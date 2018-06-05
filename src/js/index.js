@@ -309,7 +309,7 @@ function escrowButtonCancelClicked() {
   escrowSequence = parseInt(escrowSequence);
 
   if (!escrowSequence || escrowSequence < 0) {
-    DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + explorer + owner + '" target="_blank">' + explorer + owner + '</a>');
+    DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + explorer + owner + '" class="supersmall" target="_blank">' + explorer + owner + '</a>');
     DOM.escrowSequence.focus();
     return;
   }
@@ -406,7 +406,7 @@ function escrowButtonExecuteClicked() {
   escrowSequence = parseInt(escrowSequence);
 
   if (!escrowSequence || escrowSequence < 0) {
-    DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + explorer + owner + '" target="_blank">' + explorer + owner + '</a>');
+    DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + explorer + owner + '" class="supersmall" target="_blank">' + explorer + owner + '</a>');
     DOM.escrowSequence.focus();
     return;
   }
@@ -748,7 +748,7 @@ function txSequence(account) {
   var sequence = DOM.sequence.val();
   sequence = parseInt(sequence);
   if (!sequence || sequence < 1) {
-    DOM.txFeedback.html('Find "next sequence" in the "information" block here: <a href="' + explorer + account + '" target="_blank">' + explorer + account + '</a>.');
+    DOM.txFeedback.html('Find "next sequence" in the "information" block here: <a href="' + explorer + account + '" class="supersmall" target="_blank">' + explorer + account + '</a>.');
     DOM.sequence.focus();
     return false;
   }
