@@ -1,5 +1,6 @@
 (function() {
 
+var version = '0.0.3';
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -84,6 +85,7 @@ DOM.switchSettingsRegularKey = $('#switch_settings_regularKey');
 DOM.settingsDomainFields = $('.settings-domain');
 DOM.settingsGravatarFields = $('.settings-gravatar');
 DOM.settingsRegularKeyFields = $('.settings-regularKey');
+DOM.version = $('#version');
 
 function init() {
   thisYear();
@@ -126,6 +128,11 @@ function init() {
   switchSettingsGravatar();
   DOM.switchSettingsRegularKey.on("click", switchSettingsRegularKey);
   switchSettingsRegularKey();
+  showVersion();
+}
+
+function showVersion() {
+  DOM.version.html('v. ' + version);
 }
 
 function addLoadingState(element) {
@@ -771,10 +778,12 @@ function txMemos() {
 
   var memos = [];
 
+  var toolVersion = 'Bithomp tool v. ' + version;
+
   var clientMemo = {
     type: 'client',
     format: 'plain/text',
-    data: 'Bithomp tool v. 0.0.1'
+    data: toolVersion
   };
 
   if (memo != '') {
