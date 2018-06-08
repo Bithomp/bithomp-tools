@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.0.3';
+var version = '0.0.4';
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -281,7 +281,7 @@ function settingsUpdateOnline(secret, account, settings, fee, action) {
 function settingsUpdateOffline(secret, account, settings, fee, sequence) {
   api.prepareSettings(account, settings, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
     var signed = api.sign(tx.txJSON, secret);
-    DOM.txFeedback.html('<br>Copy signed transaction (in the grey box) and submit it here: <br><a href="https://bithomp.com/submit" target="_blank">https://bithomp.com/submit</a><br><br>After submitting you will be able to find transaction here: <br><a class="supersmall" href="' + explorer + signed.id + '" target="_blank">' + explorer + signed.id + '</a>');
+    DOM.txFeedback.html('<br>Copy signed transaction (in the grey box) and submit it here: <br><a href="https://bithomp.com/submit" target="_blank">https://bithomp.com/submit</a><br><br>After submitting you will be able to find transaction here: <br><a href="' + explorer + signed.id + '" target="_blank">' + explorer + signed.id + '</a>');
     DOM.txBlob.val(signed.signedTransaction);
     //hash signed.id
   }).catch(function (error) {
@@ -316,7 +316,7 @@ function escrowButtonCancelClicked() {
   escrowSequence = parseInt(escrowSequence);
 
   if (!escrowSequence || escrowSequence < 0) {
-    DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + explorer + owner + '" class="supersmall" target="_blank">' + explorer + owner + '</a>');
+    DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + explorer + owner + '" target="_blank">' + explorer + owner + '</a>');
     DOM.escrowSequence.focus();
     return;
   }
@@ -378,7 +378,7 @@ function escrowCancelOffline(secret, account, owner, escrowSequence, fee, memos,
 
   api.prepareEscrowCancellation(account, escrowCancellation, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
     var signed = api.sign(tx.txJSON, secret);
-    DOM.txFeedback.html('<br>Copy signed transaction (in the grey box) and submit it here: <br><a href="https://bithomp.com/submit" target="_blank">https://bithomp.com/submit</a><br><br>After submitting you will be able to find transaction here: <br><a class="supersmall" href="' + explorer + signed.id + '" target="_blank">' + explorer + signed.id + '</a>');
+    DOM.txFeedback.html('<br>Copy signed transaction (in the grey box) and submit it here: <br><a href="https://bithomp.com/submit" target="_blank">https://bithomp.com/submit</a><br><br>After submitting you will be able to find transaction here: <br><a href="' + explorer + signed.id + '" target="_blank">' + explorer + signed.id + '</a>');
     DOM.txBlob.val(signed.signedTransaction);
     //hash signed.id
   }).catch(function (error) {
@@ -413,7 +413,7 @@ function escrowButtonExecuteClicked() {
   escrowSequence = parseInt(escrowSequence);
 
   if (!escrowSequence || escrowSequence < 0) {
-    DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + explorer + owner + '" class="supersmall" target="_blank">' + explorer + owner + '</a>');
+    DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + explorer + owner + '" target="_blank">' + explorer + owner + '</a>');
     DOM.escrowSequence.focus();
     return;
   }
@@ -475,7 +475,7 @@ function escrowExecuteOffline(secret, account, owner, escrowSequence, fee, memos
 
   api.prepareEscrowExecution(account, escrowExecution, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
     var signed = api.sign(tx.txJSON, secret);
-    DOM.txFeedback.html('<br>Copy signed transaction (in the grey box) and submit it here: <br><a href="https://bithomp.com/submit" target="_blank">https://bithomp.com/submit</a><br><br>After submitting you will be able to find transaction here: <br><a class="supersmall" href="' + explorer + signed.id + '" target="_blank">' + explorer + signed.id + '</a>');
+    DOM.txFeedback.html('<br>Copy signed transaction (in the grey box) and submit it here: <br><a href="https://bithomp.com/submit" target="_blank">https://bithomp.com/submit</a><br><br>After submitting you will be able to find transaction here: <br><a href="' + explorer + signed.id + '" target="_blank">' + explorer + signed.id + '</a>');
     DOM.txBlob.val(signed.signedTransaction);
     //hash signed.id
   }).catch(function (error) {
@@ -567,7 +567,7 @@ function trustlineOffline(secret, account, currency, counterparty, limit, fee, m
 
   api.prepareTrustline(account, trustline, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
     var signed = api.sign(tx.txJSON, secret);
-    DOM.txFeedback.html('<br>Copy signed transaction (in the grey box) and submit it here: <br><a href="https://bithomp.com/submit" target="_blank">https://bithomp.com/submit</a><br><br>After submitting you will be able to find transaction here: <br><a class="supersmall" href="' + explorer + signed.id + '" target="_blank">' + explorer + signed.id + '</a>');
+    DOM.txFeedback.html('<br>Copy signed transaction (in the grey box) and submit it here: <br><a href="https://bithomp.com/submit" target="_blank">https://bithomp.com/submit</a><br><br>After submitting you will be able to find transaction here: <br><a href="' + explorer + signed.id + '" target="_blank">' + explorer + signed.id + '</a>');
     DOM.txBlob.val(signed.signedTransaction);
     //hash signed.id
   }).catch(function (error) {
@@ -755,7 +755,7 @@ function txSequence(account) {
   var sequence = DOM.sequence.val();
   sequence = parseInt(sequence);
   if (!sequence || sequence < 1) {
-    DOM.txFeedback.html('Find "next sequence" in the "information" block here: <a href="' + explorer + account + '" class="supersmall" target="_blank">' + explorer + account + '</a>.');
+    DOM.txFeedback.html('Find "next sequence" in the "information" block here: <a href="' + explorer + account + '" target="_blank">' + explorer + account + '</a>.');
     DOM.sequence.focus();
     return false;
   }
@@ -828,7 +828,7 @@ function paymentOffline(secret, account, recipient, destinationTag, amount, curr
 
   api.preparePayment(account, payment, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
     var signed = api.sign(tx.txJSON, secret);
-    DOM.txFeedback.html('<br>Copy signed transaction (in the grey box) and submit it here: <br><a href="https://bithomp.com/submit" target="_blank">https://bithomp.com/submit</a><br><br>After submitting you will be able to find transaction here: <br><a class="supersmall" href="' + explorer + signed.id + '" target="_blank">' + explorer + signed.id + '</a>');
+    DOM.txFeedback.html('<br>Copy signed transaction (in the grey box) and submit it here: <br><a href="https://bithomp.com/submit" target="_blank">https://bithomp.com/submit</a><br><br>After submitting you will be able to find transaction here: <br><a href="' + explorer + signed.id + '" target="_blank">' + explorer + signed.id + '</a>');
     DOM.txBlob.val(signed.signedTransaction);
     //hash signed.id
   }).catch(function (error) {

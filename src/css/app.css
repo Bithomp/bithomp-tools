@@ -33,10 +33,6 @@ a:hover {
   display: none;
 }
 
-.supersmall {
-  font-size: 9px;
-}
-
 .orange {
   color: #ce8e12;
 }
@@ -168,6 +164,8 @@ a:hover {
 
 .main-box .feedback {
   margin-top: 20px;
+  max-width: 410px;
+  word-wrap: break-word;
 }
 
 .main-box .fields-wide > div {
