@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.0.4';
+var version = '0.0.5';
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -11,7 +11,6 @@ var phraseChangeTimeoutEvent = null;
 var generationProcesses = [];
 var timer;
 var explorer = 'https://bithomp.com/explorer/';
-var onlineMode = true;
 
 var DOM = {};
 DOM.termsFields = $('.terms');

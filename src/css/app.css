@@ -37,6 +37,10 @@ a:hover {
   color: #ce8e12;
 }
 
+.red {
+  color: #d23a1c;
+}
+
 .note {
   font-size: 11px;
   margin: 20px 4px;

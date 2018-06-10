@@ -60,6 +60,10 @@ ripple-lib*  - https://github.com/ripple/ripple-lib
 
 * - modified (few extra lines added)
 
+## Credits
+
+mraburn
+
 ## License
 
 2018 Octillion S.A. All Rights Reserved

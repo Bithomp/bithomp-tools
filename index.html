@@ -42,6 +42,10 @@ a:hover {
   color: #ce8e12;
 }
 
+.red {
+  color: #d23a1c;
+}
+
 .note {
   font-size: 11px;
   margin: 20px 4px;
@@ -472,18 +476,29 @@ a:hover {
             </div>
 
             <div class="terms terms-notes bordered">
+                <b>Features</b><br>
+                - You can use this tool in two modes: online and offline.<br>
+                - Works with secret key or mnemonic (Hard Wallet).<br>
+                - Send a Payment: XRP or any IOU.<br>
+                - Add or Remove a Trustline.<br>
+                - Add a Gravatar to your account.<br>
+                - Assign a Domain to your account.<br>
+                - Execute or Cancel Escrow.<br>
+                - Add a regular key.<br>
+                <br>
                 <b>Important</b><br>
                 - Only use this tool on a trusted computer.<br>
                 - Use a private browsing mode in your browser.<br>
+                - Close the browser tab after using the tool and clear cache.<br>
                 - Never share your secret key or mnemonic (recovery phrase) with anyone.<br>
-                - Close the page after using the tool, clear cache.<br>
                 <br>
                 <b>Offline mode:</b><br>
+                - Another Computer or Phone will be required to submit the transaction.<br>
                 - Offline mode is recomended.<br>
-                - Download the <b>index.html</b> file from <a href="https://github.com/Bithomp/ripple-tools" target="_blank">github</a>
+                - Download the <b>index.html</b> file from <a href="https://github.com/Bithomp/ripple-tools" target="_blank">github</a>.
                 - Transfer it to the offline PC on the usb stick.<br>
                 - Open the index.html file in any browser, private mode.<br>
-                - You will be able to submit signed transaction blob here: <a href="https://bithomp.com/submit">https://bithomp.com/submit</a><br>
+                - You will be able to submit signed transaction blob by any device here: <a href="https://bithomp.com/submit">https://bithomp.com/submit</a><br>
                 <br>
                 <b>Online mode:</b><br>
                 - Your Secret Key and/or Mnemonic is not transmitted over the network.<br>
@@ -512,24 +527,6 @@ a:hover {
                         <div class="feedback" id="server_feedback"></div>
                     </div>
                 </fieldset>
-
-                <hr>
-
-                <h3>Choose Transaction Type</h3>
-
-                <div class="switch-field">
-                    <input type="radio" id="switch_payment" name="tx_type" value="payment" checked/>
-                    <label for="switch_payment">Payment</label>
-                    <input type="radio" id="switch_trustline" name="tx_type" value="trustline" />
-                    <label for="switch_trustline">Trustline</label>
-                    <input type="radio" id="switch_escrow" name="tx_type" value="escrow" />
-                    <label for="switch_escrow">Escrow</label>
-                </div>
-
-                <div class="switch-field">
-                    <input type="radio" id="switch_settings" name="tx_type" value="settings" />
-                    <label for="switch_settings">Settings</label>
-                </div>
 
                 <fieldset id="choose-wallet-type" class="hidden">
                     <hr>
@@ -568,9 +565,29 @@ a:hover {
                     <div class="feedback" id="account_feedback"></div>
 
                     <div id="ready-to-sign" class="hidden">
+
                         <hr>
 
-                        <h3>Transaction details</h3>
+                        <h3>Choose Transaction Type</h3>
+
+                        <div class="switch-field">
+                            <input type="radio" id="switch_payment" name="tx_type" value="payment" checked/>
+                            <label for="switch_payment">Payment</label>
+                            <input type="radio" id="switch_trustline" name="tx_type" value="trustline" />
+                            <label for="switch_trustline">Trustline</label>
+                            <input type="radio" id="switch_escrow" name="tx_type" value="escrow" />
+                            <label for="switch_escrow">Escrow</label>
+                        </div>
+
+                        <div class="switch-field">
+                            <input type="radio" id="switch_settings" name="tx_type" value="settings" />
+                            <label for="switch_settings">Settings</label>
+                        </div>
+
+                        <hr>
+
+                        <h3 class="payment-fields trustline-fields escrow-fields">Transaction details</h3>
+                        <h3 class="settings-fields hidden">Choose a Setting to Modify</h3>
 
                         <div class="fields-wide payment-fields">
                             <div>
@@ -639,19 +656,26 @@ a:hover {
                             <div class="settings-gravatar hidden">
                                 <input id="settings_email" placeholder="Gravatar email" spellcheck="false" />
                                 <div class="orange note">
-                                    Set a <a href="https://gravatar.com" target="_blank">gravatar</a> email to your ripple account in order to show your avatar in the bithomp explorer and in some other software.
+                                    Enter a <a href="https://gravatar.com" target="_blank">Gravatar</a> email address for your ripple wallet in order to display your avatar in the Bithomp Explorer and in other XRP software.
                                 </div>
                             </div>
                             <div class="settings-regularKey hidden">
                                 <input id="settings_regularKey" placeholder="Regular key" spellcheck="false" />
                                 <div class="orange note">
-                                    Here you can assign another ripple keypair to manage your account.<br>
-                                    Danger: you may lose all your XRP and other assets if you assign an address you are not in control of.
+                                    Here you can assign another ripple keypair to manage your account.<br><br>
+                                    <span class="red">
+                                        DANGER: You may lose all your XRP and other assets if you assign an address youare not in control of. 
+                                        Please do not use this tool unless you know what you are doing!
+                                    </span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="fields-wide">
+                            <div class="payment-fields escrow-fields hidden">
+                                <div class="left">Memo (optional):</div>
+                                <div class="right"><input id="memo" placeholder="message" /></div>
+                            </div>
                             <div>
                                 <div class="left">Fee to pay (XRP):</div>
                                 <div class="right"><input id="fee" value="0.000012" placeholder="0.000012" spellcheck="false" /></div>
@@ -659,10 +683,6 @@ a:hover {
                             <div class="offline-fields hidden">
                                 <div class="left">Next sequence:</div>
                                 <div class="right"><input id="sequence" placeholder="sequence of the transaction" spellcheck="false" /></div>
-                            </div>
-                            <div class="payment-fields escrow-fields hidden">
-                                <div class="left">Memo (optional):</div>
-                                <div class="right"><input id="memo" placeholder="message" /></div>
                             </div>
                         </div>
 
@@ -90229,7 +90249,7 @@ return jQuery;
 </script>
         <script>(function() {
 
-var version = '0.0.4';
+var version = '0.0.5';
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -90240,7 +90260,6 @@ var phraseChangeTimeoutEvent = null;
 var generationProcesses = [];
 var timer;
 var explorer = 'https://bithomp.com/explorer/';
-var onlineMode = true;
 
 var DOM = {};
 DOM.termsFields = $('.terms');
