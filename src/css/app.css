@@ -118,7 +118,7 @@ a:hover {
   padding: 0;
 }
 
-.main-box input, textarea {
+.main-box input[type="text"], textarea {
   width: 390px;
   padding: 4px 6px;
   border: 1px solid #dfdfdf;
@@ -128,10 +128,6 @@ a:hover {
   -moz-box-shadow: none;
   box-shadow: none;
   line-height: 20px;
-}
-
-.main-box input {
-  width: 390px;
 }
 
 .main-box input:focus, textarea:focus {
@@ -392,3 +388,89 @@ a:hover {
 }
 
 /* spinner ends */
+
+@media (max-width: 470px) {
+  body {
+    font-size: 12px;
+  }
+
+  .main-box {
+    margin-top: 20px;
+    width: 300px;
+    min-height: 400px;
+  }
+
+  .main-box .logo {
+    width: 90px !important;
+    height: 90px !important;
+  }
+
+  .main-box h2 {
+    font-size: 14px;
+    margin-top: 20px;
+  }
+
+  .main-box h3 {
+    font-size: 12px;
+  }
+
+  .main-box .social-icons {
+    top: 15px !important;
+  }
+
+  .main-box input[type="button"],
+  .main-box button,
+  .main-box .switch-field label {
+    font-size: 12px;
+    padding: 4px;
+    min-width: 118px;
+    max-width: 290px;
+    box-sizing: border-box;
+  }
+
+  .main-box .footer {
+    font-size: 10px;
+  }
+
+  .main-box input[type="text"] {
+    width: 234px !important;
+    padding: 1px 6px !important;
+  }
+
+  textarea {
+    width: 250px !important;
+    padding: 1px 6px !important;
+  }
+
+  .main-box .terms-button {
+    font-size: 11px !important;
+  }
+
+  .main-box button.github svg {
+    left: 12px;
+    top: 2px;
+  }
+
+  .main-box .terms-notes {
+    font-size: 11px;
+  }
+
+  .main-box .fields-wide .left {
+    width: 103px;
+  }
+
+  .main-box .fields-wide .right input {
+    width: 139px !important;
+  }
+
+  .main-box label[for="switch_escrow"],
+  .main-box label[for="switch_settings_regularKey"] {
+    margin-top: 30px;
+  }
+
+  #switch_settings_domain + label:after,
+  #switch_settings_gravatar + label:after {
+    display: none;
+  }
+
+}

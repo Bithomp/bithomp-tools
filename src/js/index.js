@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.0.5';
+var version = '0.0.6';
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
