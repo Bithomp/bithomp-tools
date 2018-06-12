@@ -42,9 +42,13 @@ a:hover {
 }
 
 .note {
-  font-size: 11px;
+  font-size: 12px;
   margin: 20px 4px;
   text-align: left;
+}
+
+.small {
+  font-size: 11px;
 }
 
 .main-box {
@@ -152,6 +156,19 @@ a:hover {
   margin-top: 20px;
 }
 
+.main-box .blobQR {
+  display: inline-block;
+  width: 256px;
+  height: 256px;
+  margin-top: 30px;
+}
+
+.main-box .submitUrlQR {
+  width: 100px;
+  height: 100px;
+  margin: 10px auto;
+}
+
 .main-box .secret input,
 .main-box .server input,
 .main-box .set-address input,
@@ -170,6 +187,10 @@ a:hover {
 
 .main-box .fields-wide > div {
   margin: 5px 0;
+}
+
+.main-box .fields-wide > div.note {
+  margin: 0px 4px 20px 4px;
 }
 
 .main-box .fields-wide .left,
@@ -471,6 +492,10 @@ a:hover {
   #switch_settings_domain + label:after,
   #switch_settings_gravatar + label:after {
     display: none;
+  }
+
+  .note {
+    word-break: break-all;
   }
 
 }

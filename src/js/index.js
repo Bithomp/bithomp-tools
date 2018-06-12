@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.0.6';
+var version = '0.0.7';
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -11,6 +11,16 @@ var phraseChangeTimeoutEvent = null;
 var generationProcesses = [];
 var timer;
 var explorer = 'https://bithomp.com/explorer/';
+var blobQR = new QRCode(document.getElementById("blobQR"), {
+  width : 256,
+  height : 256,
+  useSVG: true
+});
+var submitUrlQR = new QRCode(document.getElementById("submitUrlQR"), {
+  width : 100,
+  height : 100,
+  useSVG: true
+});
 
 var DOM = {};
 DOM.termsFields = $('.terms');
@@ -85,6 +95,7 @@ DOM.settingsDomainFields = $('.settings-domain');
 DOM.settingsGravatarFields = $('.settings-gravatar');
 DOM.settingsRegularKeyFields = $('.settings-regularKey');
 DOM.version = $('#version');
+DOM.submitLink = $('#submit-link');
 
 function init() {
   thisYear();
@@ -93,6 +104,7 @@ function init() {
   hideValidationError();
   DOM.switchOnline.on("click", switchOnline);
   DOM.switchOffline.on("click", switchOffline);
+  setAddress();
   switchOnline();
   switchOffline();
   DOM.serverConnect.on("click", serverConnect);
@@ -112,8 +124,6 @@ function init() {
   switchSettings();
   DOM.setAddress.on("click", setAddress);
   DOM.signAddress.on("input", signAddressChanged);
-  signAddressChanged();
-  setAddress();
   DOM.paymentButtonPay.on("click", paymentButtonPayClicked);
   DOM.trustlineButtonAdd.on("click", trustlineButtonAddClicked);
   DOM.trustlineButtonRemove.on("click", trustlineButtonRemoveClicked);
@@ -127,7 +137,23 @@ function init() {
   switchSettingsGravatar();
   DOM.switchSettingsRegularKey.on("click", switchSettingsRegularKey);
   switchSettingsRegularKey();
+  DOM.txBlob.on("click", txBlobClicked);
   showVersion();
+}
+
+function txBlobClicked() {
+  DOM.txBlob.select();
+}
+
+function showSignedTX(signed) {
+  DOM.txFeedback.html('<br>Transaction signed.<div class="note">Scan the QR or copy the transaction blob (in the grey box) and submit it on the page you\'ve already opened.</div>');
+  DOM.txBlob.val(signed.signedTransaction);
+  var tx = {
+    blob: signed.signedTransaction,
+    hash: signed.id
+  };
+  tx = JSON.stringify(tx);
+  blobQR.makeCode(tx);
 }
 
 function showVersion() {
@@ -280,8 +306,7 @@ function settingsUpdateOnline(secret, account, settings, fee, action) {
 function settingsUpdateOffline(secret, account, settings, fee, sequence) {
   api.prepareSettings(account, settings, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
     var signed = api.sign(tx.txJSON, secret);
-    DOM.txFeedback.html('<br>Copy signed transaction (in the grey box) and submit it here: <br><a href="https://bithomp.com/submit" target="_blank">https://bithomp.com/submit</a><br><br>After submitting you will be able to find transaction here: <br><a href="' + explorer + signed.id + '" target="_blank">' + explorer + signed.id + '</a>');
-    DOM.txBlob.val(signed.signedTransaction);
+    showSignedTX(signed);
     //hash signed.id
   }).catch(function (error) {
     DOM.txFeedback.html('prepareSettings: ' + error.message);
@@ -315,7 +340,7 @@ function escrowButtonCancelClicked() {
   escrowSequence = parseInt(escrowSequence);
 
   if (!escrowSequence || escrowSequence < 0) {
-    DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + explorer + owner + '" target="_blank">' + explorer + owner + '</a>');
+    DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + explorer + owner + '" target="_blank" class="small">' + explorer + owner + '</a>');
     DOM.escrowSequence.focus();
     return;
   }
@@ -377,8 +402,7 @@ function escrowCancelOffline(secret, account, owner, escrowSequence, fee, memos,
 
   api.prepareEscrowCancellation(account, escrowCancellation, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
     var signed = api.sign(tx.txJSON, secret);
-    DOM.txFeedback.html('<br>Copy signed transaction (in the grey box) and submit it here: <br><a href="https://bithomp.com/submit" target="_blank">https://bithomp.com/submit</a><br><br>After submitting you will be able to find transaction here: <br><a href="' + explorer + signed.id + '" target="_blank">' + explorer + signed.id + '</a>');
-    DOM.txBlob.val(signed.signedTransaction);
+    showSignedTX(signed);
     //hash signed.id
   }).catch(function (error) {
     DOM.txFeedback.html('prepareEscrowCancellation: ' + error.message);
@@ -474,8 +498,7 @@ function escrowExecuteOffline(secret, account, owner, escrowSequence, fee, memos
 
   api.prepareEscrowExecution(account, escrowExecution, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
     var signed = api.sign(tx.txJSON, secret);
-    DOM.txFeedback.html('<br>Copy signed transaction (in the grey box) and submit it here: <br><a href="https://bithomp.com/submit" target="_blank">https://bithomp.com/submit</a><br><br>After submitting you will be able to find transaction here: <br><a href="' + explorer + signed.id + '" target="_blank">' + explorer + signed.id + '</a>');
-    DOM.txBlob.val(signed.signedTransaction);
+    showSignedTX(signed);
     //hash signed.id
   }).catch(function (error) {
     DOM.txFeedback.html('prepareEscrowExecution: ' + error.message);
@@ -566,8 +589,7 @@ function trustlineOffline(secret, account, currency, counterparty, limit, fee, m
 
   api.prepareTrustline(account, trustline, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
     var signed = api.sign(tx.txJSON, secret);
-    DOM.txFeedback.html('<br>Copy signed transaction (in the grey box) and submit it here: <br><a href="https://bithomp.com/submit" target="_blank">https://bithomp.com/submit</a><br><br>After submitting you will be able to find transaction here: <br><a href="' + explorer + signed.id + '" target="_blank">' + explorer + signed.id + '</a>');
-    DOM.txBlob.val(signed.signedTransaction);
+    showSignedTX(signed);
     //hash signed.id
   }).catch(function (error) {
     DOM.txFeedback.html('prepareTrustline: ' + error.message);
@@ -616,6 +638,7 @@ function trustlineOnline(secret, account, currency, counterparty, limit, fee, me
 function eraseTXresults() {
   DOM.txFeedback.html('');
   DOM.txBlob.val('');
+  blobQR.clear();
 }
 
 function paymentButtonPayClicked() {
@@ -733,6 +756,13 @@ function signingSecret() {
   }
 }
 
+function submitLink() {
+  var address = signingAddress();
+  var url = 'https://bithomp.com/submit/' + address;
+  DOM.submitLink.html('<a href="' + url + '" target="_blank">' + url + '</a>');
+  submitUrlQR.makeCode(url);
+}
+
 function signingAddress() {
   var address = DOM.address.val();
   var signAddress = DOM.signAddress.val();
@@ -753,8 +783,13 @@ function signingAddress() {
 function txSequence(account) {
   var sequence = DOM.sequence.val();
   sequence = parseInt(sequence);
-  if (!sequence || sequence < 1) {
-    DOM.txFeedback.html('Find "next sequence" in the "information" block here: <a href="' + explorer + account + '" target="_blank">' + explorer + account + '</a>.');
+  if (!sequence) {
+    DOM.txFeedback.html('Please fill in the <b>Next sequence</b>.');
+    DOM.sequence.focus();
+    return false;
+  }
+  if (sequence < 1) {
+    DOM.txFeedback.html('Error: Incorrect sequence.');
     DOM.sequence.focus();
     return false;
   }
@@ -827,8 +862,7 @@ function paymentOffline(secret, account, recipient, destinationTag, amount, curr
 
   api.preparePayment(account, payment, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
     var signed = api.sign(tx.txJSON, secret);
-    DOM.txFeedback.html('<br>Copy signed transaction (in the grey box) and submit it here: <br><a href="https://bithomp.com/submit" target="_blank">https://bithomp.com/submit</a><br><br>After submitting you will be able to find transaction here: <br><a href="' + explorer + signed.id + '" target="_blank">' + explorer + signed.id + '</a>');
-    DOM.txBlob.val(signed.signedTransaction);
+    showSignedTX(signed);
     //hash signed.id
   }).catch(function (error) {
     DOM.txFeedback.html('preparePayment: ' + error.message);
@@ -886,42 +920,47 @@ function paymentOnline(secret, account, recipient, destinationTag, amount, curre
 }
 
 function validateRegularKey() {
-  var address = DOM.address.val();
-  var signAddress = DOM.signAddress.val();
-  signAddress = signAddress.trim();
+  if (DOM.setAddress.is(':checked')) {
+    var address = DOM.address.val();
+    var signAddress = DOM.signAddress.val();
+    signAddress = signAddress.trim();
 
-  if (address == '' || signAddress == '') {
-    return false;
-  }
+    if (address == '' || signAddress == '') {
+      return;
+    }
 
-  if (api.isConnected()) {
-    api.getSettings(signAddress).then(function(info) {
-      if (info && !info.regularKey) {
-        DOM.signAddressFeedback.html("<a href='" + explorer + signAddress + "' target='_blank'>Address</a> doesn't have a set regular key.");
-        return false;
-      } else if (info.regularKey == address) {
-        signAddressFeedback();
-        return true;
-        //check if it has enough?
-      } else {
-        DOM.signAddressFeedback.html("<a href='" + explorer + signAddress + "' target='_blank'>Address</a> has a different regular key.");
-        return false;
-      }
-    }).catch(function (error) {
-      DOM.readyToSignFields.hide();
-      if (error.message == 'actNotFound') {
-        DOM.signAddressFeedback.html('This account is not activated yet. <a href="https://bithomp.com/activation/' + signAddress + '" target="_blank">Activate</a>');
-      } else if (error.message == 'instance.address does not conform to the "address" format') {
-        DOM.signAddressFeedback.html('Incorrect address');
-      } else {
-        DOM.signAddressFeedback.html('getSettings: ' + error.message);
-        console.log(error);
-      }
-      return false;
-    })
-  } else {
-    DOM.signAddressFeedback.html('Disconected from a Web Socket...');
-    return false;
+    if (signAddress == address) {
+      DOM.signAddressFeedback.html("Address is the same, just uncheck the checkbox.");
+      return;
+    }
+
+    if (api.isConnected()) {
+      api.getSettings(signAddress).then(function(info) {
+        if (info && !info.regularKey) {
+          DOM.signAddressFeedback.html("<a href='" + explorer + signAddress + "' target='_blank'>Address</a> doesn't have a set regular key.");
+          return;
+        } else if (info.regularKey == address) {
+          DOM.readyToSignFields.show();
+          return;
+        } else {
+          DOM.signAddressFeedback.html("<a href='" + explorer + signAddress + "' target='_blank'>Address</a> has a different regular key.");
+          return;
+        }
+      }).catch(function (error) {
+        if (error.message == 'actNotFound') {
+          DOM.signAddressFeedback.html('This account is not activated yet. <a href="https://bithomp.com/activation/' + signAddress + '" target="_blank">Activate</a>');
+        } else if (error.message == 'instance.address does not conform to the "address" format') {
+          DOM.signAddressFeedback.html('Incorrect address');
+        } else {
+          DOM.signAddressFeedback.html('getSettings: ' + error.message);
+          console.log(error);
+        }
+        return;
+      })
+    } else {
+      DOM.signAddressFeedback.html('Disconected from a Web Socket...');
+      return;
+    }
   }
 }
 
@@ -930,29 +969,37 @@ function isValidAddress(address) {
 }
 
 function signAddressChanged() {
-  var signAddress = DOM.signAddress.val();
-  signAddress = signAddress.trim();
+  submitLink();
+  if (DOM.setAddress.is(':checked')) {
+    DOM.readyToSignFields.hide();
+    var signAddress = DOM.signAddress.val();
+    signAddress = signAddress.trim();
 
-  var address = DOM.address.val();
-  address = address.trim();
+    var address = DOM.address.val();
+    address = address.trim();
 
-  DOM.signAddressFeedback.html("");
+    DOM.signAddressFeedback.html("");
 
-  if (signAddress != '') {
+    if (signAddress == '') {
+      DOM.signAddressFeedback.html("Please enter the address.");
+      return;
+    }
 
     if (signAddress == address) {
       DOM.signAddressFeedback.html("Address is the same, just uncheck the checkbox.");
       return;
     }
 
-    if (isValidAddress(signAddress)) {
-      if (DOM.switchOnline.is(':checked')) {
-        validateRegularKey();
-      } else {
-        DOM.readyToSignFields.show();
-      }
+    if (!isValidAddress(signAddress)) {
+      DOM.signAddressFeedback.html("Error: Invalid address");
+      return;
+    }
+
+    if (DOM.switchOffline.is(':checked')) {
+      DOM.readyToSignFields.show();
     } else {
-      DOM.signAddressFeedback.html("Invalid address");
+      validateRegularKey();
+      addressFeedback();
     }
   }
 }
@@ -964,7 +1011,9 @@ function setAddress() {
   } else {
     DOM.signAddressFields.hide();
     DOM.addressFeedback.show();
+    DOM.readyToSignFields.show();
   }
+  signAddressChanged();
 }
 
 function checkBalance(accountDOM, feedbackFieldDOM) {
@@ -991,9 +1040,12 @@ function checkBalance(accountDOM, feedbackFieldDOM) {
         available = Math.floor(available * p) / p;
         if (available < 0) available = 0;
         feedbackFieldDOM.html("Balance: " + info.xrpBalance + " XRP; You can spend: " + available + " XRP");
-        DOM.readyToSignFields.show();
+        if (DOM.setAddress.is(':checked')) {
+          validateRegularKey();
+        } else {
+          DOM.readyToSignFields.show();
+        }
       }).catch(function (error) {
-        DOM.readyToSignFields.hide();
         if (error.message == 'actNotFound') {
           feedbackFieldDOM.html('This account is not activated yet. <a href="https://bithomp.com/activation/' + account + '" target="_blank">Activate</a>');
         } else if (error.message == 'instance.address does not conform to the "address" format') {
@@ -1002,17 +1054,22 @@ function checkBalance(accountDOM, feedbackFieldDOM) {
           feedbackFieldDOM.html('getAccountInfo: ' + error.message);
           console.log(error);
         }
+        DOM.readyToSignFields.hide();
       })
     }
   }
 }
 
 function addressFeedback() {
-  checkBalance(DOM.address, DOM.addressFeedback);
-}
-
-function signAddressFeedback() {
-  checkBalance(DOM.signAddress, DOM.signAddressFeedback);
+  if (DOM.switchOnline.is(':checked')) {
+    if (DOM.setAddress.is(':checked')) {
+      checkBalance(DOM.signAddress, DOM.signAddressFeedback);
+    } else {
+      checkBalance(DOM.address, DOM.addressFeedback);
+    }
+  } else {
+    DOM.readyToSignFields.show();
+  }
 }
 
 function thisYear() {
@@ -1048,7 +1105,7 @@ function serverConnect() {
     DOM.chooseWallet.show();
     DOM.serverNotConnectedFields.hide();
     addressFeedback();
-    validateRegularKey();
+    signAddressChanged();
   });
   api.on('disconnected', function(code) {
     DOM.serverFeedback.html('Disconnected, code: ' + code);
@@ -1164,16 +1221,8 @@ function isValidSecret(secret) {
   }
 }
 
-function showReadyToSignFields() {
-  var signAddress = DOM.signAddress.val();
-  signAddress = signAddress.trim();
-  if (DOM.switchOffline.is(':checked') || !DOM.setAddress.is(':checked') || (DOM.setAddress.is(':checked') && isValidAddress(signAddress))) {
-    //if online: we can also validate the regular key and the sufficient balance
-    DOM.readyToSignFields.show();
-  }
-}
-
 function secretChanged() {
+  eraseTXresults();
   var secret = DOM.secret.val();
   secret = secret.trim();
 
@@ -1191,11 +1240,11 @@ function secretChanged() {
       DOM.feedback.html(showAddress(pub));
       DOM.address.val(pub);
       DOM.setAddressFields.show();
-      showReadyToSignFields();
       DOM.secret.hide();
       addressFeedback();
-      validateRegularKey();
+      signAddressChanged();
       DOM.secretHidden.show();
+      submitLink();
     } else {
       DOM.feedback.html('invalid secret');
     }
@@ -1222,12 +1271,14 @@ function switchMnemonic() {
 
 /* mnemonic starts */
 function delayedPhraseChanged() {
+  eraseTXresults();
   hideValidationError();
   seed = null;
   bip32RootKey = null;
   bip32ExtendedKey = null;
   clearAddressesList();
   showPending();
+  submitLink();
   if (phraseChangeTimeoutEvent != null) {
     clearTimeout(phraseChangeTimeoutEvent);
   }
@@ -1310,8 +1361,7 @@ function TableRow(index) {
       DOM.pubkey.val(pubkey);
       DOM.privkey.val(privkey);
       addressFeedback();
-      validateRegularKey();
-      showReadyToSignFields();
+      signAddressChanged();
     }, 50)
   }
 

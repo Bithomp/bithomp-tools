@@ -284,6 +284,16 @@
                                 <div class="left">Memo (optional):</div>
                                 <div class="right"><input type="text" id="memo" placeholder="message" /></div>
                             </div>
+
+                            <div class="note offline-fields hidden">
+                                <hr>
+                                On your phone or another connected computer open a page: 
+                                <span id="submit-link" class="small">https://bithomp.com/submit</span>
+                                <div id="submitUrlQR" class="submitUrlQR"></div>
+                                Find there the <b>recommended fee</b> and the <b>next sequence</b>.
+                                <hr>
+                            </div>
+
                             <div>
                                 <div class="left">Fee to pay (XRP):</div>
                                 <div class="right"><input type="text" id="fee" value="0.000012" placeholder="0.000012" spellcheck="false" /></div>
@@ -309,9 +319,7 @@
                         </div>
 
                         <div class="buttons settings-fields">
-                            <button type="button" id="settings_set">
-                                Set
-                            </button>
+                            <button type="button" id="settings_set">Set</button>
 
                             <button type="button" id="settings_unset" class="settings-domain settings-regularKey hidden">
                                 Remove
@@ -320,7 +328,8 @@
 
                         <div class="feedback" id="tx_feedback"></div>
 
-                        <textarea id="txBlob" class="tx-blob offline-fields hidden"></textarea>
+                        <textarea id="txBlob" class="tx-blob offline-fields hidden" readonly></textarea>
+                        <div id="blobQR" class="blobQR offline-fields hidden"></div>
 
                     </div>
 
@@ -346,6 +355,7 @@
         <script src="js/lodash.js"></script>
         <script src="js/ripple-0.22.0-keypair.js"></script>
         <script src="js/jquery-3.2.1.js"></script>
+        <script src="js/qrcode.js"></script>
         <script src="js/index.js"></script>
     </body>
 </html>

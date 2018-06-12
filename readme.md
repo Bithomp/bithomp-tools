@@ -58,6 +58,8 @@ Lodash - https://github.com/lodash/lodash
 
 ripple-lib*  - https://github.com/ripple/ripple-lib
 
+qrcode - https://github.com/davidshimjs/qrcodejs
+
 * - modified (few extra lines added)
 
 ## Credits
