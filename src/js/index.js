@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.0.7';
+var version = '0.0.8';
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -138,7 +138,42 @@ function init() {
   DOM.switchSettingsRegularKey.on("click", switchSettingsRegularKey);
   switchSettingsRegularKey();
   DOM.txBlob.on("click", txBlobClicked);
+  DOM.paymentAmount.on("keydown", paymentAmountChanged);
+  DOM.trustlineLimit.on("keydown", trustlineLimitChanged);
+  DOM.fee.on("keydown", feeChanged);
   showVersion();
+}
+
+function feeChanged(e) {
+  replaceCommas(e);
+}
+
+function trustlineLimitChanged(e) {
+  replaceCommas(e);
+}
+
+function paymentAmountChanged(e) {
+  replaceCommas(e);
+}
+
+function replaceCommas(e) {
+  // Allow: backspace, delete, tab, escape, enter and .
+  if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+       // Allow: Ctrl/cmd+A
+      (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+       // Allow: Ctrl/cmd+C
+      (e.keyCode == 67 && (e.ctrlKey === true || e.metaKey === true)) ||
+       // Allow: Ctrl/cmd+X
+      (e.keyCode == 88 && (e.ctrlKey === true || e.metaKey === true)) ||
+       // Allow: home, end, left, right
+      (e.keyCode >= 35 && e.keyCode <= 39)) {
+           // let it happen, don't do anything
+           return;
+  }
+  // Ensure that it is a number and stop the keypress
+  if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+      e.preventDefault();
+  }
 }
 
 function txBlobClicked() {
@@ -680,6 +715,7 @@ function paymentButtonPayClicked() {
     DOM.paymentAmount.focus();
     return;
   }
+  amount = String(amount);
 
   var currency = DOM.paymentCurrency.val();
   currency = currency.trim().toUpperCase();
