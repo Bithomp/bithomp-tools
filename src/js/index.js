@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.0.8';
+var version = '0.0.9';
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -182,12 +182,8 @@ function txBlobClicked() {
 
 function showSignedTX(signed) {
   DOM.txFeedback.html('<br>Transaction signed.<div class="note">Scan the QR or copy the transaction blob (in the grey box) and submit it on the page you\'ve already opened.</div>');
-  DOM.txBlob.val(signed.signedTransaction);
-  var tx = {
-    blob: signed.signedTransaction,
-    hash: signed.id
-  };
-  tx = JSON.stringify(tx);
+  var tx = JSON.stringify(signed);
+  DOM.txBlob.val(tx);
   blobQR.makeCode(tx);
 }
 
@@ -1074,8 +1070,9 @@ function checkBalance(accountDOM, feedbackFieldDOM) {
         }
         var p = Math.pow(10, n);
         available = Math.floor(available * p) / p;
+        var balance = Math.floor(info.xrpBalance * p) / p;
         if (available < 0) available = 0;
-        feedbackFieldDOM.html("Balance: " + info.xrpBalance + " XRP; You can spend: " + available + " XRP");
+        feedbackFieldDOM.html("Balance: " + balance + " XRP; You can spend: " + available + " XRP");
         if (DOM.setAddress.is(':checked')) {
           validateRegularKey();
         } else {
