@@ -252,6 +252,11 @@
                             <label for="switch_settings_domain">Domain</label>
                             <input type="radio" id="switch_settings_gravatar" name="settings_type" value="gravatar" />
                             <label for="switch_settings_gravatar">Gravatar</label>
+                        </div>
+
+                        <div class="switch-field hidden settings-fields">
+                            <input type="radio" id="switch_settings_messageKey" name="settings_type" value="messageKey" />
+                            <label for="switch_settings_messageKey">Message key</label>
                             <input type="radio" id="switch_settings_regularKey" name="settings_type" value="regularKey" />
                             <label for="switch_settings_regularKey">Regular key</label>
                         </div>
@@ -265,6 +270,12 @@
                                 <input type="text" id="settings_email" placeholder="Gravatar email" spellcheck="false" />
                                 <div class="orange note">
                                     Enter a <a href="https://gravatar.com" target="_blank">Gravatar</a> email address for your ripple wallet in order to display your avatar in the Bithomp Explorer and in other XRP software.
+                                </div>
+                            </div>
+                            <div class="settings-messageKey hidden">
+                                <input type="text" id="settings_messageKey" placeholder="Message key" spellcheck="false" />
+                                <div class="orange note">
+                                    Public key for sending encrypted messages to this account. Conventionally, it should be a secp256k1 key, the same encryption that is used by the rest of Ripple.
                                 </div>
                             </div>
                             <div class="settings-regularKey hidden">
@@ -322,7 +333,7 @@
                         <div class="buttons settings-fields">
                             <button type="button" id="settings_set">Set</button>
 
-                            <button type="button" id="settings_unset" class="settings-domain settings-regularKey hidden">
+                            <button type="button" id="settings_unset" class="settings-domain settings-messageKey settings-regularKey hidden">
                                 Remove
                             </button>
                         </div>

@@ -174,6 +174,7 @@ a:hover {
 .main-box .set-address input,
 .main-box .settings-domain input,
 .main-box .settings-gravatar input,
+.main-box .settings-messageKey input,
 .main-box .settings-regularKey input {
   text-align: center;
   border: 2px solid #3fa3b5;
@@ -272,7 +273,9 @@ a:hover {
 #switch_payment + label:after, 
 #switch_trustline + label:after, 
 #switch_escrow + label:after,
-#switch_settings + label:after {
+#switch_settings + label:after,
+#switch_settings_domain + label:after,
+#switch_settings_gravatar + label:after {
   display: none;
 }
 
@@ -487,11 +490,6 @@ a:hover {
   .main-box label[for="switch_escrow"],
   .main-box label[for="switch_settings_regularKey"] {
     margin-top: 30px;
-  }
-
-  #switch_settings_domain + label:after,
-  #switch_settings_gravatar + label:after {
-    display: none;
   }
 
   .note {

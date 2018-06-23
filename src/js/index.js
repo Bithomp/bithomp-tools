@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.0.9';
+var version = '0.0.10';
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -85,14 +85,17 @@ DOM.thisYear = $('#thisYear');
 DOM.settingsFields = $('.settings-fields');
 DOM.settingsDomain = $('#settings_domain');
 DOM.settingsEmail = $('#settings_email');
+DOM.settingsMessageKey = $('#settings_messageKey');
 DOM.settingsRegularKey = $('#settings_regularKey');
 DOM.settingsButtonSet = $('#settings_set');
 DOM.settingsButtonUnset = $('#settings_unset');
 DOM.switchSettingsDomain = $('#switch_settings_domain');
 DOM.switchSettingsGravatar = $('#switch_settings_gravatar');
+DOM.switchSettingsMessageKey = $('#switch_settings_messageKey');
 DOM.switchSettingsRegularKey = $('#switch_settings_regularKey');
 DOM.settingsDomainFields = $('.settings-domain');
 DOM.settingsGravatarFields = $('.settings-gravatar');
+DOM.settingsMessageKeyFields = $('.settings-messageKey');
 DOM.settingsRegularKeyFields = $('.settings-regularKey');
 DOM.version = $('#version');
 DOM.submitLink = $('#submit-link');
@@ -135,6 +138,8 @@ function init() {
   switchSettingsDomain();
   DOM.switchSettingsGravatar.on("click", switchSettingsGravatar);
   switchSettingsGravatar();
+  DOM.switchSettingsMessageKey.on("click", switchSettingsMessageKey);
+  switchSettingsMessageKey();
   DOM.switchSettingsRegularKey.on("click", switchSettingsRegularKey);
   switchSettingsRegularKey();
   DOM.txBlob.on("click", txBlobClicked);
@@ -264,6 +269,36 @@ function settings(action) {
       settings.emailHash = emailHash;
     } else {
       settings.emailHash = null;
+    }
+  } else if (DOM.switchSettingsMessageKey.is(':checked')) {
+    if (action == 'set') {
+      var messageKey = DOM.settingsMessageKey.val();
+      messageKey = messageKey.trim();
+
+      if (messageKey == '') {
+        DOM.txFeedback.html('Enter a message key');
+        DOM.settingsMessageKey.focus();
+        return;
+      }
+
+      messageKey = String(messageKey).toUpperCase();
+      DOM.settingsMessageKey.val(messageKey);
+
+      if (!isHex(messageKey)) {
+        DOM.txFeedback.html('<span class="orange">Error: Invalid format of the message key (Must be HEX)</span>');
+        DOM.settingsMessageKey.focus();
+        return;
+      }
+
+      if (messageKey.length != 66) {
+        DOM.txFeedback.html('<span class="orange">Error: The key must 66 characters</span>');
+        DOM.settingsMessageKey.focus();
+        return;
+      }
+
+      settings.messageKey = messageKey;
+    } else {
+      settings.messageKey = '';
     }
   } else if (DOM.switchSettingsRegularKey.is(':checked')) {
     if (action == 'set') {
@@ -1216,6 +1251,7 @@ function switchSettings() {
 function switchSettingsDomain() {
   if (DOM.switchSettingsDomain.is(':checked')) {
     DOM.settingsGravatarFields.hide();
+    DOM.settingsMessageKeyFields.hide();
     DOM.settingsRegularKeyFields.hide();
     DOM.settingsDomainFields.show();
     eraseTXresults();
@@ -1224,9 +1260,20 @@ function switchSettingsDomain() {
 
 function switchSettingsGravatar() {
   if (DOM.switchSettingsGravatar.is(':checked')) {
+    DOM.settingsMessageKeyFields.hide();
     DOM.settingsRegularKeyFields.hide();
     DOM.settingsDomainFields.hide();
     DOM.settingsGravatarFields.show();
+    eraseTXresults();
+  }
+}
+
+function switchSettingsMessageKey() {
+  if (DOM.switchSettingsMessageKey.is(':checked')) {
+    DOM.settingsDomainFields.hide();
+    DOM.settingsGravatarFields.hide();
+    DOM.settingsRegularKeyFields.hide();
+    DOM.settingsMessageKeyFields.show();
     eraseTXresults();
   }
 }
@@ -1235,6 +1282,7 @@ function switchSettingsRegularKey() {
   if (DOM.switchSettingsRegularKey.is(':checked')) {
     DOM.settingsDomainFields.hide();
     DOM.settingsGravatarFields.hide();
+    DOM.settingsMessageKeyFields.hide();
     DOM.settingsRegularKeyFields.show();
     eraseTXresults();
   }
@@ -1719,7 +1767,12 @@ function validateEmail(email) {
 function validateDomain(domain) { 
   var re = /^((?:(?:(?:\w[\.\-\+]?)*)\w)+)((?:(?:(?:\w[\.\-\+]?){0,62})\w)+)\.(\w{2,6})$/; 
   return re.test(domain);
-} 
+}
+
+function isHex(h) {
+  var re = /[0-9A-Fa-f]/g;
+  return re.test(h);
+}
 
 init();
 

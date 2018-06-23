@@ -179,6 +179,7 @@ a:hover {
 .main-box .set-address input,
 .main-box .settings-domain input,
 .main-box .settings-gravatar input,
+.main-box .settings-messageKey input,
 .main-box .settings-regularKey input {
   text-align: center;
   border: 2px solid #3fa3b5;
@@ -277,7 +278,9 @@ a:hover {
 #switch_payment + label:after, 
 #switch_trustline + label:after, 
 #switch_escrow + label:after,
-#switch_settings + label:after {
+#switch_settings + label:after,
+#switch_settings_domain + label:after,
+#switch_settings_gravatar + label:after {
   display: none;
 }
 
@@ -492,11 +495,6 @@ a:hover {
   .main-box label[for="switch_escrow"],
   .main-box label[for="switch_settings_regularKey"] {
     margin-top: 30px;
-  }
-
-  #switch_settings_domain + label:after,
-  #switch_settings_gravatar + label:after {
-    display: none;
   }
 
   .note {
@@ -753,6 +751,11 @@ a:hover {
                             <label for="switch_settings_domain">Domain</label>
                             <input type="radio" id="switch_settings_gravatar" name="settings_type" value="gravatar" />
                             <label for="switch_settings_gravatar">Gravatar</label>
+                        </div>
+
+                        <div class="switch-field hidden settings-fields">
+                            <input type="radio" id="switch_settings_messageKey" name="settings_type" value="messageKey" />
+                            <label for="switch_settings_messageKey">Message key</label>
                             <input type="radio" id="switch_settings_regularKey" name="settings_type" value="regularKey" />
                             <label for="switch_settings_regularKey">Regular key</label>
                         </div>
@@ -766,6 +769,12 @@ a:hover {
                                 <input type="text" id="settings_email" placeholder="Gravatar email" spellcheck="false" />
                                 <div class="orange note">
                                     Enter a <a href="https://gravatar.com" target="_blank">Gravatar</a> email address for your ripple wallet in order to display your avatar in the Bithomp Explorer and in other XRP software.
+                                </div>
+                            </div>
+                            <div class="settings-messageKey hidden">
+                                <input type="text" id="settings_messageKey" placeholder="Message key" spellcheck="false" />
+                                <div class="orange note">
+                                    Public key for sending encrypted messages to this account. Conventionally, it should be a secp256k1 key, the same encryption that is used by the rest of Ripple.
                                 </div>
                             </div>
                             <div class="settings-regularKey hidden">
@@ -823,7 +832,7 @@ a:hover {
                         <div class="buttons settings-fields">
                             <button type="button" id="settings_set">Set</button>
 
-                            <button type="button" id="settings_unset" class="settings-domain settings-regularKey hidden">
+                            <button type="button" id="settings_unset" class="settings-domain settings-messageKey settings-regularKey hidden">
                                 Remove
                             </button>
                         </div>
@@ -90983,7 +90992,7 @@ var QRCode;
 </script>
         <script>(function() {
 
-var version = '0.0.9';
+var version = '0.0.10';
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -91068,14 +91077,17 @@ DOM.thisYear = $('#thisYear');
 DOM.settingsFields = $('.settings-fields');
 DOM.settingsDomain = $('#settings_domain');
 DOM.settingsEmail = $('#settings_email');
+DOM.settingsMessageKey = $('#settings_messageKey');
 DOM.settingsRegularKey = $('#settings_regularKey');
 DOM.settingsButtonSet = $('#settings_set');
 DOM.settingsButtonUnset = $('#settings_unset');
 DOM.switchSettingsDomain = $('#switch_settings_domain');
 DOM.switchSettingsGravatar = $('#switch_settings_gravatar');
+DOM.switchSettingsMessageKey = $('#switch_settings_messageKey');
 DOM.switchSettingsRegularKey = $('#switch_settings_regularKey');
 DOM.settingsDomainFields = $('.settings-domain');
 DOM.settingsGravatarFields = $('.settings-gravatar');
+DOM.settingsMessageKeyFields = $('.settings-messageKey');
 DOM.settingsRegularKeyFields = $('.settings-regularKey');
 DOM.version = $('#version');
 DOM.submitLink = $('#submit-link');
@@ -91118,6 +91130,8 @@ function init() {
   switchSettingsDomain();
   DOM.switchSettingsGravatar.on("click", switchSettingsGravatar);
   switchSettingsGravatar();
+  DOM.switchSettingsMessageKey.on("click", switchSettingsMessageKey);
+  switchSettingsMessageKey();
   DOM.switchSettingsRegularKey.on("click", switchSettingsRegularKey);
   switchSettingsRegularKey();
   DOM.txBlob.on("click", txBlobClicked);
@@ -91247,6 +91261,36 @@ function settings(action) {
       settings.emailHash = emailHash;
     } else {
       settings.emailHash = null;
+    }
+  } else if (DOM.switchSettingsMessageKey.is(':checked')) {
+    if (action == 'set') {
+      var messageKey = DOM.settingsMessageKey.val();
+      messageKey = messageKey.trim();
+
+      if (messageKey == '') {
+        DOM.txFeedback.html('Enter a message key');
+        DOM.settingsMessageKey.focus();
+        return;
+      }
+
+      messageKey = String(messageKey).toUpperCase();
+      DOM.settingsMessageKey.val(messageKey);
+
+      if (!isHex(messageKey)) {
+        DOM.txFeedback.html('<span class="orange">Error: Invalid format of the message key (Must be HEX)</span>');
+        DOM.settingsMessageKey.focus();
+        return;
+      }
+
+      if (messageKey.length != 66) {
+        DOM.txFeedback.html('<span class="orange">Error: The key must 66 characters</span>');
+        DOM.settingsMessageKey.focus();
+        return;
+      }
+
+      settings.messageKey = messageKey;
+    } else {
+      settings.messageKey = '';
     }
   } else if (DOM.switchSettingsRegularKey.is(':checked')) {
     if (action == 'set') {
@@ -92199,6 +92243,7 @@ function switchSettings() {
 function switchSettingsDomain() {
   if (DOM.switchSettingsDomain.is(':checked')) {
     DOM.settingsGravatarFields.hide();
+    DOM.settingsMessageKeyFields.hide();
     DOM.settingsRegularKeyFields.hide();
     DOM.settingsDomainFields.show();
     eraseTXresults();
@@ -92207,9 +92252,20 @@ function switchSettingsDomain() {
 
 function switchSettingsGravatar() {
   if (DOM.switchSettingsGravatar.is(':checked')) {
+    DOM.settingsMessageKeyFields.hide();
     DOM.settingsRegularKeyFields.hide();
     DOM.settingsDomainFields.hide();
     DOM.settingsGravatarFields.show();
+    eraseTXresults();
+  }
+}
+
+function switchSettingsMessageKey() {
+  if (DOM.switchSettingsMessageKey.is(':checked')) {
+    DOM.settingsDomainFields.hide();
+    DOM.settingsGravatarFields.hide();
+    DOM.settingsRegularKeyFields.hide();
+    DOM.settingsMessageKeyFields.show();
     eraseTXresults();
   }
 }
@@ -92218,6 +92274,7 @@ function switchSettingsRegularKey() {
   if (DOM.switchSettingsRegularKey.is(':checked')) {
     DOM.settingsDomainFields.hide();
     DOM.settingsGravatarFields.hide();
+    DOM.settingsMessageKeyFields.hide();
     DOM.settingsRegularKeyFields.show();
     eraseTXresults();
   }
@@ -92702,7 +92759,12 @@ function validateEmail(email) {
 function validateDomain(domain) { 
   var re = /^((?:(?:(?:\w[\.\-\+]?)*)\w)+)((?:(?:(?:\w[\.\-\+]?){0,62})\w)+)\.(\w{2,6})$/; 
   return re.test(domain);
-} 
+}
+
+function isHex(h) {
+  var re = /[0-9A-Fa-f]/g;
+  return re.test(h);
+}
 
 init();
 
