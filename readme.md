@@ -1,10 +1,10 @@
-# Ripple Tools
+# Bithomp Tools
 
-A tool to sign (and submit) simple transactions for ripple accounts, you can use secret or mnemonic.
+A tool to sign (and submit) simple transactions for xrp accounts, you can use secret or mnemonic.
 
 ## Online Version
 
-https://bithomp.github.io/ripple-tools/
+https://bithomp.github.io/bithomp-tools/
 
 ## Standalone offline version
 
@@ -41,14 +41,14 @@ please do not commit changes to `index.html`
 
 You can use this tool without having to be online.
 
-Download the file from the repository - https://github.com/Bithomp/ripple-tools
+Download the file from the repository - https://github.com/Bithomp/bithomp-tools
 This project is 100% open-source code
 
 ## Open-source
 
 This project is 100% open-source code
 
-Get the source code from the repository - https://github.com/Bithomp/ripple-tools
+Get the source code from the repository - https://github.com/Bithomp/bithomp-tools
 
 ## Libraries
 
@@ -74,4 +74,4 @@ The software is provided "as is", without warranty of any kind, express or impli
 
 Please refer to the software license for more details.
 
-https://github.com/Bithomp/ripple-tools/blob/master/LICENSE
+https://github.com/Bithomp/bithomp-tools/blob/master/LICENSE
