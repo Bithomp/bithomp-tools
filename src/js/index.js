@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.0.10';
+var version = '0.0.11';
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -89,16 +89,17 @@ DOM.settingsMessageKey = $('#settings_messageKey');
 DOM.settingsRegularKey = $('#settings_regularKey');
 DOM.settingsButtonSet = $('#settings_set');
 DOM.settingsButtonUnset = $('#settings_unset');
-DOM.switchSettingsDomain = $('#switch_settings_domain');
-DOM.switchSettingsGravatar = $('#switch_settings_gravatar');
-DOM.switchSettingsMessageKey = $('#switch_settings_messageKey');
-DOM.switchSettingsRegularKey = $('#switch_settings_regularKey');
 DOM.settingsDomainFields = $('.settings-domain');
 DOM.settingsGravatarFields = $('.settings-gravatar');
 DOM.settingsMessageKeyFields = $('.settings-messageKey');
 DOM.settingsRegularKeyFields = $('.settings-regularKey');
+DOM.settingsRequireDestinationTagFields = $('.settings-requireDestinationTag');
+DOM.settingsDisallowIncomingXRPFields = $('.settings-disallowIncomingXRP');
+DOM.settingsDefaultRippleFields = $('.settings-defaultRipple');
+DOM.settingsDisableMasterKeyFields = $('.settings-disableMasterKey');
 DOM.version = $('#version');
 DOM.submitLink = $('#submit-link');
+DOM.settingsSelect = $('#select_settings');
 
 function init() {
   thisYear();
@@ -134,19 +135,92 @@ function init() {
   DOM.escrowButtonCancel.on("click", escrowButtonCancelClicked);
   DOM.settingsButtonSet.on("click", settingsButtonSetClicked);
   DOM.settingsButtonUnset.on("click", settingsButtonUnsetClicked);
-  DOM.switchSettingsDomain.on("click", switchSettingsDomain);
-  switchSettingsDomain();
-  DOM.switchSettingsGravatar.on("click", switchSettingsGravatar);
-  switchSettingsGravatar();
-  DOM.switchSettingsMessageKey.on("click", switchSettingsMessageKey);
-  switchSettingsMessageKey();
-  DOM.switchSettingsRegularKey.on("click", switchSettingsRegularKey);
-  switchSettingsRegularKey();
   DOM.txBlob.on("click", txBlobClicked);
   DOM.paymentAmount.on("keydown", paymentAmountChanged);
   DOM.trustlineLimit.on("keydown", trustlineLimitChanged);
   DOM.fee.on("keydown", feeChanged);
+  DOM.settingsSelect.on("change", settingsSelected);
+  settingsSelected();
+
   showVersion();
+}
+
+function settingsSelected() {
+  var selectedSetting = DOM.settingsSelect.val();
+  if (selectedSetting == 'domain') {
+    DOM.settingsGravatarFields.hide();
+    DOM.settingsMessageKeyFields.hide();
+    DOM.settingsRegularKeyFields.hide();
+    DOM.settingsRequireDestinationTagFields.hide();
+    DOM.settingsDisallowIncomingXRPFields.hide();
+    DOM.settingsDefaultRippleFields.hide();
+    DOM.settingsDisableMasterKeyFields.hide();
+    DOM.settingsDomainFields.show();
+  } else if (selectedSetting == 'gravatar') {
+    DOM.settingsMessageKeyFields.hide();
+    DOM.settingsRegularKeyFields.hide();
+    DOM.settingsDomainFields.hide();
+    DOM.settingsRequireDestinationTagFields.hide();
+    DOM.settingsDisallowIncomingXRPFields.hide();
+    DOM.settingsDefaultRippleFields.hide();
+    DOM.settingsDisableMasterKeyFields.hide();
+    DOM.settingsGravatarFields.show();
+  } else if (selectedSetting == 'messageKey') {
+    DOM.settingsDomainFields.hide();
+    DOM.settingsGravatarFields.hide();
+    DOM.settingsRegularKeyFields.hide();
+    DOM.settingsRequireDestinationTagFields.hide();
+    DOM.settingsDisallowIncomingXRPFields.hide();
+    DOM.settingsDefaultRippleFields.hide();
+    DOM.settingsDisableMasterKeyFields.hide();
+    DOM.settingsMessageKeyFields.show();
+  } else if (selectedSetting == 'regularKey') {
+    DOM.settingsMessageKeyFields.hide();
+    DOM.settingsDomainFields.hide();
+    DOM.settingsGravatarFields.hide();
+    DOM.settingsRequireDestinationTagFields.hide();
+    DOM.settingsDisallowIncomingXRPFields.hide();
+    DOM.settingsDefaultRippleFields.hide();
+    DOM.settingsDisableMasterKeyFields.hide();
+    DOM.settingsRegularKeyFields.show();
+  } else if (selectedSetting == 'requireDestinationTag') {
+    DOM.settingsMessageKeyFields.hide();
+    DOM.settingsDomainFields.hide();
+    DOM.settingsGravatarFields.hide();
+    DOM.settingsRegularKeyFields.hide();
+    DOM.settingsDisallowIncomingXRPFields.hide();
+    DOM.settingsDefaultRippleFields.hide();
+    DOM.settingsDisableMasterKeyFields.hide();
+    DOM.settingsRequireDestinationTagFields.show();
+  } else if (selectedSetting == 'disallowIncomingXRP') {
+    DOM.settingsMessageKeyFields.hide();
+    DOM.settingsDomainFields.hide();
+    DOM.settingsGravatarFields.hide();
+    DOM.settingsRegularKeyFields.hide();
+    DOM.settingsRequireDestinationTagFields.hide();
+    DOM.settingsDefaultRippleFields.hide();
+    DOM.settingsDisableMasterKeyFields.hide();
+    DOM.settingsDisallowIncomingXRPFields.show();
+  } else if (selectedSetting == 'defaultRipple') {
+    DOM.settingsMessageKeyFields.hide();
+    DOM.settingsDomainFields.hide();
+    DOM.settingsGravatarFields.hide();
+    DOM.settingsRegularKeyFields.hide();
+    DOM.settingsRequireDestinationTagFields.hide();
+    DOM.settingsDisallowIncomingXRPFields.hide();
+    DOM.settingsDisableMasterKeyFields.hide();
+    DOM.settingsDefaultRippleFields.show();
+  } else if (selectedSetting == 'disableMasterKey') {
+    DOM.settingsMessageKeyFields.hide();
+    DOM.settingsDomainFields.hide();
+    DOM.settingsGravatarFields.hide();
+    DOM.settingsRegularKeyFields.hide();
+    DOM.settingsRequireDestinationTagFields.hide();
+    DOM.settingsDisallowIncomingXRPFields.hide();
+    DOM.settingsDefaultRippleFields.hide();
+    DOM.settingsDisableMasterKeyFields.show();
+  }
+  eraseTXresults();
 }
 
 function feeChanged(e) {
@@ -224,7 +298,9 @@ function settings(action) {
     memos: memos
   };
 
-  if (DOM.switchSettingsDomain.is(':checked')) {
+  var selectedSetting = DOM.settingsSelect.val();
+
+  if (selectedSetting == 'domain') {
     if (action == 'set') {
       var domain = DOM.settingsDomain.val();
       domain = domain.trim();
@@ -247,7 +323,7 @@ function settings(action) {
       settings.domain = "";
     }
 
-  } else if (DOM.switchSettingsGravatar.is(':checked')) {
+  } else if (selectedSetting == 'gravatar') {
     if (action == 'set') {
       var email = DOM.settingsEmail.val();
       email = String(email.trim());
@@ -270,7 +346,7 @@ function settings(action) {
     } else {
       settings.emailHash = null;
     }
-  } else if (DOM.switchSettingsMessageKey.is(':checked')) {
+  } else if (selectedSetting == 'messageKey') {
     if (action == 'set') {
       var messageKey = DOM.settingsMessageKey.val();
       messageKey = messageKey.trim();
@@ -300,7 +376,7 @@ function settings(action) {
     } else {
       settings.messageKey = '';
     }
-  } else if (DOM.switchSettingsRegularKey.is(':checked')) {
+  } else if (selectedSetting == 'regularKey') {
     if (action == 'set') {
       var regularKey = DOM.settingsRegularKey.val();
       regularKey = regularKey.trim();
@@ -320,6 +396,28 @@ function settings(action) {
       settings.regularKey = regularKey;
     } else {
       settings.regularKey = null;
+    }
+  } else if (selectedSetting == 'requireDestinationTag') {
+    if (action == 'set') {
+      settings.requireDestinationTag = true;
+    } else {
+      settings.requireDestinationTag = false;
+    }
+  } else if (selectedSetting == 'disallowIncomingXRP') {
+    if (action == 'set') {
+      settings.disallowIncomingXRP = true;
+    } else {
+      settings.disallowIncomingXRP = false;
+    }
+  } else if (selectedSetting == 'defaultRipple') {
+    if (action == 'set') {
+      settings.defaultRipple = true;
+    } else {
+      settings.defaultRipple = false;
+    }
+  } else if (selectedSetting == 'disableMasterKey') {
+    if (action == 'set') {
+      settings.disableMasterKey = true;
     }
   }
 
@@ -1248,46 +1346,6 @@ function switchSettings() {
   }
 }
 
-function switchSettingsDomain() {
-  if (DOM.switchSettingsDomain.is(':checked')) {
-    DOM.settingsGravatarFields.hide();
-    DOM.settingsMessageKeyFields.hide();
-    DOM.settingsRegularKeyFields.hide();
-    DOM.settingsDomainFields.show();
-    eraseTXresults();
-  }
-}
-
-function switchSettingsGravatar() {
-  if (DOM.switchSettingsGravatar.is(':checked')) {
-    DOM.settingsMessageKeyFields.hide();
-    DOM.settingsRegularKeyFields.hide();
-    DOM.settingsDomainFields.hide();
-    DOM.settingsGravatarFields.show();
-    eraseTXresults();
-  }
-}
-
-function switchSettingsMessageKey() {
-  if (DOM.switchSettingsMessageKey.is(':checked')) {
-    DOM.settingsDomainFields.hide();
-    DOM.settingsGravatarFields.hide();
-    DOM.settingsRegularKeyFields.hide();
-    DOM.settingsMessageKeyFields.show();
-    eraseTXresults();
-  }
-}
-
-function switchSettingsRegularKey() {
-  if (DOM.switchSettingsRegularKey.is(':checked')) {
-    DOM.settingsDomainFields.hide();
-    DOM.settingsGravatarFields.hide();
-    DOM.settingsMessageKeyFields.hide();
-    DOM.settingsRegularKeyFields.show();
-    eraseTXresults();
-  }
-}
-
 function showAddress(address) {
   return 'Address: <a href="' + explorer + address + '" target="_blank">' + address + '</a>';
 }
@@ -1758,6 +1816,54 @@ function calcMD5(str)
 }
 
 /* md5 ends */
+
+/* select element starts */
+$('select').each(function(){
+  var $this = $(this), numberOfOptions = $(this).children('option').length;
+
+  $this.addClass('select-hidden'); 
+  $this.wrap('<div class="select"></div>');
+  $this.after('<div class="select-styled"></div>');
+
+  var $styledSelect = $this.next('div.select-styled');
+  $styledSelect.text($this.children('option').eq(0).text());
+
+  var $list = $('<ul />', {
+    'class': 'select-options'
+  }).insertAfter($styledSelect);
+
+  for (var i = 0; i < numberOfOptions; i++) {
+    $('<li />', {
+      text: $this.children('option').eq(i).text(),
+      rel: $this.children('option').eq(i).val()
+    }).appendTo($list);
+  }
+
+  var $listItems = $list.children('li');
+
+  $styledSelect.click(function(e) {
+    e.stopPropagation();
+    $('div.select-styled.active').not(this).each(function(){
+      $(this).removeClass('active').next('ul.select-options').hide();
+    });
+    $(this).toggleClass('active').next('ul.select-options').toggle();
+  });
+
+  $listItems.click(function(e) {
+    e.stopPropagation();
+    $styledSelect.text($(this).text()).removeClass('active');
+    $this.val($(this).attr('rel'));
+    $this.trigger('change');
+    $list.hide();
+    //console.log($this.val());
+  });
+
+  $(document).click(function() {
+    $styledSelect.removeClass('active');
+    $list.hide();
+  });
+});
+/* select element ends */
 
 function validateEmail(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

@@ -278,9 +278,7 @@ a:hover {
 #switch_payment + label:after, 
 #switch_trustline + label:after, 
 #switch_escrow + label:after,
-#switch_settings + label:after,
-#switch_settings_domain + label:after,
-#switch_settings_gravatar + label:after {
+#switch_settings + label:after {
   display: none;
 }
 
@@ -418,6 +416,76 @@ a:hover {
 
 /* spinner ends */
 
+/* select starts */
+.select-hidden {
+  display: none;
+  visibility: hidden;
+  padding-right: 10px;
+}
+.select {
+  cursor: pointer;
+  position: relative;
+  color: #fff;
+  width: 406px;
+  height: 32px;
+  display: inline-block;
+}
+.select-styled {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #3fa3b5;
+  padding: 6px;
+}
+.select-styled:after {
+  content: "";
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-color: #fff transparent transparent transparent;
+  position: absolute;
+  top: 13px;
+  right: 10px;
+}
+.select-styled:hover {
+  background-color: #3fa3b5;
+}
+.select-styled:active, .select-styled.active {
+  background-color: #3fa3b5;
+}
+.select-styled:active:after, .select-styled.active:after {
+  top: 9px;
+  border-color: transparent transparent #fff transparent;
+}
+.select-options {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  z-index: 999;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background-color: #7bc4d1;
+}
+.select-options li {
+  margin: 0;
+  padding: 6px 0;
+  border: 1px solid #3fa3b5;
+  border-top: none;
+}
+.select-options li:hover {
+  color: #3fa3b5;
+  background: #fff;
+}
+.select-options li[rel="hide"] {
+  display: none;
+}
+/* select ends */
+
 @media (max-width: 470px) {
   body {
     font-size: 12px;
@@ -462,7 +530,7 @@ a:hover {
   }
 
   .main-box input[type="text"] {
-    width: 234px !important;
+    width: 244px !important;
     padding: 1px 6px !important;
   }
 
@@ -501,6 +569,9 @@ a:hover {
     word-break: break-all;
   }
 
+  .select {
+    width: 260px;
+  }
 }
 </style>
         <meta content="Bithomp tools" name="description"/>
@@ -583,6 +654,12 @@ a:hover {
             </div>
 
             <div class="terms terms-notes bordered">
+                <b>Important</b><br>
+                - Only use this tool on a trusted computer.<br>
+                - Use a private browsing mode in your browser.<br>
+                - Close the browser tab after using the tool and clear cache.<br>
+                - Never share your secret key or mnemonic (recovery phrase) with anyone.<br>
+                <br>
                 <b>Features</b><br>
                 - You can use this tool in two modes: online and offline.<br>
                 - Works with secret key or mnemonic (Hard Wallet).<br>
@@ -592,12 +669,11 @@ a:hover {
                 - Assign a Domain to your account.<br>
                 - Execute or Cancel Escrow.<br>
                 - Add a regular key.<br>
-                <br>
-                <b>Important</b><br>
-                - Only use this tool on a trusted computer.<br>
-                - Use a private browsing mode in your browser.<br>
-                - Close the browser tab after using the tool and clear cache.<br>
-                - Never share your secret key or mnemonic (recovery phrase) with anyone.<br>
+                - Add a message key.<br>
+                - Set a flag to Require destination tag.<br>
+                - Disallow Incoming XRP.<br>
+                - Enable default rippling.<br>
+                - Disable Master Key.<br>
                 <br>
                 <b>Offline mode:</b><br>
                 - Another Computer or Phone will be required to submit the transaction.<br>
@@ -746,43 +822,72 @@ a:hover {
                             </div>
                         </div>
 
-                        <div class="switch-field hidden settings-fields">
-                            <input type="radio" id="switch_settings_domain" name="settings_type" value="domain" checked="checked" />
-                            <label for="switch_settings_domain">Domain</label>
-                            <input type="radio" id="switch_settings_gravatar" name="settings_type" value="gravatar" />
-                            <label for="switch_settings_gravatar">Gravatar</label>
-                        </div>
-
-                        <div class="switch-field hidden settings-fields">
-                            <input type="radio" id="switch_settings_messageKey" name="settings_type" value="messageKey" />
-                            <label for="switch_settings_messageKey">Message key</label>
-                            <input type="radio" id="switch_settings_regularKey" name="settings_type" value="regularKey" />
-                            <label for="switch_settings_regularKey">Regular key</label>
+                        <div class="hidden settings-fields">
+                            <select id="select_settings">
+                                <option value="domain" selected="selected">Domain</option>
+                                <option value="gravatar">Gravatar</option>
+                                <option value="messageKey">Message key</option>
+                                <option value="regularKey">Regular key</option>
+                                <option value="requireDestinationTag">Require destination tag</option>
+                                <option value="disallowIncomingXRP">Disallow Incoming XRP</option>
+                                <option value="defaultRipple">Enable default rippling</option>
+                                <option value="disableMasterKey">Disable Master Key</option>
+                            </select>
                         </div>
 
                         <div class="fields-wide hidden settings-fields">
                             <div class="settings-domain">
+                                <div class="orange note">
+                                    Here you can assign a domain that owns your account.
+                                </div>
                                 <input type="text" id="settings_domain" placeholder="Domain name, e.g. mysite.com" spellcheck="false" />
                                 <br><br>
                             </div>
                             <div class="settings-gravatar hidden">
-                                <input type="text" id="settings_email" placeholder="Gravatar email" spellcheck="false" />
                                 <div class="orange note">
                                     Enter a <a href="https://gravatar.com" target="_blank">Gravatar</a> email address for your XRP wallet in order to display your avatar in the Bithomp Explorer and in other XRP software.
                                 </div>
+                                <input type="text" id="settings_email" placeholder="Gravatar email" spellcheck="false" />
                             </div>
                             <div class="settings-messageKey hidden">
-                                <input type="text" id="settings_messageKey" placeholder="Message key" spellcheck="false" />
                                 <div class="orange note">
                                     Public key for sending encrypted messages to this account. Conventionally, it should be a secp256k1 key, the same encryption that is used by the rest of Ripple.
                                 </div>
+                                <input type="text" id="settings_messageKey" placeholder="Message key" spellcheck="false" />
                             </div>
                             <div class="settings-regularKey hidden">
-                                <input type="text" id="settings_regularKey" placeholder="Regular key" spellcheck="false" />
                                 <div class="orange note">
                                     Here you can assign another keypair to manage your account.<br><br>
                                     <span class="red">
-                                        DANGER: You may lose all your XRP and other assets if you assign an address youare not in control of. 
+                                        DANGER: You may lose all your XRP and other assets if you assign an address you are not in control of. 
+                                        Please do not use this tool unless you know what you are doing!
+                                    </span>
+                                </div>
+                                <input type="text" id="settings_regularKey" placeholder="Regular key" spellcheck="false" />
+                            </div>
+                            <div class="settings-requireDestinationTag hidden">
+                                <div class="orange note">
+                                    Require a destination tag when someone sends XRP/IOU to your account.<br><br>
+                                </div>
+                            </div>
+                            <div class="settings-disallowIncomingXRP hidden">
+                                <div class="orange note">
+                                    Disallow Incoming XRP to your account.<br><br>
+                                </div>
+                            </div>
+                            <div class="settings-defaultRipple hidden">
+                                <div class="orange note">
+                                    Enable Rippling on this account’s trust lines by default.<br><br>
+                                    <span class="red">
+                                        DANGER: Please do not use this tool unless you know what you are doing!
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="settings-disableMasterKey hidden">
+                                <div class="orange note">
+                                    Disallows use of the master key to sign transactions for this account.<br><br>
+                                    <span class="red">
+                                        DANGER: Can be set only if your account has a Signer List or a Regular Key.
                                         Please do not use this tool unless you know what you are doing!
                                     </span>
                                 </div>
@@ -832,7 +937,7 @@ a:hover {
                         <div class="buttons settings-fields">
                             <button type="button" id="settings_set">Set</button>
 
-                            <button type="button" id="settings_unset" class="settings-domain settings-messageKey settings-regularKey hidden">
+                            <button type="button" id="settings_unset" class="settings-domain settings-messageKey settings-regularKey settings-requireDestinationTag settings-disallowIncomingXRP settings-defaultRipple hidden">
                                 Remove
                             </button>
                         </div>
@@ -90992,7 +91097,7 @@ var QRCode;
 </script>
         <script>(function() {
 
-var version = '0.0.10';
+var version = '0.0.11';
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -91081,16 +91186,17 @@ DOM.settingsMessageKey = $('#settings_messageKey');
 DOM.settingsRegularKey = $('#settings_regularKey');
 DOM.settingsButtonSet = $('#settings_set');
 DOM.settingsButtonUnset = $('#settings_unset');
-DOM.switchSettingsDomain = $('#switch_settings_domain');
-DOM.switchSettingsGravatar = $('#switch_settings_gravatar');
-DOM.switchSettingsMessageKey = $('#switch_settings_messageKey');
-DOM.switchSettingsRegularKey = $('#switch_settings_regularKey');
 DOM.settingsDomainFields = $('.settings-domain');
 DOM.settingsGravatarFields = $('.settings-gravatar');
 DOM.settingsMessageKeyFields = $('.settings-messageKey');
 DOM.settingsRegularKeyFields = $('.settings-regularKey');
+DOM.settingsRequireDestinationTagFields = $('.settings-requireDestinationTag');
+DOM.settingsDisallowIncomingXRPFields = $('.settings-disallowIncomingXRP');
+DOM.settingsDefaultRippleFields = $('.settings-defaultRipple');
+DOM.settingsDisableMasterKeyFields = $('.settings-disableMasterKey');
 DOM.version = $('#version');
 DOM.submitLink = $('#submit-link');
+DOM.settingsSelect = $('#select_settings');
 
 function init() {
   thisYear();
@@ -91126,19 +91232,92 @@ function init() {
   DOM.escrowButtonCancel.on("click", escrowButtonCancelClicked);
   DOM.settingsButtonSet.on("click", settingsButtonSetClicked);
   DOM.settingsButtonUnset.on("click", settingsButtonUnsetClicked);
-  DOM.switchSettingsDomain.on("click", switchSettingsDomain);
-  switchSettingsDomain();
-  DOM.switchSettingsGravatar.on("click", switchSettingsGravatar);
-  switchSettingsGravatar();
-  DOM.switchSettingsMessageKey.on("click", switchSettingsMessageKey);
-  switchSettingsMessageKey();
-  DOM.switchSettingsRegularKey.on("click", switchSettingsRegularKey);
-  switchSettingsRegularKey();
   DOM.txBlob.on("click", txBlobClicked);
   DOM.paymentAmount.on("keydown", paymentAmountChanged);
   DOM.trustlineLimit.on("keydown", trustlineLimitChanged);
   DOM.fee.on("keydown", feeChanged);
+  DOM.settingsSelect.on("change", settingsSelected);
+  settingsSelected();
+
   showVersion();
+}
+
+function settingsSelected() {
+  var selectedSetting = DOM.settingsSelect.val();
+  if (selectedSetting == 'domain') {
+    DOM.settingsGravatarFields.hide();
+    DOM.settingsMessageKeyFields.hide();
+    DOM.settingsRegularKeyFields.hide();
+    DOM.settingsRequireDestinationTagFields.hide();
+    DOM.settingsDisallowIncomingXRPFields.hide();
+    DOM.settingsDefaultRippleFields.hide();
+    DOM.settingsDisableMasterKeyFields.hide();
+    DOM.settingsDomainFields.show();
+  } else if (selectedSetting == 'gravatar') {
+    DOM.settingsMessageKeyFields.hide();
+    DOM.settingsRegularKeyFields.hide();
+    DOM.settingsDomainFields.hide();
+    DOM.settingsRequireDestinationTagFields.hide();
+    DOM.settingsDisallowIncomingXRPFields.hide();
+    DOM.settingsDefaultRippleFields.hide();
+    DOM.settingsDisableMasterKeyFields.hide();
+    DOM.settingsGravatarFields.show();
+  } else if (selectedSetting == 'messageKey') {
+    DOM.settingsDomainFields.hide();
+    DOM.settingsGravatarFields.hide();
+    DOM.settingsRegularKeyFields.hide();
+    DOM.settingsRequireDestinationTagFields.hide();
+    DOM.settingsDisallowIncomingXRPFields.hide();
+    DOM.settingsDefaultRippleFields.hide();
+    DOM.settingsDisableMasterKeyFields.hide();
+    DOM.settingsMessageKeyFields.show();
+  } else if (selectedSetting == 'regularKey') {
+    DOM.settingsMessageKeyFields.hide();
+    DOM.settingsDomainFields.hide();
+    DOM.settingsGravatarFields.hide();
+    DOM.settingsRequireDestinationTagFields.hide();
+    DOM.settingsDisallowIncomingXRPFields.hide();
+    DOM.settingsDefaultRippleFields.hide();
+    DOM.settingsDisableMasterKeyFields.hide();
+    DOM.settingsRegularKeyFields.show();
+  } else if (selectedSetting == 'requireDestinationTag') {
+    DOM.settingsMessageKeyFields.hide();
+    DOM.settingsDomainFields.hide();
+    DOM.settingsGravatarFields.hide();
+    DOM.settingsRegularKeyFields.hide();
+    DOM.settingsDisallowIncomingXRPFields.hide();
+    DOM.settingsDefaultRippleFields.hide();
+    DOM.settingsDisableMasterKeyFields.hide();
+    DOM.settingsRequireDestinationTagFields.show();
+  } else if (selectedSetting == 'disallowIncomingXRP') {
+    DOM.settingsMessageKeyFields.hide();
+    DOM.settingsDomainFields.hide();
+    DOM.settingsGravatarFields.hide();
+    DOM.settingsRegularKeyFields.hide();
+    DOM.settingsRequireDestinationTagFields.hide();
+    DOM.settingsDefaultRippleFields.hide();
+    DOM.settingsDisableMasterKeyFields.hide();
+    DOM.settingsDisallowIncomingXRPFields.show();
+  } else if (selectedSetting == 'defaultRipple') {
+    DOM.settingsMessageKeyFields.hide();
+    DOM.settingsDomainFields.hide();
+    DOM.settingsGravatarFields.hide();
+    DOM.settingsRegularKeyFields.hide();
+    DOM.settingsRequireDestinationTagFields.hide();
+    DOM.settingsDisallowIncomingXRPFields.hide();
+    DOM.settingsDisableMasterKeyFields.hide();
+    DOM.settingsDefaultRippleFields.show();
+  } else if (selectedSetting == 'disableMasterKey') {
+    DOM.settingsMessageKeyFields.hide();
+    DOM.settingsDomainFields.hide();
+    DOM.settingsGravatarFields.hide();
+    DOM.settingsRegularKeyFields.hide();
+    DOM.settingsRequireDestinationTagFields.hide();
+    DOM.settingsDisallowIncomingXRPFields.hide();
+    DOM.settingsDefaultRippleFields.hide();
+    DOM.settingsDisableMasterKeyFields.show();
+  }
+  eraseTXresults();
 }
 
 function feeChanged(e) {
@@ -91216,7 +91395,9 @@ function settings(action) {
     memos: memos
   };
 
-  if (DOM.switchSettingsDomain.is(':checked')) {
+  var selectedSetting = DOM.settingsSelect.val();
+
+  if (selectedSetting == 'domain') {
     if (action == 'set') {
       var domain = DOM.settingsDomain.val();
       domain = domain.trim();
@@ -91239,7 +91420,7 @@ function settings(action) {
       settings.domain = "";
     }
 
-  } else if (DOM.switchSettingsGravatar.is(':checked')) {
+  } else if (selectedSetting == 'gravatar') {
     if (action == 'set') {
       var email = DOM.settingsEmail.val();
       email = String(email.trim());
@@ -91262,7 +91443,7 @@ function settings(action) {
     } else {
       settings.emailHash = null;
     }
-  } else if (DOM.switchSettingsMessageKey.is(':checked')) {
+  } else if (selectedSetting == 'messageKey') {
     if (action == 'set') {
       var messageKey = DOM.settingsMessageKey.val();
       messageKey = messageKey.trim();
@@ -91292,7 +91473,7 @@ function settings(action) {
     } else {
       settings.messageKey = '';
     }
-  } else if (DOM.switchSettingsRegularKey.is(':checked')) {
+  } else if (selectedSetting == 'regularKey') {
     if (action == 'set') {
       var regularKey = DOM.settingsRegularKey.val();
       regularKey = regularKey.trim();
@@ -91312,6 +91493,28 @@ function settings(action) {
       settings.regularKey = regularKey;
     } else {
       settings.regularKey = null;
+    }
+  } else if (selectedSetting == 'requireDestinationTag') {
+    if (action == 'set') {
+      settings.requireDestinationTag = true;
+    } else {
+      settings.requireDestinationTag = false;
+    }
+  } else if (selectedSetting == 'disallowIncomingXRP') {
+    if (action == 'set') {
+      settings.disallowIncomingXRP = true;
+    } else {
+      settings.disallowIncomingXRP = false;
+    }
+  } else if (selectedSetting == 'defaultRipple') {
+    if (action == 'set') {
+      settings.defaultRipple = true;
+    } else {
+      settings.defaultRipple = false;
+    }
+  } else if (selectedSetting == 'disableMasterKey') {
+    if (action == 'set') {
+      settings.disableMasterKey = true;
     }
   }
 
@@ -92240,46 +92443,6 @@ function switchSettings() {
   }
 }
 
-function switchSettingsDomain() {
-  if (DOM.switchSettingsDomain.is(':checked')) {
-    DOM.settingsGravatarFields.hide();
-    DOM.settingsMessageKeyFields.hide();
-    DOM.settingsRegularKeyFields.hide();
-    DOM.settingsDomainFields.show();
-    eraseTXresults();
-  }
-}
-
-function switchSettingsGravatar() {
-  if (DOM.switchSettingsGravatar.is(':checked')) {
-    DOM.settingsMessageKeyFields.hide();
-    DOM.settingsRegularKeyFields.hide();
-    DOM.settingsDomainFields.hide();
-    DOM.settingsGravatarFields.show();
-    eraseTXresults();
-  }
-}
-
-function switchSettingsMessageKey() {
-  if (DOM.switchSettingsMessageKey.is(':checked')) {
-    DOM.settingsDomainFields.hide();
-    DOM.settingsGravatarFields.hide();
-    DOM.settingsRegularKeyFields.hide();
-    DOM.settingsMessageKeyFields.show();
-    eraseTXresults();
-  }
-}
-
-function switchSettingsRegularKey() {
-  if (DOM.switchSettingsRegularKey.is(':checked')) {
-    DOM.settingsDomainFields.hide();
-    DOM.settingsGravatarFields.hide();
-    DOM.settingsMessageKeyFields.hide();
-    DOM.settingsRegularKeyFields.show();
-    eraseTXresults();
-  }
-}
-
 function showAddress(address) {
   return 'Address: <a href="' + explorer + address + '" target="_blank">' + address + '</a>';
 }
@@ -92750,6 +92913,54 @@ function calcMD5(str)
 }
 
 /* md5 ends */
+
+/* select element starts */
+$('select').each(function(){
+  var $this = $(this), numberOfOptions = $(this).children('option').length;
+
+  $this.addClass('select-hidden'); 
+  $this.wrap('<div class="select"></div>');
+  $this.after('<div class="select-styled"></div>');
+
+  var $styledSelect = $this.next('div.select-styled');
+  $styledSelect.text($this.children('option').eq(0).text());
+
+  var $list = $('<ul />', {
+    'class': 'select-options'
+  }).insertAfter($styledSelect);
+
+  for (var i = 0; i < numberOfOptions; i++) {
+    $('<li />', {
+      text: $this.children('option').eq(i).text(),
+      rel: $this.children('option').eq(i).val()
+    }).appendTo($list);
+  }
+
+  var $listItems = $list.children('li');
+
+  $styledSelect.click(function(e) {
+    e.stopPropagation();
+    $('div.select-styled.active').not(this).each(function(){
+      $(this).removeClass('active').next('ul.select-options').hide();
+    });
+    $(this).toggleClass('active').next('ul.select-options').toggle();
+  });
+
+  $listItems.click(function(e) {
+    e.stopPropagation();
+    $styledSelect.text($(this).text()).removeClass('active');
+    $this.val($(this).attr('rel'));
+    $this.trigger('change');
+    $list.hide();
+    //console.log($this.val());
+  });
+
+  $(document).click(function() {
+    $styledSelect.removeClass('active');
+    $list.hide();
+  });
+});
+/* select element ends */
 
 function validateEmail(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

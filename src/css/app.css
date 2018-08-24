@@ -273,9 +273,7 @@ a:hover {
 #switch_payment + label:after, 
 #switch_trustline + label:after, 
 #switch_escrow + label:after,
-#switch_settings + label:after,
-#switch_settings_domain + label:after,
-#switch_settings_gravatar + label:after {
+#switch_settings + label:after {
   display: none;
 }
 
@@ -413,6 +411,76 @@ a:hover {
 
 /* spinner ends */
 
+/* select starts */
+.select-hidden {
+  display: none;
+  visibility: hidden;
+  padding-right: 10px;
+}
+.select {
+  cursor: pointer;
+  position: relative;
+  color: #fff;
+  width: 406px;
+  height: 32px;
+  display: inline-block;
+}
+.select-styled {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #3fa3b5;
+  padding: 6px;
+}
+.select-styled:after {
+  content: "";
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-color: #fff transparent transparent transparent;
+  position: absolute;
+  top: 13px;
+  right: 10px;
+}
+.select-styled:hover {
+  background-color: #3fa3b5;
+}
+.select-styled:active, .select-styled.active {
+  background-color: #3fa3b5;
+}
+.select-styled:active:after, .select-styled.active:after {
+  top: 9px;
+  border-color: transparent transparent #fff transparent;
+}
+.select-options {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  z-index: 999;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background-color: #7bc4d1;
+}
+.select-options li {
+  margin: 0;
+  padding: 6px 0;
+  border: 1px solid #3fa3b5;
+  border-top: none;
+}
+.select-options li:hover {
+  color: #3fa3b5;
+  background: #fff;
+}
+.select-options li[rel="hide"] {
+  display: none;
+}
+/* select ends */
+
 @media (max-width: 470px) {
   body {
     font-size: 12px;
@@ -457,7 +525,7 @@ a:hover {
   }
 
   .main-box input[type="text"] {
-    width: 234px !important;
+    width: 244px !important;
     padding: 1px 6px !important;
   }
 
@@ -496,4 +564,7 @@ a:hover {
     word-break: break-all;
   }
 
+  .select {
+    width: 260px;
+  }
 }

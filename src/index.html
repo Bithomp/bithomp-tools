@@ -84,6 +84,12 @@
             </div>
 
             <div class="terms terms-notes bordered">
+                <b>Important</b><br>
+                - Only use this tool on a trusted computer.<br>
+                - Use a private browsing mode in your browser.<br>
+                - Close the browser tab after using the tool and clear cache.<br>
+                - Never share your secret key or mnemonic (recovery phrase) with anyone.<br>
+                <br>
                 <b>Features</b><br>
                 - You can use this tool in two modes: online and offline.<br>
                 - Works with secret key or mnemonic (Hard Wallet).<br>
@@ -93,12 +99,11 @@
                 - Assign a Domain to your account.<br>
                 - Execute or Cancel Escrow.<br>
                 - Add a regular key.<br>
-                <br>
-                <b>Important</b><br>
-                - Only use this tool on a trusted computer.<br>
-                - Use a private browsing mode in your browser.<br>
-                - Close the browser tab after using the tool and clear cache.<br>
-                - Never share your secret key or mnemonic (recovery phrase) with anyone.<br>
+                - Add a message key.<br>
+                - Set a flag to Require destination tag.<br>
+                - Disallow Incoming XRP.<br>
+                - Enable default rippling.<br>
+                - Disable Master Key.<br>
                 <br>
                 <b>Offline mode:</b><br>
                 - Another Computer or Phone will be required to submit the transaction.<br>
@@ -247,43 +252,72 @@
                             </div>
                         </div>
 
-                        <div class="switch-field hidden settings-fields">
-                            <input type="radio" id="switch_settings_domain" name="settings_type" value="domain" checked="checked" />
-                            <label for="switch_settings_domain">Domain</label>
-                            <input type="radio" id="switch_settings_gravatar" name="settings_type" value="gravatar" />
-                            <label for="switch_settings_gravatar">Gravatar</label>
-                        </div>
-
-                        <div class="switch-field hidden settings-fields">
-                            <input type="radio" id="switch_settings_messageKey" name="settings_type" value="messageKey" />
-                            <label for="switch_settings_messageKey">Message key</label>
-                            <input type="radio" id="switch_settings_regularKey" name="settings_type" value="regularKey" />
-                            <label for="switch_settings_regularKey">Regular key</label>
+                        <div class="hidden settings-fields">
+                            <select id="select_settings">
+                                <option value="domain" selected="selected">Domain</option>
+                                <option value="gravatar">Gravatar</option>
+                                <option value="messageKey">Message key</option>
+                                <option value="regularKey">Regular key</option>
+                                <option value="requireDestinationTag">Require destination tag</option>
+                                <option value="disallowIncomingXRP">Disallow Incoming XRP</option>
+                                <option value="defaultRipple">Enable default rippling</option>
+                                <option value="disableMasterKey">Disable Master Key</option>
+                            </select>
                         </div>
 
                         <div class="fields-wide hidden settings-fields">
                             <div class="settings-domain">
+                                <div class="orange note">
+                                    Here you can assign a domain that owns your account.
+                                </div>
                                 <input type="text" id="settings_domain" placeholder="Domain name, e.g. mysite.com" spellcheck="false" />
                                 <br><br>
                             </div>
                             <div class="settings-gravatar hidden">
-                                <input type="text" id="settings_email" placeholder="Gravatar email" spellcheck="false" />
                                 <div class="orange note">
                                     Enter a <a href="https://gravatar.com" target="_blank">Gravatar</a> email address for your XRP wallet in order to display your avatar in the Bithomp Explorer and in other XRP software.
                                 </div>
+                                <input type="text" id="settings_email" placeholder="Gravatar email" spellcheck="false" />
                             </div>
                             <div class="settings-messageKey hidden">
-                                <input type="text" id="settings_messageKey" placeholder="Message key" spellcheck="false" />
                                 <div class="orange note">
                                     Public key for sending encrypted messages to this account. Conventionally, it should be a secp256k1 key, the same encryption that is used by the rest of Ripple.
                                 </div>
+                                <input type="text" id="settings_messageKey" placeholder="Message key" spellcheck="false" />
                             </div>
                             <div class="settings-regularKey hidden">
-                                <input type="text" id="settings_regularKey" placeholder="Regular key" spellcheck="false" />
                                 <div class="orange note">
                                     Here you can assign another keypair to manage your account.<br><br>
                                     <span class="red">
-                                        DANGER: You may lose all your XRP and other assets if you assign an address youare not in control of. 
+                                        DANGER: You may lose all your XRP and other assets if you assign an address you are not in control of. 
+                                        Please do not use this tool unless you know what you are doing!
+                                    </span>
+                                </div>
+                                <input type="text" id="settings_regularKey" placeholder="Regular key" spellcheck="false" />
+                            </div>
+                            <div class="settings-requireDestinationTag hidden">
+                                <div class="orange note">
+                                    Require a destination tag when someone sends XRP/IOU to your account.<br><br>
+                                </div>
+                            </div>
+                            <div class="settings-disallowIncomingXRP hidden">
+                                <div class="orange note">
+                                    Disallow Incoming XRP to your account.<br><br>
+                                </div>
+                            </div>
+                            <div class="settings-defaultRipple hidden">
+                                <div class="orange note">
+                                    Enable Rippling on this account’s trust lines by default.<br><br>
+                                    <span class="red">
+                                        DANGER: Please do not use this tool unless you know what you are doing!
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="settings-disableMasterKey hidden">
+                                <div class="orange note">
+                                    Disallows use of the master key to sign transactions for this account.<br><br>
+                                    <span class="red">
+                                        DANGER: Can be set only if your account has a Signer List or a Regular Key.
                                         Please do not use this tool unless you know what you are doing!
                                     </span>
                                 </div>
@@ -333,7 +367,7 @@
                         <div class="buttons settings-fields">
                             <button type="button" id="settings_set">Set</button>
 
-                            <button type="button" id="settings_unset" class="settings-domain settings-messageKey settings-regularKey hidden">
+                            <button type="button" id="settings_unset" class="settings-domain settings-messageKey settings-regularKey settings-requireDestinationTag settings-disallowIncomingXRP settings-defaultRipple hidden">
                                 Remove
                             </button>
                         </div>
