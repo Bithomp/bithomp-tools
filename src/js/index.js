@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.0.11';
+var version = '0.1.0';
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -58,6 +58,7 @@ DOM.switchPayment = $('#switch_payment');
 DOM.switchTrustline = $('#switch_trustline');
 DOM.switchEscrow = $('#switch_escrow');
 DOM.switchSettings = $('#switch_settings');
+DOM.switchOrder = $('#switch_order');
 DOM.paymentFields = $('.payment-fields');
 DOM.paymentRecipient = $('#payment_recipient');
 DOM.paymentDestinationTag = $('#payment_destination_tag');
@@ -100,6 +101,19 @@ DOM.settingsDisableMasterKeyFields = $('.settings-disableMasterKey');
 DOM.version = $('#version');
 DOM.submitLink = $('#submit-link');
 DOM.settingsSelect = $('#select_settings');
+DOM.orderFields = $('.order-fields');
+DOM.orderSelect = $('#select_order');
+DOM.orderBuyFields = $('.order-buy');
+DOM.orderSellFields = $('.order-sell');
+DOM.orderCancellFields = $('.order-cancel');
+DOM.orderButtonSubmit = $('#order_submit');
+DOM.orderQuantityAmount = $('#order_quantity_amount');
+DOM.orderQuantityCurrency = $('#order_quantity_currency');
+DOM.orderQuantityCounterparty = $('#order_quantity_counterparty');
+DOM.orderTotalPriceAmount = $('#order_totalPrice_amount');
+DOM.orderTotalPriceCurrency = $('#order_totalPrice_currency');
+DOM.orderTotalPriceCounterparty = $('#order_totalPrice_counterparty');
+DOM.orderSequence = $('#order_sequence');
 
 function init() {
   thisYear();
@@ -126,6 +140,8 @@ function init() {
   switchEscrow();
   DOM.switchSettings.on("click", switchSettings);
   switchSettings();
+  DOM.switchOrder.on("click", switchOrder);
+  switchOrder();
   DOM.setAddress.on("click", setAddress);
   DOM.signAddress.on("input", signAddressChanged);
   DOM.paymentButtonPay.on("click", paymentButtonPayClicked);
@@ -141,8 +157,223 @@ function init() {
   DOM.fee.on("keydown", feeChanged);
   DOM.settingsSelect.on("change", settingsSelected);
   settingsSelected();
+  DOM.orderSelect.on("change", orderSelected);
+  orderSelected();
+  DOM.orderButtonSubmit.on("click", orderButtonSubmitClicked);
+  DOM.orderQuantityAmount.on("keydown", orderQuantityAmountChanged);
+  DOM.orderTotalPriceAmount.on("keydown", orderTotalPriceChanged);
 
   showVersion();
+}
+
+function orderQuantityAmountChanged(e) {
+  replaceCommas(e);
+}
+
+function orderTotalPriceChanged(e) {
+  replaceCommas(e);
+}
+
+function orderSelected() {
+  var selectedOrder = DOM.orderSelect.val();
+  if (selectedOrder == 'buy') {
+    DOM.orderSellFields.hide();
+    DOM.orderCancellFields.hide();
+    DOM.orderBuyFields.show();
+  } else if (selectedOrder == 'sell') {
+    DOM.orderCancellFields.hide();
+    DOM.orderBuyFields.hide();
+    DOM.orderSellFields.show();
+  } else if (selectedOrder == 'cancel') {
+    DOM.orderSellFields.hide();
+    DOM.orderBuyFields.hide();
+    DOM.orderCancellFields.show();
+  }
+  eraseTXresults();
+}
+
+function orderButtonSubmitClicked() {
+  order();
+}
+
+function order() {
+  eraseTXresults();
+  var secret = signingSecret(); //secret or keypair json (pub + priv)
+  var account = signingAddress();
+
+  if (!secret || !account) return;
+
+  var memos = txMemos();
+
+  var order = {
+    memos: memos
+  };
+
+  var selectedOrder = DOM.orderSelect.val();
+
+  if (selectedOrder == 'buy' || selectedOrder == 'sell') {
+
+    order.direction = selectedOrder;
+
+    var validatedAmount = validateAmount(DOM.orderQuantityAmount, DOM.orderQuantityCurrency, DOM.orderQuantityCounterparty);
+
+    if (validatedAmount) {
+      if (validatedAmount.currency == 'XRP') {
+        order.quantity = {
+          value: validatedAmount.value,
+          currency: validatedAmount.currency
+        };
+      } else {
+        order.quantity = validatedAmount;
+      }
+    } else {
+      return;
+    }
+
+    validatedAmount = validateAmount(DOM.orderTotalPriceAmount, DOM.orderTotalPriceCurrency, DOM.orderTotalPriceCounterparty);
+
+    if (validatedAmount) {
+      if (validatedAmount.currency == 'XRP') {
+        order.totalPrice = {
+          value: validatedAmount.value,
+          currency: validatedAmount.currency
+        };
+      } else {
+        order.totalPrice = validatedAmount;
+      }
+    } else {
+      return;
+    }
+
+  } else if (selectedOrder == 'cancel') {
+
+    var orderSequence = DOM.orderSequence.val();
+    orderSequence = parseInt(orderSequence);
+
+    if (!orderSequence || orderSequence < 0) {
+      DOM.txFeedback.html('Enter Sequence (#) of the order you want to cancel, try to find it here: <br><a href="' + explorer + account + '" target="_blank" class="small">' + explorer + account + '</a>');
+      DOM.orderSequence.focus();
+      return;
+    }
+
+    order.orderSequence = orderSequence;
+  }
+
+  var fee = txFee();
+  if (!fee) {
+    DOM.fee.focus();
+    return;
+  }
+  if (DOM.switchOnline.is(':checked')) {
+    //show error if not activated
+    if (selectedOrder == 'cancel') {
+      orderCancelOnline(secret, account, order, fee);
+    } else {
+      orderSubmitOnline(secret, account, order, fee);
+    }
+  } else {
+    var sequence = txSequence(account);
+    if (!sequence) return;
+
+    if (selectedOrder == 'cancel') {
+      orderCancelOffline(secret, account, order, fee, sequence);
+    } else {
+      orderSubmitOffline(secret, account, order, fee, sequence);
+    }
+  }
+}
+
+function orderCancelOnline(secret, account, orderCancelation, fee) {
+  if (api.isConnected()) {
+    var buttonElement = DOM.orderButtonSubmit;
+    var buttonValue = addLoadingState(buttonElement);
+
+    api.prepareOrderCancellation(account, orderCancelation, {fee: fee}).then(function(tx) {
+      var signed = api.sign(tx.txJSON, secret);
+      api.submit(
+        signed.signedTransaction
+      ).then(function(result) {
+        //signed.id //hash
+        DOM.txFeedback.html(result.resultMessage + "<br><a href='" + explorer + signed.id + "' target='_blank'>Check on bithomp in 5 sec.</a>");
+        buttonElement.html(buttonValue);
+      }).catch(function (error) {
+        DOM.txFeedback.html('submit: ' + error.message);
+        console.log(error);
+        buttonElement.html(buttonValue);
+      })
+    }).catch(function (error) {
+      DOM.txFeedback.html('prepareOrderCancellation: ' + error.message);
+      console.log(error);
+      buttonElement.html(buttonValue);
+    })
+  }
+}
+
+function orderCancelOffline(secret, account, orderCancelation, fee, sequence) {
+  api.prepareOrderCancellation(account, orderCancelation, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
+    var signed = api.sign(tx.txJSON, secret);
+    showSignedTX(signed);
+    //hash signed.id
+  }).catch(function (error) {
+    DOM.txFeedback.html('prepareOrderCancellation: ' + error.message);
+    console.log(error);
+  });
+}
+
+function orderSubmitOnline(secret, account, order, fee) {
+  if (api.isConnected()) {
+
+    var buttonElement = DOM.orderButtonSubmit;
+    var buttonValue = addLoadingState(buttonElement);
+
+    //check for available balance first
+    api.getAccountInfo(account).then(function(info) {
+      var available = info.xrpBalance - 20 - (5 * info.ownerCount);
+      available = Math.floor(available * 1000000) / 1000000;
+
+      if (available < 5) {
+        var xrpneeded = 5 - available;
+        DOM.txFeedback.html('<span class="orange">Error: To create an order you need to have 5 XRP available. ' + xrpneeded + ' XRP lacks.</span>');
+        addressFeedback(); //update the shown balances
+        buttonElement.html(buttonValue);
+      } else {
+        // prepare and submit the order
+        api.prepareOrder(account, order, {fee: fee}).then(function(tx) {
+          var signed = api.sign(tx.txJSON, secret);
+          api.submit(
+            signed.signedTransaction
+          ).then(function(result) {
+            //signed.id //hash
+            DOM.txFeedback.html(result.resultMessage + "<br><a href='" + explorer + signed.id + "' target='_blank'>Check on bithomp in 5 sec.</a>");
+            buttonElement.html(buttonValue);
+          }).catch(function (error) {
+            DOM.txFeedback.html('submit: ' + error.message);
+            console.log(error);
+            buttonElement.html(buttonValue);
+          })
+        }).catch(function (error) {
+          DOM.txFeedback.html('prepareOrder: ' + error.message);
+          console.log(error);
+          buttonElement.html(buttonValue);
+        })
+      }
+    }).catch(function (error) {
+      DOM.txFeedback.html('getAccountInfo: ' + error.message);
+      console.log(error);
+      buttonElement.html(buttonValue);
+    })
+  }
+}
+
+function orderSubmitOffline(secret, account, order, fee, sequence) {
+  api.prepareOrder(account, order, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
+    var signed = api.sign(tx.txJSON, secret);
+    showSignedTX(signed);
+    //hash signed.id
+  }).catch(function (error) {
+    DOM.txFeedback.html('prepareOrder: ' + error.message);
+    console.log(error);
+  });
 }
 
 function settingsSelected() {
@@ -805,6 +1036,48 @@ function eraseTXresults() {
   blobQR.clear();
 }
 
+function validateAmount(DOMamount, DOMcurrency, DOMcounterparty) {
+  var amount = DOMamount.val();
+  amount = amount.trim();
+
+  if (!amount || amount < 0) {
+    DOM.txFeedback.html('Please fill in the amount!');
+    DOMamount.focus();
+    return false;
+  }
+  amount = String(amount);
+
+  var currency = DOMcurrency.val();
+  currency = currency.trim().toUpperCase();
+
+  if (!currency || currency.lenght > 3) {
+    DOM.txFeedback.html('Incorrect currency: empty or wrong format');
+    DOMcurrency.focus();
+    return false;
+  }
+
+  var counterparty = DOMcounterparty.val();
+  counterparty = counterparty.trim();
+
+  if (currency != 'XRP' && !counterparty) {
+    DOM.txFeedback.html('Please fill in the counterparty.');
+    DOMcounterparty.focus();
+    return false;
+  }
+
+  if (counterparty != '' && !isValidAddress(counterparty)) {
+    DOM.txFeedback.html('Error: invalid counterparty address.');
+    DOMcounterparty.focus();
+    return false;
+  }
+
+  return {
+    value: amount,
+    currency: currency,
+    counterparty: counterparty
+  };
+}
+
 function paymentButtonPayClicked() {
   eraseTXresults();
   var secret = signingSecret(); //secret or keypair json (pub + priv)
@@ -836,39 +1109,15 @@ function paymentButtonPayClicked() {
   var destinationTag = DOM.paymentDestinationTag.val();
   destinationTag = parseInt(destinationTag);
 
-  var amount = DOM.paymentAmount.val();
-  amount = amount.trim();
+  var validatedAmount = validateAmount(DOM.paymentAmount, DOM.paymentCurrency, DOM.paymentCounterparty);
 
-  if (!amount || amount < 0) {
-    DOM.txFeedback.html('Please fill in the amount you want to send!');
-    DOM.paymentAmount.focus();
+  if (validatedAmount) {
+    var amount = validatedAmount.value;
+    var currency = validatedAmount.currency;
+    var counterparty = validatedAmount.counterparty;
+  } else {
     return;
   }
-  amount = String(amount);
-
-  var currency = DOM.paymentCurrency.val();
-  currency = currency.trim().toUpperCase();
-
-  if (!currency || currency.lenght > 3) {
-    DOM.txFeedback.html('Incorrect currency: empty or wrong format');
-    DOM.paymentCurrency.focus();
-    return;
-  }
-
-  var counterparty = DOM.paymentCounterparty.val();
-  counterparty = counterparty.trim();
-
-  if (currency != 'XRP' && !counterparty) {
-    DOM.txFeedback.html('Please fill in the counterparty.');
-    DOM.paymentCounterparty.focus();
-    return;
-  }
-
-  if (counterparty != '' && !isValidAddress(counterparty)) {
-    DOM.txFeedback.html('Error: invalid counterparty address.');
-    DOM.paymentCounterparty.focus();
-    return;
-  } 
 
   var fee = txFee();
   if (!fee) {
@@ -1311,6 +1560,7 @@ function switchPayment() {
     DOM.trustlineFields.hide();
     DOM.escrowFields.hide();
     DOM.settingsFields.hide();
+    DOM.orderFields.hide();
     DOM.paymentFields.show();
     eraseTXresults();
   }
@@ -1321,6 +1571,7 @@ function switchTrustline() {
     DOM.paymentFields.hide();
     DOM.escrowFields.hide();
     DOM.settingsFields.hide();
+    DOM.orderFields.hide();
     DOM.trustlineFields.show();
     eraseTXresults();
   }
@@ -1331,6 +1582,7 @@ function switchEscrow() {
     DOM.paymentFields.hide();
     DOM.trustlineFields.hide();
     DOM.settingsFields.hide();
+    DOM.orderFields.hide();
     DOM.escrowFields.show();
     eraseTXresults();
   }
@@ -1341,7 +1593,19 @@ function switchSettings() {
     DOM.paymentFields.hide();
     DOM.trustlineFields.hide();
     DOM.escrowFields.hide();
+    DOM.orderFields.hide();
     DOM.settingsFields.show();
+    eraseTXresults();
+  }
+}
+
+function switchOrder() {
+  if (DOM.switchOrder.is(':checked')) {
+    DOM.paymentFields.hide();
+    DOM.trustlineFields.hide();
+    DOM.settingsFields.hide();
+    DOM.escrowFields.hide();
+    DOM.orderFields.show();
     eraseTXresults();
   }
 }

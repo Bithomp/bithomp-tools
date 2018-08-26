@@ -273,7 +273,8 @@ a:hover {
 #switch_payment + label:after, 
 #switch_trustline + label:after, 
 #switch_escrow + label:after,
-#switch_settings + label:after {
+#switch_settings + label:after,
+#switch_order + label:after {
   display: none;
 }
 
@@ -555,8 +556,7 @@ a:hover {
     width: 139px !important;
   }
 
-  .main-box label[for="switch_escrow"],
-  .main-box label[for="switch_settings_regularKey"] {
+  .main-box label[for="switch_settings"] {
     margin-top: 30px;
   }
 

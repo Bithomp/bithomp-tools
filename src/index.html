@@ -95,6 +95,7 @@
                 - Works with secret key or mnemonic (Hard Wallet).<br>
                 - Send a Payment: XRP or any IOU.<br>
                 - Add or Remove a Trustline.<br>
+                - Place or Cancel Buy/Sell trade orders.<br>
                 - Add a Gravatar to your account.<br>
                 - Assign a Domain to your account.<br>
                 - Execute or Cancel Escrow.<br>
@@ -188,19 +189,21 @@
                             <label for="switch_payment">Payment</label>
                             <input type="radio" id="switch_trustline" name="tx_type" value="trustline" />
                             <label for="switch_trustline">Trustline</label>
-                            <input type="radio" id="switch_escrow" name="tx_type" value="escrow" />
-                            <label for="switch_escrow">Escrow</label>
-                        </div>
-
-                        <div class="switch-field">
                             <input type="radio" id="switch_settings" name="tx_type" value="settings" />
                             <label for="switch_settings">Settings</label>
+                        </div>
+                        <div class="switch-field">
+                            <input type="radio" id="switch_order" name="tx_type" value="order" />
+                            <label for="switch_order">Order</label>
+                            <input type="radio" id="switch_escrow" name="tx_type" value="escrow" />
+                            <label for="switch_escrow">Escrow</label>
                         </div>
 
                         <hr>
 
                         <h3 class="payment-fields trustline-fields escrow-fields">Transaction details</h3>
                         <h3 class="settings-fields hidden">Choose a Setting to Modify</h3>
+                        <h3 class="order-fields hidden">Choose a type of Order transaction</h3>
 
                         <div class="fields-wide payment-fields">
                             <div>
@@ -223,7 +226,6 @@
                                 <div class="left">Counterparty:</div>
                                 <div class="right"><input type="text" id="payment_counterparty" placeholder="If the currency is different from XRP" spellcheck="false" /></div>
                             </div>
-
                         </div>
 
                         <div class="fields-wide hidden trustline-fields">
@@ -324,6 +326,55 @@
                             </div>
                         </div>
 
+                        <div class="hidden order-fields">
+                            <select id="select_order">
+                                <option value="buy" selected="selected">Create a BUY order</option>
+                                <option value="sell">Create a SELL order</option>
+                                <option value="cancel">Order cancelation</option>
+                            </select>
+                        </div>
+
+                        <div class="hidden order-fields">
+                            <div class="fields-wide order-buy order-sell">
+                                <div class="orange note">
+                                    <br><center>NOTE: To place an order you need to have at least 5 XRP available.</center>
+                                </div>
+                                <h3 class="order-buy">I want to Buy</h3>
+                                <h3 class="order-sell hidden">I want to Sell</h3>
+                                <div>
+                                    <div class="left">Amount:</div>
+                                    <div class="right"><input type="text" id="order_quantity_amount" spellcheck="false" /></div>
+                                </div>
+                                <div>
+                                    <div class="left">Currency:</div>
+                                    <div class="right"><input type="text" id="order_quantity_currency" spellcheck="false" /></div>
+                                </div>
+                                <div>
+                                    <div class="left">Counterparty:</div>
+                                    <div class="right"><input type="text" id="order_quantity_counterparty" placeholder="Leave blank if the currency is XRP" spellcheck="false" /></div>
+                                </div>
+                                <h3>The total price to be paid</h3>
+                                <div>
+                                    <div class="left">Amount:</div>
+                                    <div class="right"><input type="text" id="order_totalPrice_amount" spellcheck="false" /></div>
+                                </div>
+                                <div>
+                                    <div class="left">Currency:</div>
+                                    <div class="right"><input type="text" id="order_totalPrice_currency" spellcheck="false" /></div>
+                                </div>
+                                <div>
+                                    <div class="left">Counterparty:</div>
+                                    <div class="right"><input type="text" id="order_totalPrice_counterparty" placeholder="Leave blank if the currency is XRP" spellcheck="false" /></div>
+                                </div>
+                            </div>
+                            <div class="fields-wide order-cancel hidden">
+                                <div>
+                                    <div class="left">Order sequence:</div>
+                                    <div class="right"><input type="text" id="order_sequence" placeholder="sequence of the order to cancel" spellcheck="false" /></div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="fields-wide">
                             <div class="payment-fields escrow-fields hidden">
                                 <div class="left">Memo (optional):</div>
@@ -339,6 +390,8 @@
                                 Find there the <b>recommended fee</b> and the <b>next sequence</b>.
                                 <hr>
                             </div>
+
+                            <h3 class="order-fields hidden">Transaction details</h3>
 
                             <div>
                                 <div class="left">Fee to pay (XRP):</div>
@@ -370,6 +423,10 @@
                             <button type="button" id="settings_unset" class="settings-domain settings-messageKey settings-regularKey settings-requireDestinationTag settings-disallowIncomingXRP settings-defaultRipple hidden">
                                 Remove
                             </button>
+                        </div>
+
+                        <div class="buttons order-fields">
+                            <button type="button" id="order_submit">Submit</button>
                         </div>
 
                         <div class="feedback" id="tx_feedback"></div>
