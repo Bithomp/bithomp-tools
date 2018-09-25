@@ -122,7 +122,8 @@ a:hover {
   padding: 0;
 }
 
-.main-box input[type="text"], textarea {
+.main-box input[type="text"],
+.main-box textarea {
   width: 390px;
   padding: 4px 6px;
   border: 1px solid #dfdfdf;
@@ -134,7 +135,8 @@ a:hover {
   line-height: 20px;
 }
 
-.main-box input:focus, textarea:focus {
+.main-box input:focus,
+.main-box textarea:focus {
   background-color: #fff;
 }
 
@@ -146,7 +148,8 @@ a:hover {
   margin: 0;
 }
 
-.main-box textarea.phrase, .main-box textarea.tx-blob {
+.main-box textarea.phrase,
+.main-box textarea.tx-blob {
   height: 104px;
   padding: 10px;
   border: 2px solid #3fa3b5;
@@ -175,7 +178,8 @@ a:hover {
 .main-box .settings-domain input,
 .main-box .settings-gravatar input,
 .main-box .settings-messageKey input,
-.main-box .settings-regularKey input {
+.main-box .settings-regularKey input,
+.main-box .settings-signers input {
   text-align: center;
   border: 2px solid #3fa3b5;
 }
@@ -203,13 +207,25 @@ a:hover {
   border: 2px solid #3fa3b5;
 }
 
+.main-box .fields-wide .double-fileds {
+  margin-bottom: 5px;
+}
+
 .main-box .fields-wide .left {
   width: 120px;
   text-align: right;
 }
 
+.main-box .fields-wide .left input {
+  width: 105px;
+}
+
 .main-box .fields-wide .right input {
   width: 266px;
+}
+
+.main-box .line-with-button {
+  margin-bottom: 25px;
 }
 
 /* switcher and buttons starts */
@@ -368,6 +384,11 @@ a:hover {
 .container-set-address {
   width: 200px;
   margin: 5px auto 20px auto;
+}
+
+.container-multisig {
+  width: 90px;
+  margin: 20px auto 0px;
 }
 
 /* checkbox ends */
@@ -549,7 +570,11 @@ a:hover {
   }
 
   .main-box .fields-wide .left {
-    width: 103px;
+    width: 101px;
+  }
+
+  .main-box .fields-wide .left input {
+    width: 85px !important;
   }
 
   .main-box .fields-wide .right input {

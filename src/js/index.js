@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.1.0';
+var version = '0.2.0';
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -50,6 +50,7 @@ DOM.pubkey = $('#pubkey');
 DOM.addressFeedback = $('#account_feedback');
 DOM.setAddressFields = $('.set-address');
 DOM.setAddress = $('#set_address');
+DOM.multisig = $('#multisig');
 DOM.signAddressFields = $('.sign-address');
 DOM.signAddress = $('#sign_address');
 DOM.signAddressFeedback = $('#sign_address_feedback');
@@ -88,12 +89,16 @@ DOM.settingsDomain = $('#settings_domain');
 DOM.settingsEmail = $('#settings_email');
 DOM.settingsMessageKey = $('#settings_messageKey');
 DOM.settingsRegularKey = $('#settings_regularKey');
+DOM.settingsSigners = $('#settings_signers');
 DOM.settingsButtonSet = $('#settings_set');
 DOM.settingsButtonUnset = $('#settings_unset');
 DOM.settingsDomainFields = $('.settings-domain');
 DOM.settingsGravatarFields = $('.settings-gravatar');
 DOM.settingsMessageKeyFields = $('.settings-messageKey');
 DOM.settingsRegularKeyFields = $('.settings-regularKey');
+DOM.settingsSignersFields = $('.settings-signers');
+DOM.settingsSignersThreshold = $('#settings_signers_threshold');
+DOM.settingsSignersButtonAdd = $('#settings_signers_add');
 DOM.settingsRequireDestinationTagFields = $('.settings-requireDestinationTag');
 DOM.settingsDisallowIncomingXRPFields = $('.settings-disallowIncomingXRP');
 DOM.settingsDefaultRippleFields = $('.settings-defaultRipple');
@@ -162,16 +167,46 @@ function init() {
   DOM.orderButtonSubmit.on("click", orderButtonSubmitClicked);
   DOM.orderQuantityAmount.on("keydown", orderQuantityAmountChanged);
   DOM.orderTotalPriceAmount.on("keydown", orderTotalPriceChanged);
-
+  DOM.settingsSignersThreshold.on("keydown", signersThresholdChanged);
+  DOM.settingsSignersButtonAdd.on("click", settingsSignersButtonAddClicked);
   showVersion();
 }
 
+function signingOptions() {
+  var options = {};
+  if (DOM.setAddress.is(':checked') && DOM.multisig.is(':checked')) {
+    options.signAs = DOM.address.val();
+  }
+  return options;
+}
+
+function settingsSignersButtonAddClicked() {
+  var signerAddressList = $('[name="settings_signers_address"]');
+  var countSigners = signerAddressList.length;
+  //max 20 fields, hide button to add more
+  if (countSigners == 19) {
+    DOM.settingsSignersButtonAdd.hide();
+  }
+  var lastSignerAddress = signerAddressList.eq(countSigners-1);
+  var lastSignerFieldSet = lastSignerAddress.parent().parent();
+  //dublicate
+  lastSignerFieldSet.clone()
+                    .find('[name="settings_signers_address"]').val('').end()
+                    .find('[name="settings_signers_weight"]').val('').end()
+                    .insertAfter(lastSignerFieldSet);
+}
+
+function signersThresholdChanged(e) {
+  var allowDots = false;
+  digitize(e, allowDots);
+}
+
 function orderQuantityAmountChanged(e) {
-  replaceCommas(e);
+  digitize(e);
 }
 
 function orderTotalPriceChanged(e) {
-  replaceCommas(e);
+  digitize(e);
 }
 
 function orderSelected() {
@@ -311,7 +346,8 @@ function orderCancelOnline(secret, account, orderCancelation, fee) {
 
 function orderCancelOffline(secret, account, orderCancelation, fee, sequence) {
   api.prepareOrderCancellation(account, orderCancelation, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
-    var signed = api.sign(tx.txJSON, secret);
+    var options = signingOptions();
+    var signed = api.sign(tx.txJSON, secret, options);
     showSignedTX(signed);
     //hash signed.id
   }).catch(function (error) {
@@ -333,7 +369,7 @@ function orderSubmitOnline(secret, account, order, fee) {
 
       if (available < 5) {
         var xrpneeded = 5 - available;
-        DOM.txFeedback.html('<span class="orange">Error: To create an order you need to have 5 XRP available. ' + xrpneeded + ' XRP lacks.</span>');
+        DOM.txFeedback.html('Error: To create an order you need to have 5 XRP available. ' + xrpneeded + ' XRP lacks.');
         addressFeedback(); //update the shown balances
         buttonElement.html(buttonValue);
       } else {
@@ -367,7 +403,8 @@ function orderSubmitOnline(secret, account, order, fee) {
 
 function orderSubmitOffline(secret, account, order, fee, sequence) {
   api.prepareOrder(account, order, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
-    var signed = api.sign(tx.txJSON, secret);
+    var options = signingOptions();
+    var signed = api.sign(tx.txJSON, secret, options);
     showSignedTX(signed);
     //hash signed.id
   }).catch(function (error) {
@@ -378,111 +415,62 @@ function orderSubmitOffline(secret, account, order, fee, sequence) {
 
 function settingsSelected() {
   var selectedSetting = DOM.settingsSelect.val();
-  if (selectedSetting == 'domain') {
-    DOM.settingsGravatarFields.hide();
-    DOM.settingsMessageKeyFields.hide();
-    DOM.settingsRegularKeyFields.hide();
-    DOM.settingsRequireDestinationTagFields.hide();
-    DOM.settingsDisallowIncomingXRPFields.hide();
-    DOM.settingsDefaultRippleFields.hide();
-    DOM.settingsDisableMasterKeyFields.hide();
-    DOM.settingsDomainFields.show();
-  } else if (selectedSetting == 'gravatar') {
-    DOM.settingsMessageKeyFields.hide();
-    DOM.settingsRegularKeyFields.hide();
-    DOM.settingsDomainFields.hide();
-    DOM.settingsRequireDestinationTagFields.hide();
-    DOM.settingsDisallowIncomingXRPFields.hide();
-    DOM.settingsDefaultRippleFields.hide();
-    DOM.settingsDisableMasterKeyFields.hide();
-    DOM.settingsGravatarFields.show();
-  } else if (selectedSetting == 'messageKey') {
-    DOM.settingsDomainFields.hide();
-    DOM.settingsGravatarFields.hide();
-    DOM.settingsRegularKeyFields.hide();
-    DOM.settingsRequireDestinationTagFields.hide();
-    DOM.settingsDisallowIncomingXRPFields.hide();
-    DOM.settingsDefaultRippleFields.hide();
-    DOM.settingsDisableMasterKeyFields.hide();
-    DOM.settingsMessageKeyFields.show();
-  } else if (selectedSetting == 'regularKey') {
-    DOM.settingsMessageKeyFields.hide();
-    DOM.settingsDomainFields.hide();
-    DOM.settingsGravatarFields.hide();
-    DOM.settingsRequireDestinationTagFields.hide();
-    DOM.settingsDisallowIncomingXRPFields.hide();
-    DOM.settingsDefaultRippleFields.hide();
-    DOM.settingsDisableMasterKeyFields.hide();
-    DOM.settingsRegularKeyFields.show();
-  } else if (selectedSetting == 'requireDestinationTag') {
-    DOM.settingsMessageKeyFields.hide();
-    DOM.settingsDomainFields.hide();
-    DOM.settingsGravatarFields.hide();
-    DOM.settingsRegularKeyFields.hide();
-    DOM.settingsDisallowIncomingXRPFields.hide();
-    DOM.settingsDefaultRippleFields.hide();
-    DOM.settingsDisableMasterKeyFields.hide();
-    DOM.settingsRequireDestinationTagFields.show();
-  } else if (selectedSetting == 'disallowIncomingXRP') {
-    DOM.settingsMessageKeyFields.hide();
-    DOM.settingsDomainFields.hide();
-    DOM.settingsGravatarFields.hide();
-    DOM.settingsRegularKeyFields.hide();
-    DOM.settingsRequireDestinationTagFields.hide();
-    DOM.settingsDefaultRippleFields.hide();
-    DOM.settingsDisableMasterKeyFields.hide();
-    DOM.settingsDisallowIncomingXRPFields.show();
-  } else if (selectedSetting == 'defaultRipple') {
-    DOM.settingsMessageKeyFields.hide();
-    DOM.settingsDomainFields.hide();
-    DOM.settingsGravatarFields.hide();
-    DOM.settingsRegularKeyFields.hide();
-    DOM.settingsRequireDestinationTagFields.hide();
-    DOM.settingsDisallowIncomingXRPFields.hide();
-    DOM.settingsDisableMasterKeyFields.hide();
-    DOM.settingsDefaultRippleFields.show();
-  } else if (selectedSetting == 'disableMasterKey') {
-    DOM.settingsMessageKeyFields.hide();
-    DOM.settingsDomainFields.hide();
-    DOM.settingsGravatarFields.hide();
-    DOM.settingsRegularKeyFields.hide();
-    DOM.settingsRequireDestinationTagFields.hide();
-    DOM.settingsDisallowIncomingXRPFields.hide();
-    DOM.settingsDefaultRippleFields.hide();
-    DOM.settingsDisableMasterKeyFields.show();
-  }
+  var fieldsList = {
+    gravatar: DOM.settingsGravatarFields,
+    domain: DOM.settingsDomainFields,
+    messageKey: DOM.settingsMessageKeyFields,
+    regularKey: DOM.settingsRegularKeyFields,
+    signers: DOM.settingsSignersFields,
+    requireDestinationTag: DOM.settingsRequireDestinationTagFields,
+    disallowIncomingXRP: DOM.settingsDisallowIncomingXRPFields,
+    defaultRipple: DOM.settingsDefaultRippleFields,
+    disableMasterKey: DOM.settingsDisableMasterKeyFields,
+  };
+  //hide all
+  Object.keys(fieldsList).forEach(function(key) {
+    if (selectedSetting != key) fieldsList[key].hide();
+  });
+  //show selected
+  fieldsList[selectedSetting].show();
   eraseTXresults();
 }
 
 function feeChanged(e) {
-  replaceCommas(e);
+  digitize(e);
 }
 
 function trustlineLimitChanged(e) {
-  replaceCommas(e);
+  digitize(e);
 }
 
 function paymentAmountChanged(e) {
-  replaceCommas(e);
+  digitize(e);
 }
 
-function replaceCommas(e) {
-  // Allow: backspace, delete, tab, escape, enter and .
-  if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
-       // Allow: Ctrl/cmd+A
-      (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
-       // Allow: Ctrl/cmd+C
-      (e.keyCode == 67 && (e.ctrlKey === true || e.metaKey === true)) ||
-       // Allow: Ctrl/cmd+X
-      (e.keyCode == 88 && (e.ctrlKey === true || e.metaKey === true)) ||
-       // Allow: home, end, left, right
-      (e.keyCode >= 35 && e.keyCode <= 39)) {
-           // let it happen, don't do anything
-           return;
+function digitize(e, allowDot=true) {
+  // Allow: backspace, delete, tab, escape, enter
+  var keyList = [46, 8, 9, 27, 13, 110];
+
+  if (allowDot) {
+    //add . (dot)
+    keyList.push(190);
   }
-  // Ensure that it is a number and stop the keypress
+
+  if ($.inArray(e.keyCode, keyList) !== -1 ||
+     // Allow: Ctrl/cmd+A
+    (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+     // Allow: Ctrl/cmd+C
+    (e.keyCode == 67 && (e.ctrlKey === true || e.metaKey === true)) ||
+     // Allow: Ctrl/cmd+X
+    (e.keyCode == 88 && (e.ctrlKey === true || e.metaKey === true)) ||
+     // Allow: home, end, left, right
+    (e.keyCode >= 35 && e.keyCode <= 39)) {
+       // let it happen, don't do anything
+      return;
+  }
+   // Ensure that it is a number and stop the keypress
   if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-      e.preventDefault();
+    e.preventDefault();
   }
 }
 
@@ -592,13 +580,13 @@ function settings(action) {
       DOM.settingsMessageKey.val(messageKey);
 
       if (!isHex(messageKey)) {
-        DOM.txFeedback.html('<span class="orange">Error: Invalid format of the message key (Must be HEX)</span>');
+        DOM.txFeedback.html('Error: Invalid format of the message key (Must be HEX)');
         DOM.settingsMessageKey.focus();
         return;
       }
 
       if (messageKey.length != 66) {
-        DOM.txFeedback.html('<span class="orange">Error: The key must 66 characters</span>');
+        DOM.txFeedback.html('Error: The key must 66 characters');
         DOM.settingsMessageKey.focus();
         return;
       }
@@ -627,6 +615,96 @@ function settings(action) {
       settings.regularKey = regularKey;
     } else {
       settings.regularKey = null;
+    }
+  } else if (selectedSetting == 'signers') {
+    if (action == 'set') {
+      var threshold = DOM.settingsSignersThreshold.val();
+      threshold = threshold.trim();
+
+      if (threshold == '') {
+        DOM.txFeedback.html('Enter a threshold.');
+        DOM.settingsSignersThreshold.focus();
+        return;
+      }
+
+      threshold = Number(threshold);
+
+      if (threshold < 1) {
+        DOM.txFeedback.html('Invalid threshold value.');
+        DOM.settingsSignersThreshold.focus();
+        return;
+      }
+
+      var signersWeightList = $('[name="settings_signers_weight"]');
+      var weightAll = 0;
+      var addressError = false;
+      var weights = [];
+      signersWeightList.each(function() {
+        var weight = $(this).val();
+        weight = Number(weight);
+
+        var addressField = $(this).closest('.double-fileds').find('[name="settings_signers_address"]');
+        var address = addressField.val();
+        address = address.trim();
+
+        if (weight > 0) {
+          if (address == '') {
+            DOM.txFeedback.html('Signer address is missing');
+            addressField.focus();
+            addressError = true;
+            return false;
+          }
+          if (isValidAddress(address)) {
+            //checking for duplicates
+            var i;
+            for (i = 0; i < weights.length; ++i) {
+              if (weights[i].address == address) {
+                DOM.txFeedback.html('Duplicate signer address');
+                addressField.focus();
+                addressError = true;
+                return false;
+              }
+            }
+            //adding to the array
+            weights.push({
+              weight: weight,
+              address: address
+            });
+          } else {
+            DOM.txFeedback.html('Invalid signer address');
+            addressField.focus();
+            addressError = true;
+            return false;
+          }
+        } else {
+          if (address != '') {
+            DOM.txFeedback.html('Signer weight is missing');
+            $(this).focus();
+            addressError = true;
+            return false;
+          }
+        }
+
+        weightAll = weightAll + weight;
+      });
+
+      if (addressError) {
+        return;
+      }
+
+      if (threshold > weightAll) {
+        DOM.txFeedback.html('The weight of all signers isn\'t enough for the threshold.');
+        return;
+      }
+
+      settings.signers = {
+        threshold: threshold,
+        weights: weights
+      };
+    } else {
+      settings.signers = {
+        threshold: 0
+      };
     }
   } else if (selectedSetting == 'requireDestinationTag') {
     if (action == 'set') {
@@ -700,7 +778,8 @@ function settingsUpdateOnline(secret, account, settings, fee, action) {
 
 function settingsUpdateOffline(secret, account, settings, fee, sequence) {
   api.prepareSettings(account, settings, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
-    var signed = api.sign(tx.txJSON, secret);
+    var options = signingOptions();
+    var signed = api.sign(tx.txJSON, secret, options);
     showSignedTX(signed);
     //hash signed.id
   }).catch(function (error) {
@@ -796,7 +875,8 @@ function escrowCancelOffline(secret, account, owner, escrowSequence, fee, memos,
   };
 
   api.prepareEscrowCancellation(account, escrowCancellation, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
-    var signed = api.sign(tx.txJSON, secret);
+    var options = signingOptions();
+    var signed = api.sign(tx.txJSON, secret, options);
     showSignedTX(signed);
     //hash signed.id
   }).catch(function (error) {
@@ -892,7 +972,8 @@ function escrowExecuteOffline(secret, account, owner, escrowSequence, fee, memos
   };
 
   api.prepareEscrowExecution(account, escrowExecution, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
-    var signed = api.sign(tx.txJSON, secret);
+    var options = signingOptions();
+    var signed = api.sign(tx.txJSON, secret, options);
     showSignedTX(signed);
     //hash signed.id
   }).catch(function (error) {
@@ -983,7 +1064,8 @@ function trustlineOffline(secret, account, currency, counterparty, limit, fee, m
   };
 
   api.prepareTrustline(account, trustline, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
-    var signed = api.sign(tx.txJSON, secret);
+    var options = signingOptions();
+    var signed = api.sign(tx.txJSON, secret, options);
     showSignedTX(signed);
     //hash signed.id
   }).catch(function (error) {
@@ -1184,7 +1266,7 @@ function signingAddress() {
 
   if (DOM.setAddress.is(':checked')) {
     if (!isValidAddress(signAddress)) {
-      DOM.txFeedback.html('Invalid signing address');
+      DOM.signAddressFeedback.html('Invalid signing address');
       return false;
     } else {
       return signAddress;
@@ -1275,7 +1357,8 @@ function paymentOffline(secret, account, recipient, destinationTag, amount, curr
     payment.destination.tag = destinationTag;
 
   api.preparePayment(account, payment, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
-    var signed = api.sign(tx.txJSON, secret);
+    var options = signingOptions();
+    var signed = api.sign(tx.txJSON, secret, options);
     showSignedTX(signed);
     //hash signed.id
   }).catch(function (error) {

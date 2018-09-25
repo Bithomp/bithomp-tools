@@ -96,6 +96,7 @@
                 <b>Features</b><br>
                 - You can use this tool in two modes: online and offline.<br>
                 - Works with secret key or mnemonic (Hard Wallet).<br>
+                - Multisignature signing in the Offline mode.<br>
                 - Send a Payment: XRP or any IOU.<br>
                 - Add or Remove a Trustline.<br>
                 - Place or Cancel Buy/Sell trade orders.<br>
@@ -103,6 +104,7 @@
                 - Assign a Domain to your account.<br>
                 - Execute or Cancel Escrow.<br>
                 - Add a regular key.<br>
+                - Add a list of signers (multisig).<br>
                 - Add a message key.<br>
                 - Set a flag to Require destination tag.<br>
                 - Disallow Incoming XRP.<br>
@@ -165,18 +167,25 @@
                     </div>
 
                     <div class="secret">
-                        <input type="text" id="secret" placeholder="Enter your XRP secret here, i.e. sxxxxxxxxxxxxxxxxx" spellcheck="false" />
+                        <input type="text" id="secret" placeholder="Enter your XRP secret here, i.e. sxxxxxxxxxxxxxxxxx" spellcheck="false" autocomplete="off" />
                         <input type="text" id="secret_hidden" placeholder="*****************************" class="hidden" />
                     </div>
 
                     <div class="feedback" id="feedback"></div>
                     <div class="set-address hidden">
                         <label class="container container-set-address">
-                            Sign on behalf of a different address.
+                            Sign on behalf of a different address
                             <input type="checkbox" id="set_address">
                             <span class="checkmark"></span>
                         </label>
                         <input type="text" id="sign_address" placeholder="Enter a XRP address" class="sign-address hidden" spellcheck="false" />
+                        <div class="offline-fields hidden">
+                            <label class="container container-multisig sign-address hidden">
+                                Multi-signatute
+                                <input type="checkbox" id="multisig">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
                         <div class="feedback sign-address hidden" id="sign_address_feedback"></div>
                     </div>
                     <div class="feedback" id="account_feedback"></div>
@@ -263,6 +272,7 @@
                                 <option value="gravatar">Gravatar</option>
                                 <option value="messageKey">Message key</option>
                                 <option value="regularKey">Regular key</option>
+                                <option value="signers">Multi-signature</option>
                                 <option value="requireDestinationTag">Require destination tag</option>
                                 <option value="disallowIncomingXRP">Disallow Incoming XRP</option>
                                 <option value="defaultRipple">Enable default rippling</option>
@@ -299,6 +309,57 @@
                                     </span>
                                 </div>
                                 <input type="text" id="settings_regularKey" placeholder="Regular key" spellcheck="false" />
+                            </div>
+                            <div class="settings-signers hidden">
+                                <div class="note">
+                                    Here you can assign/remove sets of accounts can be used to sign a transaction on behalf of this account using multisigning.
+                                </div>
+                                <div class="note red">
+                                    DANGER: You may lose all your XRP and other assets if you assign addresses you are not in control of. 
+                                    Please do not use this tool unless you know what you are doing!
+                                </div>
+                                <div class="note orange">
+                                    NOTE: To assign a List of Signers you need to have at least 15 XRP available. 
+                                    (10 XRP + 5 XRP for each signer, for ex. 3 signers: 10 + 3*5 = 25 XRP. 
+                                </div>
+                                <div class="note">
+                                    THRESHOLD - a target number for the signer weights. A multi-signature from this list is valid only if the sum weights of the signatures provided is equal or greater than this value.
+                                </div>
+
+                                <input type="text" id="settings_signers_threshold" placeholder="Threshold" />
+                                <div><br><center>List of Signers</center><br></div>
+
+                                <div class="double-fileds">
+                                    <div class="left">
+                                        <input type="text" name="settings_signers_weight" placeholder="Weight" />
+                                    </div>
+                                    <div class="right">
+                                        <input type="text" name="settings_signers_address" placeholder="Address" />
+                                    </div>
+                                </div>
+
+                                <div class="double-fileds">
+                                    <div class="left">
+                                        <input type="text" name="settings_signers_weight" placeholder="Weight" />
+                                    </div>
+                                    <div class="right">
+                                        <input type="text" name="settings_signers_address" placeholder="Address" />
+                                    </div>
+                                </div>
+
+                                <div class="double-fileds">
+                                    <div class="left">
+                                        <input type="text" name="settings_signers_weight" placeholder="Weight" />
+                                    </div>
+                                    <div class="right">
+                                        <input type="text" name="settings_signers_address" placeholder="Address" />
+                                    </div>
+                                </div>
+
+                                <div class="line-with-button">
+                                    <button type="button" id="settings_signers_add">Add more</button>
+                                </div>
+
                             </div>
                             <div class="settings-requireDestinationTag hidden">
                                 <div class="orange note">
@@ -406,33 +467,33 @@
                             </div>
                         </div>
 
-                        <div class="buttons payment-fields">
+                        <div class="payment-fields">
                             <button type="button" id="payment_pay">Pay</button>
                         </div>
 
-                        <div class="buttons trustline-fields hidden">
+                        <div class="trustline-fields hidden">
                             <button type="button" id="trustline_add">Add</button>
                             <button type="button" id="trustline_remove">Delete</button>
                         </div>
 
-                        <div class="buttons escrow-fields">
+                        <div class="escrow-fields">
                             <button type="button" id="escrow_execute">Execute</button>
                             <button type="button" id="escrow_cancel">Cancel</button>
                         </div>
 
-                        <div class="buttons settings-fields">
+                        <div class="settings-fields">
                             <button type="button" id="settings_set">Set</button>
 
-                            <button type="button" id="settings_unset" class="settings-domain settings-messageKey settings-regularKey settings-requireDestinationTag settings-disallowIncomingXRP settings-defaultRipple hidden">
+                            <button type="button" id="settings_unset" class="settings-domain settings-messageKey settings-regularKey settings-signers settings-requireDestinationTag settings-disallowIncomingXRP settings-defaultRipple hidden">
                                 Remove
                             </button>
                         </div>
 
-                        <div class="buttons order-fields">
+                        <div class="order-fields">
                             <button type="button" id="order_submit">Submit</button>
                         </div>
 
-                        <div class="feedback" id="tx_feedback"></div>
+                        <div class="feedback orange" id="tx_feedback"></div>
 
                         <textarea id="txBlob" class="tx-blob offline-fields hidden" readonly></textarea>
                         <div id="blobQR" class="blobQR offline-fields hidden"></div>
