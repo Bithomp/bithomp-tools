@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.2.0';
+var version = '0.3.0';
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -28,6 +28,7 @@ DOM.termsButton = $('#terms_button');
 DOM.agreedTermsFields = $('.terms-agreed');
 DOM.switchOnline = $('#switch_online');
 DOM.switchOffline = $('#switch_offline');
+DOM.onlineFields = $('.online-fields');
 DOM.offlineFields = $('.offline-fields');
 DOM.serverFields = $('.server');
 DOM.server = $('#server');
@@ -36,13 +37,17 @@ DOM.serverConnect = $('#server_connect');
 DOM.serverFeedback = $('#server_feedback');
 DOM.chooseWallet = $('#choose-wallet-type');
 DOM.switchSecret = $('#switch_secret');
-DOM.switchMnemonic = $('#switch_mnemonic');
-DOM.mnemonicFields = $('.mnemonic');
-DOM.phrase = $("#phrase");
-DOM.secretFields = $('.secret');
+DOM.secretFields = $('.secret-fields');
 DOM.secret = $('#secret');
 DOM.secretHidden = $('#secret_hidden');
-DOM.mnemonic = $('#phrase');
+DOM.switchMnemonic = $('#switch_mnemonic');
+DOM.mnemonicFields = $('.mnemonic-fields');
+DOM.phrase = $("#phrase");
+DOM.switchHwElement = $('.switch_hw');
+DOM.switchHW = $('#switch_hw');
+DOM.HwFields = $('.hw-fields');
+DOM.ledgerhwNotConnectedFields = $('.ledgerhw-not-connected');
+DOM.ledgerhwConnectButton = $('#ledgerhw_connect');
 DOM.feedback = $('#feedback');
 DOM.address = $('#address');
 DOM.privkey = $('#privkey');
@@ -133,10 +138,13 @@ function init() {
   DOM.serverConnect.on("click", serverConnect);
   DOM.switchSecret.on("click", switchSecret);
   DOM.switchMnemonic.on("click", switchMnemonic);
+  DOM.switchHW.on("click", switchHW);
   DOM.secret.on("input focusout", secretChanged);
   DOM.secretHidden.on("click", secretHiddenClicked);
   switchSecret();
   switchMnemonic();
+  switchHW();
+  DOM.ledgerhwConnectButton.on("click", ledgerhwConnectButtonClicked);
   DOM.switchPayment.on("click", switchPayment);
   switchPayment();
   DOM.switchTrustline.on("click", switchTrustline);
@@ -169,7 +177,55 @@ function init() {
   DOM.orderTotalPriceAmount.on("keydown", orderTotalPriceChanged);
   DOM.settingsSignersThreshold.on("keydown", signersThresholdChanged);
   DOM.settingsSignersButtonAdd.on("click", settingsSignersButtonAddClicked);
+  showHwOptionWhenItWorks();
   showVersion();
+}
+
+function showHwOptionWhenItWorks() {
+  var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  var smallScreen = window.matchMedia("only screen and (max-width: 480px)")
+  if (!isMobile && !smallScreen.matches && location.protocol == 'https:') {
+    DOM.switchHwElement.show();
+  }
+}
+
+function ledgerhwConnectButtonClicked() {
+  DOM.ledgerhwNotConnectedFields.hide();
+  DOM.feedback.html('Trying to connect to your Ledger Hardware Wallet...');
+  bithomphw.getXrpAddress().then(function(data) {
+    DOM.feedback.html(showAddress(data.address));
+    DOM.address.val(data.address);
+    DOM.pubkey.val(data.publicKey);
+    DOM.setAddressFields.show();
+    addressFeedback();
+    //disabling signing address and multisig for now
+    DOM.setAddressFields.hide();
+  }).catch(function(err) {
+    var error = err.message;
+    if (error) {
+      if (error.indexOf('browser support is needed') > -1) {
+        DOM.feedback.text('In order to use this functionality you need to open this page in Chrome, Opera or Firefox with a U2F extension');
+      } else if (error.indexOf('U2F TIMEOUT') > -1) {
+        DOM.ledgerhwNotConnectedFields.show();
+        DOM.feedback.html(
+          'Couldn\'t connect to your Hardware Wallet.<br>You can try again.'
+        );
+      } else if (error.indexOf('0x6804') > -1) {
+        DOM.ledgerhwNotConnectedFields.show();
+        DOM.feedback.text('Enter pin on your Hardware Wallet and try again.');
+      } else {
+        DOM.ledgerhwNotConnectedFields.show();
+        DOM.feedback.text(error);
+      }
+      console.log(error);
+    } else {
+      DOM.ledgerhwNotConnectedFields.show();
+      console.log(err);
+    }
+    //Ledger device: UNKNOWN_ERROR (0x6804)
+    //Failed to sign with Ledger device: U2F TIMEOUT
+    //U2F browser support is needed for Ledger. Please use Chrome, Opera or Firefox with a U2F extension. Also make sure you're on an HTTPS connection
+  });
 }
 
 function signingOptions() {
@@ -1092,18 +1148,8 @@ function trustlineOnline(secret, account, currency, counterparty, limit, fee, me
     };
 
     api.prepareTrustline(account, trustline, {fee: fee}).then(function(tx) {
-      var signed = api.sign(tx.txJSON, secret);
-      api.submit(
-        signed.signedTransaction
-      ).then(function(result) {
-        //signed.id //hash
-        DOM.txFeedback.html(result.resultMessage + "<br><a href='" + explorer + account + "' target='_blank'>Check on bithomp in 5 sec.</a>");
-        buttonElement.html(buttonValue);
-      }).catch(function (error) {
-        DOM.txFeedback.html('submit: ' + error.message);
-        console.log(error);
-        buttonElement.html(buttonValue);
-      })
+      var showAccount = true;
+      submitOnline(tx.txJSON, account, secret, buttonElement, buttonValue, showAccount);
     }).catch(function (error) {
       DOM.txFeedback.html('prepareTrustline: ' + error.message);
       console.log(error);
@@ -1250,6 +1296,11 @@ function signingSecret() {
       return {privateKey: privkey, publicKey: pubkey}
     }
   }
+
+  if (DOM.switchHW.is(':checked')) {
+    return 'ledgerhw';
+  }
+
 }
 
 function submitLink() {
@@ -1367,6 +1418,60 @@ function paymentOffline(secret, account, recipient, destinationTag, amount, curr
   })
 }
 
+function submitOnlineShowAddress(blob, account, buttonElement, buttonValue) {
+  api.submit(
+    blob
+  ).then(function(result) {
+    DOM.txFeedback.html(result.resultMessage + "<br><a href='" + explorer + account + "' target='_blank'>Check on bithomp in 5 sec.</a>");
+    buttonElement.html(buttonValue);
+  }).catch(function (error) {
+    DOM.txFeedback.html('submit: ' + error.message);
+    console.log(error);
+    buttonElement.html(buttonValue);
+  })
+}
+
+function signAndSubmitOnline(txJSON, secret, account, buttonElement, buttonValue, showAccount) {
+  var signed = api.sign(txJSON, secret);
+  api.submit(
+    signed.signedTransaction
+  ).then(function(result) {
+    var showItem = signed.id;
+    if (showAccount) {
+      showItem = account;
+    }
+    DOM.txFeedback.html(result.resultMessage + "<br><a href='" + explorer + showItem + "' target='_blank' rel='noopener'>Check on bithomp in 5 sec.</a>");
+    buttonElement.html(buttonValue);
+  }).catch(function (error) {
+    DOM.txFeedback.html('submit: ' + error.message);
+    console.log(error);
+    buttonElement.html(buttonValue);
+  })
+}
+
+function ledgerhwSubmitOnlineShowAddress(txJSON, account, buttonElement, buttonValue) {
+  var preparedTx = JSON.parse(txJSON);
+  var publicKey = DOM.pubkey.val();
+  preparedTx.SigningPubKey = publicKey;
+  delete preparedTx.Memos;
+  DOM.txFeedback.html('Transaction sent for signing to your Hardware Wallet!<br>Check it and Confirm.');
+  bithomphw.signXrpTransaction(preparedTx).then(function(blob) {
+    submitOnlineShowAddress(blob, account, buttonElement, buttonValue);
+  }).catch(function(err) {
+    DOM.txFeedback.html('Error on signing');
+    buttonElement.html(buttonValue);
+    console.log(err.message);
+  });
+}
+
+function submitOnline(txJSON, account, secret, buttonElement, buttonValue, showAccount=false) {
+  if (secret == 'ledgerhw') {
+    ledgerhwSubmitOnlineShowAddress(txJSON, account, buttonElement, buttonValue);
+  } else {
+    signAndSubmitOnline(txJSON, secret, account, buttonElement, buttonValue, showAccount);
+  }
+}
+
 function paymentOnline(secret, account, recipient, destinationTag, amount, currency, counterparty, fee, memos) {
   if (api.isConnected()) {
     var buttonValue = addLoadingState(DOM.paymentButtonPay);
@@ -1397,17 +1502,7 @@ function paymentOnline(secret, account, recipient, destinationTag, amount, curre
       payment.destination.tag = destinationTag;
 
     api.preparePayment(account, payment, {fee: fee}).then(function(tx) {
-      var signed = api.sign(tx.txJSON, secret);
-      api.submit(
-        signed.signedTransaction
-      ).then(function(result) {
-        DOM.txFeedback.html(result.resultMessage + "<br><a href='" + explorer + signed.id + "' target='_blank'>Check on bithomp in 5 sec.</a>");
-        DOM.paymentButtonPay.html(buttonValue);
-      }).catch(function (error) {
-        DOM.txFeedback.html('submit: ' + error.message);
-        console.log(error);
-        DOM.paymentButtonPay.html(buttonValue);
-      })
+      submitOnline(tx.txJSON, account, secret, DOM.paymentButtonPay, buttonValue);
     }).catch(function (error) {
       DOM.txFeedback.html('preparePayment: ' + error.message);
       console.log(error);
@@ -1623,6 +1718,7 @@ function switchOffline() {
     }
     api = new ripple.RippleAPI();
     DOM.chooseWallet.show();
+    DOM.onlineFields.hide();
     DOM.offlineFields.show();
     eraseTXresults();
   }
@@ -1633,6 +1729,7 @@ function switchOnline() {
     DOM.serverFields.show();
     DOM.chooseWallet.hide();
     DOM.serverNotConnectedFields.show();
+    DOM.onlineFields.show();
     DOM.offlineFields.hide();
     eraseTXresults();
   }
@@ -1694,7 +1791,7 @@ function switchOrder() {
 }
 
 function showAddress(address) {
-  return 'Address: <a href="' + explorer + address + '" target="_blank">' + address + '</a>';
+  return '<span class="black">Address:</span> <a href="' + explorer + address + '" target="_blank">' + address + '</a>';
 }
 
 function isValidSecret(secret) {
@@ -1730,7 +1827,6 @@ function secretChanged() {
       addressFeedback();
       signAddressChanged();
       DOM.secretHidden.show();
-      submitLink();
     } else {
       DOM.feedback.html('invalid secret');
     }
@@ -1742,6 +1838,7 @@ function secretChanged() {
 function switchSecret() {
   if (DOM.switchSecret.is(':checked')) {
     DOM.mnemonicFields.hide();
+    DOM.HwFields.hide();
     DOM.secretFields.show();
     secretChanged();
   }
@@ -1750,8 +1847,24 @@ function switchSecret() {
 function switchMnemonic() {
   if (DOM.switchMnemonic.is(':checked')) {
     DOM.secretFields.hide();
+    DOM.HwFields.hide();
     DOM.mnemonicFields.show();
     delayedPhraseChanged();
+  }
+}
+
+function switchHW() {
+  if (DOM.switchHW.is(':checked')) {
+    DOM.secretFields.hide();
+    DOM.mnemonicFields.hide();
+    DOM.HwFields.show();
+    //reset connection to ledgerhw
+    clearAddressesList();
+    hideValidationError();
+    DOM.ledgerhwNotConnectedFields.show();
+    //click on payment option, only one available for now for ledgerhw
+    DOM.switchPayment.prop('checked', true);
+    switchPayment();
   }
 }
 

@@ -41,6 +41,10 @@ a:hover {
   color: #d23a1c;
 }
 
+.black {
+  color: black;
+}
+
 .note {
   font-size: 12px;
   margin: 20px 4px;
@@ -49,6 +53,10 @@ a:hover {
 
 .small {
   font-size: 11px;
+}
+
+.inline {
+  display: inline-block;
 }
 
 .main-box {
@@ -172,14 +180,11 @@ a:hover {
   margin: 10px auto;
 }
 
-.main-box .secret input,
-.main-box .server input,
-.main-box .set-address input,
-.main-box .settings-domain input,
-.main-box .settings-gravatar input,
-.main-box .settings-messageKey input,
-.main-box .settings-regularKey input,
-.main-box .settings-signers input {
+.main-box .ledgerhw-not-connected {
+  padding: 20px;
+}
+
+.main-box input.bordered-centered {
   text-align: center;
   border: 2px solid #3fa3b5;
 }
@@ -290,7 +295,8 @@ a:hover {
 #switch_trustline + label:after, 
 #switch_escrow + label:after,
 #switch_settings + label:after,
-#switch_order + label:after {
+#switch_order + label:after,
+#switch_hw + label:after {
   display: none;
 }
 
