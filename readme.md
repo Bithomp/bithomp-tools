@@ -60,6 +60,8 @@ ripple-lib*  - https://github.com/ripple/ripple-lib
 
 qrcode - https://github.com/davidshimjs/qrcodejs
 
+bithomphw - https://github.com/octillionsa/bithomphw
+
 * - modified (few extra lines added)
 
 ## Credits

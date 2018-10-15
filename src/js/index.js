@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.3.1';
+var version = '0.3.2';
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -1418,11 +1418,11 @@ function paymentOffline(secret, account, recipient, destinationTag, amount, curr
   })
 }
 
-function submitOnlineShowAddress(blob, account, buttonElement, buttonValue) {
+function submitOnlineShowLink(blob, showItem, buttonElement, buttonValue) {
   api.submit(
     blob
   ).then(function(result) {
-    DOM.txFeedback.html(result.resultMessage + "<br><a href='" + explorer + account + "' target='_blank'>Check on bithomp in 5 sec.</a>");
+    DOM.txFeedback.html(result.resultMessage + "<br><a href='" + explorer + showItem + "' target='_blank'>Check on bithomp in 5 sec.</a>");
     buttonElement.html(buttonValue);
   }).catch(function (error) {
     DOM.txFeedback.html('submit: ' + error.message);
@@ -1433,30 +1433,27 @@ function submitOnlineShowAddress(blob, account, buttonElement, buttonValue) {
 
 function signAndSubmitOnline(txJSON, secret, account, buttonElement, buttonValue, showAccount) {
   var signed = api.sign(txJSON, secret);
-  api.submit(
-    signed.signedTransaction
-  ).then(function(result) {
-    var showItem = signed.id;
-    if (showAccount) {
-      showItem = account;
-    }
-    DOM.txFeedback.html(result.resultMessage + "<br><a href='" + explorer + showItem + "' target='_blank' rel='noopener'>Check on bithomp in 5 sec.</a>");
-    buttonElement.html(buttonValue);
-  }).catch(function (error) {
-    DOM.txFeedback.html('submit: ' + error.message);
-    console.log(error);
-    buttonElement.html(buttonValue);
-  })
+  var blob = signed.signedTransaction;
+  var showItem = signed.id;
+  if (showAccount) {
+    showItem = account;
+  }
+  submitOnlineShowLink(blob, showItem, buttonElement, buttonValue);
 }
 
-function ledgerhwSubmitOnlineShowAddress(txJSON, account, buttonElement, buttonValue) {
+function ledgerhwSubmitOnline(txJSON, account, buttonElement, buttonValue, showAccount) {
   var preparedTx = JSON.parse(txJSON);
   var publicKey = DOM.pubkey.val();
   preparedTx.SigningPubKey = publicKey;
   delete preparedTx.Memos;
   DOM.txFeedback.html('Transaction sent for signing to your Hardware Wallet!<br>Check it and Confirm.');
-  bithomphw.signXrpTransaction(preparedTx).then(function(blob) {
-    submitOnlineShowAddress(blob, account, buttonElement, buttonValue);
+  bithomphw.signXrpTransaction(preparedTx).then(function(signed) {
+    var blob = signed.signedTransaction;
+    var showItem = signed.id;
+    if (showAccount) {
+      showItem = account;
+    }
+    submitOnlineShowLink(blob, showItem, buttonElement, buttonValue);
   }).catch(function(err) {
     DOM.txFeedback.html('Error on signing');
     buttonElement.html(buttonValue);
@@ -1466,7 +1463,7 @@ function ledgerhwSubmitOnlineShowAddress(txJSON, account, buttonElement, buttonV
 
 function submitOnline(txJSON, account, secret, buttonElement, buttonValue, showAccount=false) {
   if (secret == 'ledgerhw') {
-    ledgerhwSubmitOnlineShowAddress(txJSON, account, buttonElement, buttonValue);
+    ledgerhwSubmitOnline(txJSON, account, buttonElement, buttonValue, showAccount);
   } else {
     signAndSubmitOnline(txJSON, secret, account, buttonElement, buttonValue, showAccount);
   }
