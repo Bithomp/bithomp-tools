@@ -1,6 +1,12 @@
 (function() {
 
-var version = '0.3.2';
+var version = '0.3.3';
+var testnet = false;
+var bithomp = 'https://bithomp.com';
+var bithompTestnet = 'https://test.bithomp.com';
+var wsProduction = 'wss://s3.ripple.com';
+var wsTestnet = 'wss://s.altnet.rippletest.net:51233';
+
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -10,20 +16,13 @@ var network = bitcoinjs.bitcoin.networks.bitcoin;
 var phraseChangeTimeoutEvent = null;
 var generationProcesses = [];
 var timer;
-var explorer = 'https://bithomp.com/explorer/';
-var blobQR = new QRCode(document.getElementById("blobQR"), {
-  width : 256,
-  height : 256,
-  useSVG: true
-});
-var submitUrlQR = new QRCode(document.getElementById("submitUrlQR"), {
-  width : 100,
-  height : 100,
-  useSVG: true
-});
+var blobQR = new QRCode(document.getElementById("blobQR"), {width:256,height:256,useSVG:true});
+var submitUrlQR = new QRCode(document.getElementById("submitUrlQR"), {width:100,height:100,useSVG:true});
 
 var DOM = {};
+DOM.body = $('body');
 DOM.termsFields = $('.terms');
+DOM.bithompSubmit = $('#bithompSubmit');
 DOM.termsButton = $('#terms_button');
 DOM.agreedTermsFields = $('.terms-agreed');
 DOM.switchOnline = $('#switch_online');
@@ -126,6 +125,7 @@ DOM.orderTotalPriceCounterparty = $('#order_totalPrice_counterparty');
 DOM.orderSequence = $('#order_sequence');
 
 function init() {
+  mainOrTestNet();
   thisYear();
   DOM.termsButton.on("click", termsAgreed);
   DOM.phrase.on("input", delayedPhraseChanged);
@@ -179,6 +179,19 @@ function init() {
   DOM.settingsSignersButtonAdd.on("click", settingsSignersButtonAddClicked);
   showHwOptionWhenItWorks();
   showVersion();
+}
+
+function mainOrTestNet() {
+  if (testnet) {
+    $("a[href='" + bithomp + "']").attr("href", bithompTestnet);
+    DOM.body.addClass('testnet');
+    DOM.server.val(wsTestnet);
+    DOM.server.prop("readonly", true);
+    bithomp = bithompTestnet;
+  } else {
+    DOM.server.val(wsProduction);
+  }
+  DOM.bithompSubmit.attr('href', bithomp + '/submit').text(bithomp + '/submit');
 }
 
 function showHwOptionWhenItWorks() {
@@ -342,7 +355,7 @@ function order() {
     orderSequence = parseInt(orderSequence);
 
     if (!orderSequence || orderSequence < 0) {
-      DOM.txFeedback.html('Enter Sequence (#) of the order you want to cancel, try to find it here: <br><a href="' + explorer + account + '" target="_blank" class="small">' + explorer + account + '</a>');
+      DOM.txFeedback.html('Enter Sequence (#) of the order you want to cancel, try to find it here: <br><a href="' + bithomp + '/explorer/' + account + '" target="_blank" rel="noopener" class="small">' + bithomp + '/explorer/' + account + '</a>');
       DOM.orderSequence.focus();
       return;
     }
@@ -385,7 +398,7 @@ function orderCancelOnline(secret, account, orderCancelation, fee) {
         signed.signedTransaction
       ).then(function(result) {
         //signed.id //hash
-        DOM.txFeedback.html(result.resultMessage + "<br><a href='" + explorer + signed.id + "' target='_blank'>Check on bithomp in 5 sec.</a>");
+        DOM.txFeedback.html(result.resultMessage + "<br><a href='" + bithomp + '/explorer/' + signed.id + "' target='_blank' rel='noopener'>Check on bithomp in 5 sec.</a>");
         buttonElement.html(buttonValue);
       }).catch(function (error) {
         DOM.txFeedback.html('submit: ' + error.message);
@@ -436,7 +449,7 @@ function orderSubmitOnline(secret, account, order, fee) {
             signed.signedTransaction
           ).then(function(result) {
             //signed.id //hash
-            DOM.txFeedback.html(result.resultMessage + "<br><a href='" + explorer + signed.id + "' target='_blank'>Check on bithomp in 5 sec.</a>");
+            DOM.txFeedback.html(result.resultMessage + "<br><a href='" + bithomp + '/explorer/' + signed.id + "' target='_blank' rel='noopener'>Check on bithomp in 5 sec.</a>");
             buttonElement.html(buttonValue);
           }).catch(function (error) {
             DOM.txFeedback.html('submit: ' + error.message);
@@ -817,7 +830,7 @@ function settingsUpdateOnline(secret, account, settings, fee, action) {
         signed.signedTransaction
       ).then(function(result) {
         //signed.id //hash
-        DOM.txFeedback.html(result.resultMessage + "<br><a href='" + explorer + signed.id + "' target='_blank'>Check on bithomp in 5 sec.</a>");
+        DOM.txFeedback.html(result.resultMessage + "<br><a href='" + bithomp + '/explorer/' + signed.id + "' target='_blank' rel='noopener'>Check on bithomp in 5 sec.</a>");
         buttonElement.html(buttonValue);
       }).catch(function (error) {
         DOM.txFeedback.html('submit: ' + error.message);
@@ -870,7 +883,7 @@ function escrowButtonCancelClicked() {
   escrowSequence = parseInt(escrowSequence);
 
   if (!escrowSequence || escrowSequence < 0) {
-    DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + explorer + owner + '" target="_blank" class="small">' + explorer + owner + '</a>');
+    DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + bithomp + '/explorer/' + owner + '" target="_blank" rel="noopener" class="small">' + bithomp + '/explorer/' + owner + '</a>');
     DOM.escrowSequence.focus();
     return;
   }
@@ -908,7 +921,7 @@ function escrowCancelOnline(secret, account, owner, escrowSequence, fee, memos) 
         signed.signedTransaction
       ).then(function(result) {
         //signed.id //hash
-        DOM.txFeedback.html(result.resultMessage + "<br><a href='" + explorer + signed.id + "' target='_blank'>Check on bithomp in 5 sec.</a>");
+        DOM.txFeedback.html(result.resultMessage + "<br><a href='" + bithomp + "/explorer/" + signed.id + "' target='_blank' rel='noopener'>Check on bithomp in 5 sec.</a>");
         DOM.escrowButtonCancel.html(buttonValue);
       }).catch(function (error) {
         DOM.txFeedback.html('submit: ' + error.message);
@@ -967,7 +980,7 @@ function escrowButtonExecuteClicked() {
   escrowSequence = parseInt(escrowSequence);
 
   if (!escrowSequence || escrowSequence < 0) {
-    DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + explorer + owner + '" target="_blank">' + explorer + owner + '</a>');
+    DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + bithomp + '/explorer/' + owner + '" target="_blank" rel="noopener">' + bithomp + '/explorer/' + owner + '</a>');
     DOM.escrowSequence.focus();
     return;
   }
@@ -1005,7 +1018,7 @@ function escrowExecuteOnline(secret, account, owner, escrowSequence, fee, memos)
         signed.signedTransaction
       ).then(function(result) {
         //signed.id //hash
-        DOM.txFeedback.html(result.resultMessage + "<br><a href='" + explorer + signed.id + "' target='_blank'>Check on bithomp in 5 sec.</a>");
+        DOM.txFeedback.html(result.resultMessage + "<br><a href='" + bithomp + "/explorer/" + signed.id + "' target='_blank' rel='noopener'>Check on bithomp in 5 sec.</a>");
         DOM.escrowButtonExecute.html(buttonValue);
       }).catch(function (error) {
         DOM.txFeedback.html('submit: ' + error.message);
@@ -1422,7 +1435,7 @@ function submitOnlineShowLink(blob, showItem, buttonElement, buttonValue) {
   api.submit(
     blob
   ).then(function(result) {
-    DOM.txFeedback.html(result.resultMessage + "<br><a href='" + explorer + showItem + "' target='_blank'>Check on bithomp in 5 sec.</a>");
+    DOM.txFeedback.html(result.resultMessage + "<br><a href='" + bithomp + "/explorer/" + showItem + "' target='_blank' rel='noopener'>Check on bithomp in 5 sec.</a>");
     buttonElement.html(buttonValue);
   }).catch(function (error) {
     DOM.txFeedback.html('submit: ' + error.message);
@@ -1526,13 +1539,13 @@ function validateRegularKey() {
     if (api.isConnected()) {
       api.getSettings(signAddress).then(function(info) {
         if (info && !info.regularKey) {
-          DOM.signAddressFeedback.html("<a href='" + explorer + signAddress + "' target='_blank'>Address</a> doesn't have a set regular key.");
+          DOM.signAddressFeedback.html("<a href='" + bithomp + "/explorer/" + signAddress + "' target='_blank' rel='noopener'>Address</a> doesn't have a set regular key.");
           return;
         } else if (info.regularKey == address) {
           DOM.readyToSignFields.show();
           return;
         } else {
-          DOM.signAddressFeedback.html("<a href='" + explorer + signAddress + "' target='_blank'>Address</a> has a different regular key.");
+          DOM.signAddressFeedback.html("<a href='" + bithomp + "/explorer/" + signAddress + "' target='_blank' rel='noopener'>Address</a> has a different regular key.");
           return;
         }
       }).catch(function (error) {
@@ -1788,7 +1801,7 @@ function switchOrder() {
 }
 
 function showAddress(address) {
-  return '<span class="black">Address:</span> <a href="' + explorer + address + '" target="_blank">' + address + '</a>';
+  return '<span class="black">Address:</span> <a href="' + bithomp + '/explorer/' + address + '" target="_blank" rel="noopener">' + address + '</a>';
 }
 
 function isValidSecret(secret) {

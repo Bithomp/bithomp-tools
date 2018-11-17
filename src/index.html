@@ -11,7 +11,7 @@
     <body>
         <div class="main-box">
             <div class="box-header">
-                <a href="https://bithomp.com/">
+                <a href="https://bithomp.com">
                     <div class="logo">
                         <svg version="1.1" id="layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                              viewBox="0 0 180 52" enable-background="new 0 0 180 52" xml:space="preserve">
@@ -117,10 +117,10 @@
                 <b>Offline mode:</b><br>
                 - Another Computer or Phone will be required to submit the transaction.<br>
                 - Offline mode is recomended.<br>
-                - Download the <b>index.html</b> file from <a href="https://github.com/Bithomp/bithomp-tools" target="_blank">github</a>.
+                - Download the <b>index.html</b> file from <a href="https://github.com/Bithomp/bithomp-tools" target="_blank" rel="noopener">github</a>.
                 - Transfer it to the offline PC on the usb stick.<br>
                 - Open the index.html file in any browser, private mode.<br>
-                - You will be able to submit signed transaction blob by any device here: <a href="https://bithomp.com/submit">https://bithomp.com/submit</a><br>
+                - You will be able to submit signed transaction blob by any device here: <a id="bithompSubmit" href="https://bithomp.com/submit" rel="noopener">https://bithomp.com/submit</a><br>
                 <br>
                 <b>Online mode:</b><br>
                 - Your Secret Key and/or Mnemonic is not transmitted over the network.<br>
@@ -144,7 +144,7 @@
 
                 <fieldset class="server">
                     <div>
-                        <input type="text" id="server" placeholder="Enter the xrp server here" value="wss://s3.ripple.com" spellcheck="false" class="bordered-centered" />
+                        <input type="text" id="server" placeholder="Enter XRPL ws here" value="wss://s1.ripple.com" spellcheck="false" class="bordered-centered" />
                         <input type="button" value="connect" id="server_connect" class="server-not-connected" />
                         <div class="feedback" id="server_feedback"></div>
                     </div>
