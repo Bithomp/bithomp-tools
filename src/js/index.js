@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.3.3';
+var version = '0.3.4';
 var testnet = false;
 var bithomp = 'https://bithomp.com';
 var bithompTestnet = 'https://test.bithomp.com';
@@ -796,6 +796,8 @@ function settings(action) {
   } else if (selectedSetting == 'disableMasterKey') {
     if (action == 'set') {
       settings.disableMasterKey = true;
+    } else {
+      settings.disableMasterKey = false;
     }
   }
 
