@@ -105,7 +105,7 @@
                 - Place or Cancel Buy/Sell trade orders.<br>
                 - Add a Gravatar to your account.<br>
                 - Assign a Domain to your account.<br>
-                - Execute or Cancel Escrow.<br>
+                - Create, Execute or Cancel Escrow.<br>
                 - Add a regular key.<br>
                 - Add a list of signers (multisig).<br>
                 - Add a message key.<br>
@@ -233,9 +233,10 @@
 
                         <hr>
 
-                        <h3 class="payment-fields trustline-fields escrow-fields">Transaction details</h3>
+                        <h3 class="payment-fields trustline-fields">Transaction details</h3>
                         <h3 class="settings-fields hidden">Choose a Setting to Modify</h3>
                         <h3 class="order-fields hidden">Choose a type of Order transaction</h3>
+                        <h3 class="escrow-fields hidden">Choose a type of Escrow transaction</h3>
 
                         <div class="fields-wide payment-fields">
                             <div>
@@ -280,14 +281,84 @@
                             </div>
                         </div>
 
-                        <div class="fields-wide hidden escrow-fields">
-                            <div>
-                                <div class="left">Owner:</div>
-                                <div class="right"><input type="text" id="escrow_owner" placeholder="XRP address of the escrow owner" spellcheck="false" /></div>
+                        <div class="hidden escrow-fields">
+                            <select id="select_escrow">
+                                <option value="creation" selected="selected">Escrow creation</option>
+                                <option value="execution">Escrow execution</option>
+                                <option value="cancellation">Escrow cancellation</option>
+                            </select>
+                        </div>
+
+                        <div class="hidden escrow-fields">
+                            <div class="fields-wide escrow-creation">
+                                <div class="orange note">
+                                    <br><center>NOTE: To create an escrow you need to have at least 5 XRP available.</center>
+                                </div>
+                                <div>
+                                    <div class="left">Recipient:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_recipient" placeholder="XRP address of a payee" spellcheck="false" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="left">Destination tag:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_destination_tag" placeholder="If it's required" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="left">Amount:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_amount" />
+                                    </div>
+                                </div>
+                                <div class="red note">
+                                    <br><center>DANGER: You can LOCK your XRP for years here...</center>
+                                </div>
+                                <div>
+                                    <div class="left">Year:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_year" maxlength="4"/>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="left">Month:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_month" maxlength="2"/>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="left">Day:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_day" maxlength="2"/>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="left">Hour:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_hour" maxlength="2"/>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="left">Minute:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_minute" maxlength="2"/>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <div class="left">Escrow sequence:</div>
-                                <div class="right"><input type="text" id="escrow_sequence" placeholder="sequence of the escrow to execute" spellcheck="false" /></div>
+                            <div class="fields-wide escrow-execution escrow-cancellation hidden">
+                                <div>
+                                    <div class="left">Owner:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_owner" placeholder="XRP address of the escrow owner" spellcheck="false" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="left">Escrow sequence:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_sequence" placeholder="sequence of the escrow to execute" spellcheck="false" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -504,8 +575,7 @@
                         </div>
 
                         <div class="escrow-fields">
-                            <button type="button" id="escrow_execute">Execute</button>
-                            <button type="button" id="escrow_cancel">Cancel</button>
+                            <button type="button" id="escrow_submit">Submit</button>
                         </div>
 
                         <div class="settings-fields">

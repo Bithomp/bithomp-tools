@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.3.5';
+var version = '0.4.0';
 var testnet = false;
 var bithomp = 'https://bithomp.com';
 var bithompTestnet = 'https://test.bithomp.com';
@@ -78,10 +78,21 @@ DOM.trustlineLimit = $('#trustline_limit');
 DOM.trustlineButtonAdd = $('#trustline_add');
 DOM.trustlineButtonRemove = $('#trustline_remove');
 DOM.escrowFields = $('.escrow-fields');
+DOM.escrowSelect = $('#select_escrow');
+DOM.escrowCreationFields = $('.escrow-creation');
+DOM.escrowExecutionFields = $('.escrow-execution');
+DOM.escrowCancellationFields = $('.escrow-cancellation');
+DOM.escrowRecipient = $('#escrow_recipient');
+DOM.escrowDestinationTag = $('#escrow_destination_tag');
+DOM.escrowAmount = $('#escrow_amount');
+DOM.escrowYear = $('#escrow_year');
+DOM.escrowMonth = $('#escrow_month');
+DOM.escrowDay = $('#escrow_day');
+DOM.escrowHour = $('#escrow_hour');
+DOM.escrowMinute = $('#escrow_minute');
 DOM.escrowOwner = $('#escrow_owner');
 DOM.escrowSequence = $('#escrow_sequence');
-DOM.escrowButtonExecute = $('#escrow_execute');
-DOM.escrowButtonCancel = $('#escrow_cancel');
+DOM.escrowButtonSubmit = $('#escrow_submit');
 DOM.fee = $('#fee');
 DOM.sequence = $('#sequence');
 DOM.memo = $('#memo');
@@ -160,8 +171,6 @@ function init() {
   DOM.paymentButtonPay.on("click", paymentButtonPayClicked);
   DOM.trustlineButtonAdd.on("click", trustlineButtonAddClicked);
   DOM.trustlineButtonRemove.on("click", trustlineButtonRemoveClicked);
-  DOM.escrowButtonExecute.on("click", escrowButtonExecuteClicked);
-  DOM.escrowButtonCancel.on("click", escrowButtonCancelClicked);
   DOM.settingsButtonSet.on("click", settingsButtonSetClicked);
   DOM.settingsButtonUnset.on("click", settingsButtonUnsetClicked);
   DOM.txBlob.on("click", txBlobClicked);
@@ -172,6 +181,16 @@ function init() {
   settingsSelected();
   DOM.orderSelect.on("change", orderSelected);
   orderSelected();
+  DOM.escrowSelect.on("change", escrowSelected);
+  escrowSelected();
+  DOM.escrowDestinationTag.on("keydown", escrowDestinationTagChanged);
+  DOM.escrowAmount.on("keydown", escrowAmountChanged);
+  DOM.escrowYear.on("keydown", escrowYearChanged);
+  DOM.escrowMonth.on("keydown", escrowMonthChanged);
+  DOM.escrowDay.on("keydown", escrowDayChanged);
+  DOM.escrowHour.on("keydown", escrowHourChanged);
+  DOM.escrowMinute.on("keydown", escrowMinuteChanged);
+  DOM.escrowButtonSubmit.on("click", escrowButtonSubmitClicked);
   DOM.orderButtonSubmit.on("click", orderButtonSubmitClicked);
   DOM.orderQuantityAmount.on("keydown", orderQuantityAmountChanged);
   DOM.orderTotalPriceAmount.on("keydown", orderTotalPriceChanged);
@@ -859,35 +878,261 @@ function settingsUpdateOffline(secret, account, settings, fee, sequence) {
   });
 }
 
-function escrowButtonCancelClicked() {
+function addZero(number) {
+  if (number < 10) {
+    return '0' + number;
+  }
+  return number;
+}
+
+function fillDate() {
+  var today = new Date();
+  var year = today.getFullYear();
+  var month = addZero(today.getMonth() + 1);
+  var day = addZero(today.getDate());
+  var hour = addZero(today.getHours());
+  var minute = addZero(today.getMinutes());
+  DOM.escrowYear.val(year);
+  DOM.escrowMonth.val(month);
+  DOM.escrowDay.val(day);
+  DOM.escrowHour.val(hour);
+  DOM.escrowMinute.val(minute);
+}
+
+function escrowSelected() {
+  var selected = DOM.escrowSelect.val();
+  if (selected == 'creation') {
+    fillDate();
+    DOM.escrowExecutionFields.hide();
+    DOM.escrowCancellationFields.hide();
+    DOM.escrowCreationFields.show();
+  } else if (selected == 'execution') {
+    DOM.escrowCancellationFields.hide();
+    DOM.escrowCreationFields.hide();
+    DOM.escrowExecutionFields.show();
+  } else if (selected == 'cancellation') {
+    DOM.escrowExecutionFields.hide();
+    DOM.escrowCreationFields.hide();
+    DOM.escrowCancellationFields.show();
+  }
+  eraseTXresults();
+}
+
+function escrowDestinationTagChanged(e) {
+  var allowDots = false;
+  digitize(e, allowDots);
+}
+
+function escrowAmountChanged(e) {
+  digitize(e);
+}
+
+function escrowYearChanged(e) {
+  var allowDots = false;
+  digitize(e, allowDots);
+}
+
+function escrowMonthChanged(e) {
+  var allowDots = false;
+  digitize(e, allowDots);
+}
+
+function escrowDayChanged(e) {
+  var allowDots = false;
+  digitize(e, allowDots);
+}
+
+function escrowHourChanged(e) {
+  var allowDots = false;
+  digitize(e, allowDots);
+}
+
+function escrowMinuteChanged(e) {
+  var allowDots = false;
+  digitize(e, allowDots);
+}
+
+function escrowButtonSubmitClicked() {
+  escrow();
+}
+
+function isValidDate(year, month, day) {
+  month = month - 1;
+  var d = new Date(year, month, day);
+  if (d.getFullYear() == year && d.getMonth() == month && d.getDate() == day) {
+    return true;
+  }
+  return false;
+}
+
+function escrow() {
   eraseTXresults();
   var secret = signingSecret(); //secret or keypair json (pub + priv)
   var account = signingAddress();
 
   if (!secret || !account) return;
 
-  var owner = DOM.escrowOwner.val();
-  owner = owner.trim();
+  var memos = txMemos();
 
-  if (!owner) {
-    DOM.txFeedback.html('Error: Please fill in the owner of your escrow');
-    DOM.escrowOwner.focus();
-    return;
-  }
+  var escrow = {
+    memos: memos
+  };
 
-  if (!isValidAddress(owner)) {
-    DOM.txFeedback.html('Error: Invalid escrow owner address');
-    DOM.escrowOwner.focus();
-    return;
-  }
+  var selected = DOM.escrowSelect.val();
 
-  var escrowSequence = DOM.escrowSequence.val();
-  escrowSequence = parseInt(escrowSequence);
+  if (selected == 'cancellation' || selected == 'execution') {
+    var owner = DOM.escrowOwner.val();
+    owner = owner.trim();
 
-  if (!escrowSequence || escrowSequence < 0) {
-    DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + bithomp + '/explorer/' + owner + '" target="_blank" rel="noopener" class="small">' + bithomp + '/explorer/' + owner + '</a>');
-    DOM.escrowSequence.focus();
-    return;
+    if (!owner) {
+      DOM.txFeedback.html('Error: Please fill in the owner of your escrow');
+      DOM.escrowOwner.focus();
+      return;
+    }
+
+    if (!isValidAddress(owner)) {
+      DOM.txFeedback.html('Error: Invalid escrow owner address');
+      DOM.escrowOwner.focus();
+      return;
+    }
+
+    var escrowSequence = DOM.escrowSequence.val();
+    escrowSequence = parseInt(escrowSequence);
+
+    if (!escrowSequence || escrowSequence < 0) {
+      DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + bithomp + '/explorer/' + owner + '" target="_blank" rel="noopener">' + bithomp + '/explorer/' + owner + '</a>');
+      DOM.escrowSequence.focus();
+      return;
+    }
+
+    escrow.owner = owner;
+    escrow.escrowSequence = escrowSequence;
+
+  } else if (selected == 'creation') {
+
+    var recipient = DOM.escrowRecipient.val();
+    recipient = recipient.trim();
+
+    if (!recipient) {
+      DOM.txFeedback.html('Error: Please fill in the recipient of your escrow!');
+      DOM.escrowRecipient.focus();
+      return;
+    }
+
+    if (!isValidAddress(recipient)) {
+      DOM.txFeedback.html('Error: Invalid recipient address');
+      DOM.escrowRecipient.focus();
+      return;
+    }
+
+    var destinationTag = DOM.escrowDestinationTag.val();
+    destinationTag = parseInt(destinationTag);
+
+    var amount = DOM.escrowAmount.val();
+    amount = amount.trim();
+
+    if (!amount || amount < 0) {
+      DOM.txFeedback.html('Please fill in the amount!');
+      DOM.escrowAmount.focus();
+      return false;
+    }
+    amount = String(amount);
+
+    var today = new Date();
+    var todayYear = today.getFullYear();
+
+    var year = Number(DOM.escrowYear.val());
+    var month = Number(DOM.escrowMonth.val());
+    var day = Number(DOM.escrowDay.val());
+    var hour = Number(DOM.escrowHour.val());
+    var minute = Number(DOM.escrowMinute.val());
+
+    if (!year) {
+      DOM.txFeedback.html('Please fill in the escrow Year.');
+      DOM.escrowYear.focus();
+      return false;
+    }
+
+    if (year < todayYear) {
+      DOM.txFeedback.html('The escrow Year should be current or in the feature');
+      DOM.escrowYear.focus();
+      return false;
+    }
+
+    if (year > (todayYear + 20)) {
+      DOM.txFeedback.html('Sorry, maximum 20 Years for escrow in this tool');
+      DOM.escrowYear.focus();
+      return false;
+    }
+
+    if (!month) {
+      DOM.txFeedback.html('Please fill in the escrow Month.');
+      DOM.escrowMonth.focus();
+      return false;
+    }
+
+    if (month < 1 || month > 12) {
+      DOM.txFeedback.html('Enter correct Month, example: 09 (for September).');
+      DOM.escrowMonth.focus();
+      return false;
+    }
+
+    if (!day) {
+      DOM.txFeedback.html('Please fill in the escrow Day.');
+      DOM.escrowDay.focus();
+      return false;
+    }
+
+    if (day < 1 || day > 31) {
+      DOM.txFeedback.html('Enter correct Day');
+      DOM.escrowDay.focus();
+      return false;
+    }
+
+    if (!isValidDate(year,month,day)) {
+      DOM.txFeedback.html('Incorrect date!');
+      return false;
+    }
+
+    if (!hour) {
+      DOM.txFeedback.html('Please fill in the escrow Hour.');
+      DOM.escrowHour.focus();
+      return false;
+    }
+
+    if (hour < 1 || hour > 24) {
+      DOM.txFeedback.html('Enter correct Hour, example: 19 (for 7pm)');
+      DOM.escrowHour.focus();
+      return false;
+    }
+
+    if (!minute) {
+      DOM.txFeedback.html('Please fill in the escrow Minute.');
+      DOM.escrowMinute.focus();
+      return false;
+    }
+
+    if (minute < 1 || minute > 60) {
+      DOM.txFeedback.html('Enter correct Minute');
+      DOM.escrowMinute.focus();
+      return false;
+    }
+
+    var timeString = year + '-' + addZero(month) + '-' + addZero(day) + 'T' + addZero(hour) + ':' + addZero(minute) + ':00';
+    var escrowDate = new Date(timeString);
+
+    if (escrowDate < today) {
+      DOM.txFeedback.html('The date/time need to be in the feature');
+      return false;
+    }
+
+    escrow.destination = recipient;
+    escrow.amount = amount;
+    if (destinationTag) {
+      escrow.destinationTag = destinationTag;
+    }
+    escrow.allowExecuteAfter = escrowDate.toJSON();
+    //allowCancelAfter
   }
 
   var fee = txFee();
@@ -895,57 +1140,91 @@ function escrowButtonCancelClicked() {
     DOM.fee.focus();
     return;
   }
-
-  var memos = txMemos();
-
   if (DOM.switchOnline.is(':checked')) {
     //show error if not activated
-    escrowCancelOnline(secret, account, owner, escrowSequence, fee, memos);
+    if (selected == 'creation') {
+      escrowCreateOnline(secret, account, escrow, fee);
+    } else if (selected = 'execution') {
+      escrowExecuteOnline(secret, account, escrow, fee);
+    } else if (selected == 'cancellation') {
+      escrowCancelOnline(secret, account, escrow, fee);
+    }
   } else {
     var sequence = txSequence(account);
     if (!sequence) return;
-    escrowCancelOffline(secret, account, owner, escrowSequence, fee, memos, sequence);
+
+    if (selected == 'creation') {
+      escrowCreateOffline(secret, account, escrow, fee, sequence);
+    } else if (selected = 'execution') {
+      escrowExecuteOffline(secret, account, escrow, fee, sequence);
+    } else if (selected == 'cancellation') {
+      escrowCancelOffline(secret, account, escrow, fee, sequence);
+    }
   }
 }
 
-function escrowCancelOnline(secret, account, owner, escrowSequence, fee, memos) {
+function escrowCreateOnline(secret, account, escrow, fee) {
   if (api.isConnected()) {
-    var buttonValue = addLoadingState(DOM.escrowButtonCancel);
-    var escrowCancellation = {
-      owner: owner,
-      escrowSequence: escrowSequence,
-      memos: memos
-    };
-
-    api.prepareEscrowCancellation(account, escrowCancellation, {fee: fee}).then(function(tx) {
+    var buttonValue = addLoadingState(DOM.escrowButtonSubmit);
+    api.prepareEscrowCreation(account, escrow, {fee: fee}).then(function(tx) {
       var signed = api.sign(tx.txJSON, secret);
       api.submit(
         signed.signedTransaction
       ).then(function(result) {
         //signed.id //hash
         DOM.txFeedback.html(result.resultMessage + "<br><a href='" + bithomp + "/explorer/" + signed.id + "' target='_blank' rel='noopener'>Check on bithomp in 5 sec.</a>");
-        DOM.escrowButtonCancel.html(buttonValue);
+        DOM.escrowButtonSubmit.html(buttonValue);
       }).catch(function (error) {
         DOM.txFeedback.html('submit: ' + error.message);
         console.log(error);
-        DOM.escrowButtonCancel.html(buttonValue);
+        DOM.escrowButtonSubmit.html(buttonValue);
       })
     }).catch(function (error) {
-      DOM.txFeedback.html('prepareEscrowCancellation: ' + error.message);
+      DOM.txFeedback.html('prepareEscrowCreation: ' + error.message);
       console.log(error);
-      DOM.escrowButtonCancel.html(buttonValue);
+      DOM.escrowButtonSubmit.html(buttonValue);
     })
   }
 }
 
-function escrowCancelOffline(secret, account, owner, escrowSequence, fee, memos, sequence) {
-  var escrowCancellation = {
-    owner: owner,
-    escrowSequence: escrowSequence,
-    memos: memos
-  };
+function escrowCreateOffline(secret, account, escrow, fee, sequence) {
+  api.prepareEscrowCreation(account, escrow, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
+    var options = signingOptions();
+    var signed = api.sign(tx.txJSON, secret, options);
+    showSignedTX(signed);
+    //hash signed.id
+  }).catch(function (error) {
+    DOM.txFeedback.html('prepareEscrowCreation: ' + error.message);
+    console.log(error);
+  });
+}  
 
-  api.prepareEscrowCancellation(account, escrowCancellation, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
+function escrowCancelOnline(secret, account, escrow, fee) {
+  if (api.isConnected()) {
+    var buttonValue = addLoadingState(DOM.escrowButtonSubmit);
+    api.prepareEscrowCancellation(account, escrow, {fee: fee}).then(function(tx) {
+      var signed = api.sign(tx.txJSON, secret);
+      api.submit(
+        signed.signedTransaction
+      ).then(function(result) {
+        //signed.id //hash
+        DOM.txFeedback.html(result.resultMessage + "<br><a href='" + bithomp + "/explorer/" + signed.id + "' target='_blank' rel='noopener'>Check on bithomp in 5 sec.</a>");
+        DOM.escrowButtonSubmit.html(buttonValue);
+      }).catch(function (error) {
+        DOM.txFeedback.html('submit: ' + error.message);
+        console.log(error);
+        DOM.escrowButtonSubmit.html(buttonValue);
+      })
+    }).catch(function (error) {
+      DOM.txFeedback.html('prepareEscrowCancellation: ' + error.message);
+      console.log(error);
+      DOM.escrowButtonSubmit.html(buttonValue);
+    })
+  }
+}
+
+function escrowCancelOffline(secret, account, escrow, fee, sequence) {
+  api.prepareEscrowCancellation(account, escrow, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
     var options = signingOptions();
     var signed = api.sign(tx.txJSON, secret, options);
     showSignedTX(signed);
@@ -956,93 +1235,32 @@ function escrowCancelOffline(secret, account, owner, escrowSequence, fee, memos,
   });
 }
 
-function escrowButtonExecuteClicked() {
-  eraseTXresults();
-  var secret = signingSecret(); //secret or keypair json (pub + priv)
-  var account = signingAddress();
-
-  if (!secret || !account) return;
-
-  var owner = DOM.escrowOwner.val();
-  owner = owner.trim();
-
-  if (!owner) {
-    DOM.txFeedback.html('Error: Please fill in the owner of your escrow');
-    DOM.escrowOwner.focus();
-    return;
-  }
-
-  if (!isValidAddress(owner)) {
-    DOM.txFeedback.html('Error: Invalid escrow owner address');
-    DOM.escrowOwner.focus();
-    return;
-  }
-
-  var escrowSequence = DOM.escrowSequence.val();
-  escrowSequence = parseInt(escrowSequence);
-
-  if (!escrowSequence || escrowSequence < 0) {
-    DOM.txFeedback.html('Enter Sequence (#) of the escrow, try to find it here: <br><a href="' + bithomp + '/explorer/' + owner + '" target="_blank" rel="noopener">' + bithomp + '/explorer/' + owner + '</a>');
-    DOM.escrowSequence.focus();
-    return;
-  }
-
-  var fee = txFee();
-  if (!fee) {
-    DOM.fee.focus();
-    return;
-  }
-
-  var memos = txMemos();
-
-  if (DOM.switchOnline.is(':checked')) {
-    //show error if not activated
-    escrowExecuteOnline(secret, account, owner, escrowSequence, fee, memos);
-  } else {
-    var sequence = txSequence(account);
-    if (!sequence) return;
-    escrowExecuteOffline(secret, account, owner, escrowSequence, fee, memos, sequence);
-  }
-}
-
-function escrowExecuteOnline(secret, account, owner, escrowSequence, fee, memos) {
+function escrowExecuteOnline(secret, account, escrow, fee) {
   if (api.isConnected()) {
-    var buttonValue = addLoadingState(DOM.escrowButtonExecute);
-    var escrowExecution = {
-      owner: owner,
-      escrowSequence: escrowSequence,
-      memos: memos
-    };
-
-    api.prepareEscrowExecution(account, escrowExecution, {fee: fee}).then(function(tx) {
+    var buttonValue = addLoadingState(DOM.escrowButtonSubmit);
+    api.prepareEscrowExecution(account, escrow, {fee: fee}).then(function(tx) {
       var signed = api.sign(tx.txJSON, secret);
       api.submit(
         signed.signedTransaction
       ).then(function(result) {
         //signed.id //hash
         DOM.txFeedback.html(result.resultMessage + "<br><a href='" + bithomp + "/explorer/" + signed.id + "' target='_blank' rel='noopener'>Check on bithomp in 5 sec.</a>");
-        DOM.escrowButtonExecute.html(buttonValue);
+        DOM.escrowButtonSubmit.html(buttonValue);
       }).catch(function (error) {
         DOM.txFeedback.html('submit: ' + error.message);
         console.log(error);
-        DOM.escrowButtonExecute.html(buttonValue);
+        DOM.escrowButtonSubmit.html(buttonValue);
       })
     }).catch(function (error) {
       DOM.txFeedback.html('prepareEscrowExecution: ' + error.message);
       console.log(error);
-      DOM.escrowButtonExecute.html(buttonValue);
+      DOM.escrowButtonSubmit.html(buttonValue);
     })
   }
 }
 
-function escrowExecuteOffline(secret, account, owner, escrowSequence, fee, memos, sequence) {
-  var escrowExecution = {
-    owner: owner,
-    escrowSequence: escrowSequence,
-    memos: memos
-  };
-
-  api.prepareEscrowExecution(account, escrowExecution, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
+function escrowExecuteOffline(secret, account, escrow, fee, sequence) {
+  api.prepareEscrowExecution(account, escrow, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
     var options = signingOptions();
     var signed = api.sign(tx.txJSON, secret, options);
     showSignedTX(signed);
