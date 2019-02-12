@@ -91357,7 +91357,7 @@ var QRCode;
 </script>
         <script>(function() {
 
-var version = '0.4.0';
+var version = '0.4.1';
 var testnet = false;
 var bithomp = 'https://bithomp.com';
 var bithompTestnet = 'https://test.bithomp.com';
@@ -91531,6 +91531,7 @@ function init() {
   DOM.settingsButtonSet.on("click", settingsButtonSetClicked);
   DOM.settingsButtonUnset.on("click", settingsButtonUnsetClicked);
   DOM.txBlob.on("click", txBlobClicked);
+  DOM.paymentDestinationTag.on("keydown", paymentDestinationTagChanged);
   DOM.paymentAmount.on("keydown", paymentAmountChanged);
   DOM.trustlineLimit.on("keydown", trustlineLimitChanged);
   DOM.fee.on("keydown", feeChanged);
@@ -91886,6 +91887,11 @@ function feeChanged(e) {
 
 function trustlineLimitChanged(e) {
   digitize(e);
+}
+
+function paymentDestinationTagChanged(e) {
+  var allowDots = false;
+  digitize(e, allowDots);
 }
 
 function paymentAmountChanged(e) {
@@ -92845,15 +92851,44 @@ function paymentButtonPayClicked() {
 
   var memos = txMemos();
 
+  var payment = {
+    source: {
+      address: account,
+      maxAmount: {
+        value: amount,
+        currency: currency
+      }
+    },
+    destination: {
+      address: recipient,
+      amount: {
+        value: amount,
+        currency: currency
+      }
+    },
+    memos: memos
+  };
+
+  if (currency != 'XRP') {
+    payment.source.maxAmount.counterparty = counterparty;
+    payment.destination.amount.counterparty = counterparty;
+    maxAmount = amount * 1.01;
+    maxAmount = maxAmount.toFixed(16);
+    payment.source.maxAmount.value = maxAmount;
+  }
+
+  if (destinationTag)
+    payment.destination.tag = destinationTag;
+
   if (DOM.switchOnline.is(':checked')) {
     //show error if not activated
     //check if destination tag is required
     //check if can accept XRP
-    paymentOnline(secret, account, recipient, destinationTag, amount, currency, counterparty, fee, memos);
+    paymentOnline(secret, account, payment, fee);
   } else {
     var sequence = txSequence(account);
     if (!sequence) return;
-    paymentOffline(secret, account, recipient, destinationTag, amount, currency, counterparty, fee, memos, sequence);
+    paymentOffline(secret, account, payment, fee, sequence);
   }
 }
 
@@ -92970,33 +93005,7 @@ function txMemos() {
   return memos;
 }
 
-function paymentOffline(secret, account, recipient, destinationTag, amount, currency, counterparty, fee, memos, sequence) {
-  var payment = {
-    source: {
-      address: account,
-      maxAmount: {
-        value: amount,
-        currency: currency
-      }
-    },
-    destination: {
-      address: recipient,
-      amount: {
-        value: amount,
-        currency: currency
-      }
-    },
-    memos: memos
-  };
-
-  if (currency != 'XRP') {
-    payment.source.maxAmount.counterparty = counterparty;
-    payment.destination.amount.counterparty = counterparty;
-  }
-
-  if (destinationTag)
-    payment.destination.tag = destinationTag;
-
+function paymentOffline(secret, account, payment, fee, sequence) {
   api.preparePayment(account, payment, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
     var options = signingOptions();
     var signed = api.sign(tx.txJSON, secret, options);
@@ -93059,35 +93068,9 @@ function submitOnline(txJSON, account, secret, buttonElement, buttonValue, showA
   }
 }
 
-function paymentOnline(secret, account, recipient, destinationTag, amount, currency, counterparty, fee, memos) {
+function paymentOnline(secret, account, payment, fee) {
   if (api.isConnected()) {
     var buttonValue = addLoadingState(DOM.paymentButtonPay);
-    var payment = {
-      source: {
-        address: account,
-        maxAmount: {
-          value: amount,
-          currency: currency
-        }
-      },
-      destination: {
-        address: recipient,
-        amount: {
-          value: amount,
-          currency: currency
-        }
-      },
-      memos: memos
-    };
-
-    if (currency != 'XRP') {
-      payment.source.maxAmount.counterparty = counterparty;
-      payment.destination.amount.counterparty = counterparty;
-    }
-
-    if (destinationTag)
-      payment.destination.tag = destinationTag;
-
     api.preparePayment(account, payment, {fee: fee}).then(function(tx) {
       submitOnline(tx.txJSON, account, secret, DOM.paymentButtonPay, buttonValue);
     }).catch(function (error) {
