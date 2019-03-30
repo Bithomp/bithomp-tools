@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.4.1';
+var version = '0.4.2';
 var testnet = false;
 var bithomp = 'https://bithomp.com';
 var bithompTestnet = 'https://test.bithomp.com';
@@ -85,13 +85,25 @@ DOM.escrowCancellationFields = $('.escrow-cancellation');
 DOM.escrowRecipient = $('#escrow_recipient');
 DOM.escrowDestinationTag = $('#escrow_destination_tag');
 DOM.escrowAmount = $('#escrow_amount');
-DOM.escrowYear = $('#escrow_year');
-DOM.escrowMonth = $('#escrow_month');
-DOM.escrowDay = $('#escrow_day');
-DOM.escrowHour = $('#escrow_hour');
-DOM.escrowMinute = $('#escrow_minute');
+DOM.escrowExecuteAfter = $('#escrow_executeAfter');
+DOM.escrowExecuteAfterFields = $('.escrow-executeAfter-fields');
+DOM.escrowExecuteYear = $('#escrow_execute_year');
+DOM.escrowExecuteMonth = $('#escrow_execute_month');
+DOM.escrowExecuteDay = $('#escrow_execute_day');
+DOM.escrowExecuteHour = $('#escrow_execute_hour');
+DOM.escrowExecuteMinute = $('#escrow_execute_minute');
+DOM.escrowCancelAfter = $('#escrow_cancelAfter');
+DOM.escrowCancelAfterFields = $('.escrow-cancelAfter-fields');
+DOM.escrowCancelYear = $('#escrow_cancel_year');
+DOM.escrowCancelMonth = $('#escrow_cancel_month');
+DOM.escrowCancelDay = $('#escrow_cancel_day');
+DOM.escrowCancelHour = $('#escrow_cancel_hour');
+DOM.escrowCancelMinute = $('#escrow_cancel_minute');
 DOM.escrowOwner = $('#escrow_owner');
 DOM.escrowSequence = $('#escrow_sequence');
+DOM.escrowCreateCondition = $('#escrow_create_condition');
+DOM.escrowExecuteCondition = $('#escrow_execute_condition');
+DOM.escrowExecuteFulfillment = $('#escrow_execute_fulfillment');
 DOM.escrowButtonSubmit = $('#escrow_submit');
 DOM.fee = $('#fee');
 DOM.sequence = $('#sequence');
@@ -186,11 +198,18 @@ function init() {
   escrowSelected();
   DOM.escrowDestinationTag.on("keydown", escrowDestinationTagChanged);
   DOM.escrowAmount.on("keydown", escrowAmountChanged);
-  DOM.escrowYear.on("keydown", escrowYearChanged);
-  DOM.escrowMonth.on("keydown", escrowMonthChanged);
-  DOM.escrowDay.on("keydown", escrowDayChanged);
-  DOM.escrowHour.on("keydown", escrowHourChanged);
-  DOM.escrowMinute.on("keydown", escrowMinuteChanged);
+  DOM.escrowExecuteAfter.on("click", escrowExecuteAfterClicked);
+  DOM.escrowExecuteYear.on("keydown", escrowYearChanged);
+  DOM.escrowExecuteMonth.on("keydown", escrowMonthChanged);
+  DOM.escrowExecuteDay.on("keydown", escrowDayChanged);
+  DOM.escrowExecuteHour.on("keydown", escrowHourChanged);
+  DOM.escrowExecuteMinute.on("keydown", escrowMinuteChanged);
+  DOM.escrowCancelAfter.on("click", escrowCancelAfterClicked);
+  DOM.escrowCancelYear.on("keydown", escrowYearChanged);
+  DOM.escrowCancelMonth.on("keydown", escrowMonthChanged);
+  DOM.escrowCancelDay.on("keydown", escrowDayChanged);
+  DOM.escrowCancelHour.on("keydown", escrowHourChanged);
+  DOM.escrowCancelMinute.on("keydown", escrowMinuteChanged);
   DOM.escrowButtonSubmit.on("click", escrowButtonSubmitClicked);
   DOM.orderButtonSubmit.on("click", orderButtonSubmitClicked);
   DOM.orderQuantityAmount.on("keydown", orderQuantityAmountChanged);
@@ -407,12 +426,12 @@ function order() {
   }
 }
 
-function orderCancelOnline(secret, account, orderCancelation, fee) {
+function orderCancelOnline(secret, account, orderCancellation, fee) {
   if (api.isConnected()) {
     var buttonElement = DOM.orderButtonSubmit;
     var buttonValue = addLoadingState(buttonElement);
 
-    api.prepareOrderCancellation(account, orderCancelation, {fee: fee}).then(function(tx) {
+    api.prepareOrderCancellation(account, orderCancellation, {fee: fee}).then(function(tx) {
       var signed = api.sign(tx.txJSON, secret);
       api.submit(
         signed.signedTransaction
@@ -433,8 +452,8 @@ function orderCancelOnline(secret, account, orderCancelation, fee) {
   }
 }
 
-function orderCancelOffline(secret, account, orderCancelation, fee, sequence) {
-  api.prepareOrderCancellation(account, orderCancelation, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
+function orderCancelOffline(secret, account, orderCancellation, fee, sequence) {
+  api.prepareOrderCancellation(account, orderCancellation, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
     var options = signingOptions();
     var signed = api.sign(tx.txJSON, secret, options);
     showSignedTX(signed);
@@ -898,11 +917,16 @@ function fillDate() {
   var day = addZero(today.getDate());
   var hour = addZero(today.getHours());
   var minute = addZero(today.getMinutes());
-  DOM.escrowYear.val(year);
-  DOM.escrowMonth.val(month);
-  DOM.escrowDay.val(day);
-  DOM.escrowHour.val(hour);
-  DOM.escrowMinute.val(minute);
+  DOM.escrowExecuteYear.val(year);
+  DOM.escrowExecuteMonth.val(month);
+  DOM.escrowExecuteDay.val(day);
+  DOM.escrowExecuteHour.val(hour);
+  DOM.escrowExecuteMinute.val(minute);
+  DOM.escrowCancelYear.val(year);
+  DOM.escrowCancelMonth.val(month);
+  DOM.escrowCancelDay.val(day);
+  DOM.escrowCancelHour.val(hour);
+  DOM.escrowCancelMinute.val(minute);
 }
 
 function escrowSelected() {
@@ -920,6 +944,24 @@ function escrowSelected() {
     DOM.escrowExecutionFields.hide();
     DOM.escrowCreationFields.hide();
     DOM.escrowCancellationFields.show();
+  }
+  eraseTXresults();
+}
+
+function escrowExecuteAfterClicked() {
+  if (DOM.escrowExecuteAfter.is(':checked')) {
+    DOM.escrowExecuteAfterFields.show();
+  } else {
+    DOM.escrowExecuteAfterFields.hide();
+  }
+  eraseTXresults();
+}
+
+function escrowCancelAfterClicked() {
+  if (DOM.escrowCancelAfter.is(':checked')) {
+    DOM.escrowCancelAfterFields.show();
+  } else {
+    DOM.escrowCancelAfterFields.hide();
   }
   eraseTXresults();
 }
@@ -971,6 +1013,98 @@ function isValidDate(year, month, day) {
   return false;
 }
 
+function validateDateAndTime(DateLabel, DOMyear, DOMmonth, DOMday, DOMhour, DOMminute) {
+  var today = new Date();
+  var todayYear = today.getFullYear();
+
+  var year = Number(DOMyear.val());
+  var month = Number(DOMmonth.val());
+  var day = Number(DOMday.val());
+  var hour = Number(DOMhour.val());
+  var minute = Number(DOMminute.val());
+
+  if (!year) {
+    DOM.txFeedback.html('Please fill in the ' + DateLabel + ' Year.');
+    DOMyear.focus();
+    return false;
+  }
+
+  if (year < todayYear) {
+    DOM.txFeedback.html('The ' + DateLabel + ' Year should be current or in the feature.');
+    DOMyear.focus();
+    return false;
+  }
+
+  if (year > (todayYear + 20)) {
+    DOM.txFeedback.html('Sorry, maximum 20 Years allowed in this tool.');
+    DOMyear.focus();
+    return false;
+  }
+
+  if (!month) {
+    DOM.txFeedback.html('Please fill in the ' + DateLabel + ' Month.');
+    DOMmonth.focus();
+    return false;
+  }
+
+  if (month < 1 || month > 12) {
+    DOM.txFeedback.html('Enter correct ' + DateLabel + ' Month, example: 09 (for September).');
+    DOMmonth.focus();
+    return false;
+  }
+
+  if (!day) {
+    DOM.txFeedback.html('Please fill in the ' + DateLabel + ' Day.');
+    DOMday.focus();
+    return false;
+  }
+
+  if (day < 1 || day > 31) {
+    DOM.txFeedback.html('Enter correct ' + DateLabel + ' Day');
+    DOMday.focus();
+    return false;
+  }
+
+  if (!isValidDate(year,month,day)) {
+    DOM.txFeedback.html('Incorrect ' + DateLabel + ' date!');
+    return false;
+  }
+
+  if (!hour) {
+    DOM.txFeedback.html('Please fill in the ' + DateLabel + ' Hour.');
+    DOM.escrowExecuteHour.focus();
+    return false;
+  }
+
+  if (hour < 1 || hour > 24) {
+    DOM.txFeedback.html('Enter correct ' + DateLabel + ' Hour, example: 19 (for 7pm)');
+    DOMhour.focus();
+    return false;
+  }
+
+  if (!minute) {
+    DOM.txFeedback.html('Please fill in the ' + DateLabel + ' Minute.');
+    DOMminute.focus();
+    return false;
+  }
+
+  if (minute < 1 || minute > 60) {
+    DOM.txFeedback.html('Enter correct ' + DateLabel + ' Minute');
+    DOMminute.focus();
+    return false;
+  }
+
+  var escrowDateString = year + '-' + addZero(month) + '-' + addZero(day) + 'T' + addZero(hour) + ':' + addZero(minute) + ':00';
+  var escrowDate = new Date(escrowDateString);
+
+  if (escrowDate < today) {
+    DOM.txFeedback.html('The ' + DateLabel + ' date/time need to be in the feature');
+    return false;
+  }
+
+  return escrowDate.toJSON();
+}
+
 function escrow() {
   eraseTXresults();
   var secret = signingSecret(); //secret or keypair json (pub + priv)
@@ -1014,6 +1148,39 @@ function escrow() {
     escrow.owner = owner;
     escrow.escrowSequence = escrowSequence;
 
+    if (selected == 'execution') {
+      var escrowExecuteFulfillment = DOM.escrowExecuteFulfillment.val();
+      var escrowExecuteCondition = DOM.escrowExecuteCondition.val();
+      if (escrowExecuteFulfillment && !escrowExecuteCondition) {
+        DOM.txFeedback.html('Enter a Condition or remove Fulfillment');
+        DOM.escrowExecuteCondition.focus();
+        return;
+      }
+      if (!escrowExecuteFulfillment && escrowExecuteCondition) {
+        DOM.txFeedback.html('Enter a Fulfillment or remove Condition');
+        DOM.escrowExecuteFulfillment.focus();
+        return;
+      }
+      if (escrowExecuteFulfillment && escrowExecuteCondition) {
+        escrowExecuteCondition = escrowExecuteCondition.toUpperCase();
+        if (validateCondition(escrowExecuteCondition)) {
+          escrow.condition = escrowExecuteCondition;
+        } else {
+          DOM.txFeedback.html('Condition is in wrong format.');
+          DOM.escrowExecuteCondition.focus();
+          return false;
+        }
+        escrowExecuteFulfillment = escrowExecuteFulfillment.toUpperCase();
+        if (validateFulfillment(escrowExecuteFulfillment)) {
+          escrow.fulfillment = escrowExecuteFulfillment;
+        } else {
+          DOM.txFeedback.html('Fulfillment is in wrong format.');
+          DOM.escrowExecuteFulfillment.focus();
+          return false;
+        }
+      }
+    } 
+
   } else if (selected == 'creation') {
 
     var recipient = DOM.escrowRecipient.val();
@@ -1044,92 +1211,45 @@ function escrow() {
     }
     amount = String(amount);
 
-    var today = new Date();
-    var todayYear = today.getFullYear();
-
-    var year = Number(DOM.escrowYear.val());
-    var month = Number(DOM.escrowMonth.val());
-    var day = Number(DOM.escrowDay.val());
-    var hour = Number(DOM.escrowHour.val());
-    var minute = Number(DOM.escrowMinute.val());
-
-    if (!year) {
-      DOM.txFeedback.html('Please fill in the escrow Year.');
-      DOM.escrowYear.focus();
+    if (!DOM.escrowExecuteAfter.is(':checked') && !DOM.escrowCancelAfter.is(':checked')) {
+      DOM.txFeedback.html('If the escrow does not have an Execute-after time, it must have a Cancellation time.');
       return false;
     }
 
-    if (year < todayYear) {
-      DOM.txFeedback.html('The escrow Year should be current or in the feature');
-      DOM.escrowYear.focus();
+    var escrowCondition = DOM.escrowCreateCondition.val();
+
+    if (!escrowCondition && !DOM.escrowExecuteAfter.is(':checked')) {
+      DOM.txFeedback.html('The escrow must have Execute After time or a Condition, or both.');
       return false;
     }
 
-    if (year > (todayYear + 20)) {
-      DOM.txFeedback.html('Sorry, maximum 20 Years for escrow in this tool');
-      DOM.escrowYear.focus();
-      return false;
+    if (DOM.escrowExecuteAfter.is(':checked')) {
+      var escrowExecuteAfter = validateDateAndTime('Execute After', DOM.escrowExecuteYear, DOM.escrowExecuteMonth, DOM.escrowExecuteDay, DOM.escrowExecuteHour, DOM.escrowExecuteMinute);
+      if (escrowExecuteAfter) {
+        escrow.allowExecuteAfter = escrowExecuteAfter;
+      } else {
+        return false;
+      }
     }
 
-    if (!month) {
-      DOM.txFeedback.html('Please fill in the escrow Month.');
-      DOM.escrowMonth.focus();
-      return false;
+    if (DOM.escrowCancelAfter.is(':checked')) {
+      var escrowCancelAfter = validateDateAndTime('Cancel After', DOM.escrowCancelYear, DOM.escrowCancelMonth, DOM.escrowCancelDay, DOM.escrowCancelHour, DOM.escrowCancelMinute);
+      if (escrowCancelAfter) {
+        escrow.allowCancelAfter = escrowCancelAfter;
+      } else {
+        return false;
+      }
     }
 
-    if (month < 1 || month > 12) {
-      DOM.txFeedback.html('Enter correct Month, example: 09 (for September).');
-      DOM.escrowMonth.focus();
-      return false;
-    }
-
-    if (!day) {
-      DOM.txFeedback.html('Please fill in the escrow Day.');
-      DOM.escrowDay.focus();
-      return false;
-    }
-
-    if (day < 1 || day > 31) {
-      DOM.txFeedback.html('Enter correct Day');
-      DOM.escrowDay.focus();
-      return false;
-    }
-
-    if (!isValidDate(year,month,day)) {
-      DOM.txFeedback.html('Incorrect date!');
-      return false;
-    }
-
-    if (!hour) {
-      DOM.txFeedback.html('Please fill in the escrow Hour.');
-      DOM.escrowHour.focus();
-      return false;
-    }
-
-    if (hour < 1 || hour > 24) {
-      DOM.txFeedback.html('Enter correct Hour, example: 19 (for 7pm)');
-      DOM.escrowHour.focus();
-      return false;
-    }
-
-    if (!minute) {
-      DOM.txFeedback.html('Please fill in the escrow Minute.');
-      DOM.escrowMinute.focus();
-      return false;
-    }
-
-    if (minute < 1 || minute > 60) {
-      DOM.txFeedback.html('Enter correct Minute');
-      DOM.escrowMinute.focus();
-      return false;
-    }
-
-    var timeString = year + '-' + addZero(month) + '-' + addZero(day) + 'T' + addZero(hour) + ':' + addZero(minute) + ':00';
-    var escrowDate = new Date(timeString);
-
-    if (escrowDate < today) {
-      DOM.txFeedback.html('The date/time need to be in the feature');
-      return false;
+    if (escrowCondition) {
+      escrowCondition = escrowCondition.toUpperCase();
+      if (validateCondition(escrowCondition)) {
+        escrow.condition = escrowCondition;
+      } else {
+        DOM.txFeedback.html('Condition is in wrong format.');
+        DOM.escrowCreateCondition.focus();
+        return false;
+      }
     }
 
     escrow.destination = recipient;
@@ -1137,8 +1257,6 @@ function escrow() {
     if (destinationTag) {
       escrow.destinationTag = destinationTag;
     }
-    escrow.allowExecuteAfter = escrowDate.toJSON();
-    //allowCancelAfter
   }
 
   var fee = txFee();
@@ -1150,7 +1268,7 @@ function escrow() {
     //show error if not activated
     if (selected == 'creation') {
       escrowCreateOnline(secret, account, escrow, fee);
-    } else if (selected = 'execution') {
+    } else if (selected == 'execution') {
       escrowExecuteOnline(secret, account, escrow, fee);
     } else if (selected == 'cancellation') {
       escrowCancelOnline(secret, account, escrow, fee);
@@ -1161,7 +1279,7 @@ function escrow() {
 
     if (selected == 'creation') {
       escrowCreateOffline(secret, account, escrow, fee, sequence);
-    } else if (selected = 'execution') {
+    } else if (selected == 'execution') {
       escrowExecuteOffline(secret, account, escrow, fee, sequence);
     } else if (selected == 'cancellation') {
       escrowCancelOffline(secret, account, escrow, fee, sequence);
@@ -1978,6 +2096,8 @@ function switchEscrow() {
     DOM.orderFields.hide();
     DOM.escrowFields.show();
     eraseTXresults();
+    escrowExecuteAfterClicked();
+    escrowCancelAfterClicked();
   }
 }
 
@@ -2546,6 +2666,16 @@ function validateEmail(email) {
 function validateDomain(domain) { 
   var re = /^((?:(?:(?:\w[\.\-\+]?)*)\w)+)((?:(?:(?:\w[\.\-\+]?){0,62})\w)+)\.(\w{2,6})$/; 
   return re.test(domain);
+}
+
+function validateCondition(condition) {
+  var re = /^[A-F0-9]{0,256}$/;
+  return re.test(condition);
+}
+
+function validateFulfillment(fulfillment) {
+  var re = /^[A-F0-9]+$/;
+  return re.test(fulfillment);
 }
 
 function isHex(h) {

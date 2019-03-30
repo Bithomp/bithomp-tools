@@ -315,34 +315,93 @@
                                 <div class="red note">
                                     <br><center>DANGER: You can LOCK your XRP for years here...</center>
                                 </div>
-                                <div>
+                                <label class="container container-escrow-executeAfter">
+                                    Allow to Execute only after a date (optional)
+                                    <input type="checkbox" id="escrow_executeAfter" checked="checked"/>
+                                    <span class="checkmark"></span>
+                                </label>
+                                <div class="orange note escrow-executeAfter-fields">
+                                    <br><center>The escrow can not be executed before this time.</center>
+                                </div>
+                                <div class="escrow-executeAfter-fields">
                                     <div class="left">Year:</div>
                                     <div class="right">
-                                        <input type="text" id="escrow_year" maxlength="4"/>
+                                        <input type="text" id="escrow_execute_year" maxlength="4"/>
                                     </div>
                                 </div>
-                                <div>
+                                <div class="escrow-executeAfter-fields">
                                     <div class="left">Month:</div>
                                     <div class="right">
-                                        <input type="text" id="escrow_month" maxlength="2"/>
+                                        <input type="text" id="escrow_execute_month" maxlength="2"/>
                                     </div>
                                 </div>
-                                <div>
+                                <div class="escrow-executeAfter-fields">
                                     <div class="left">Day:</div>
                                     <div class="right">
-                                        <input type="text" id="escrow_day" maxlength="2"/>
+                                        <input type="text" id="escrow_execute_day" maxlength="2"/>
                                     </div>
                                 </div>
-                                <div>
+                                <div class="escrow-executeAfter-fields">
                                     <div class="left">Hour:</div>
                                     <div class="right">
-                                        <input type="text" id="escrow_hour" maxlength="2"/>
+                                        <input type="text" id="escrow_execute_hour" maxlength="2"/>
                                     </div>
                                 </div>
-                                <div>
+                                <div class="escrow-executeAfter-fields">
                                     <div class="left">Minute:</div>
                                     <div class="right">
-                                        <input type="text" id="escrow_minute" maxlength="2"/>
+                                        <input type="text" id="escrow_execute_minute" maxlength="2"/>
+                                    </div>
+                                </div>
+                                <label class="container container-escrow-cancelAfter">
+                                    Allow to Cancel after a date (optional)
+                                    <input type="checkbox" id="escrow_cancelAfter"/>
+                                    <span class="checkmark"></span>
+                                </label>
+                                <div class="orange note escrow-cancelAfter-fields">
+                                    <br><center>The escrow may be cancelled after this time.</center>
+                                </div>
+                                <div class="escrow-cancelAfter-fields">
+                                    <div class="left">Year:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_cancel_year" maxlength="4"/>
+                                    </div>
+                                </div>
+                                <div class="escrow-cancelAfter-fields">
+                                    <div class="left">Month:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_cancel_month" maxlength="2"/>
+                                    </div>
+                                </div>
+                                <div class="escrow-cancelAfter-fields">
+                                    <div class="left">Day:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_cancel_day" maxlength="2"/>
+                                    </div>
+                                </div>
+                                <div class="escrow-cancelAfter-fields">
+                                    <div class="left">Hour:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_cancel_hour" maxlength="2"/>
+                                    </div>
+                                </div>
+                                <div class="escrow-cancelAfter-fields">
+                                    <div class="left">Minute:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_cancel_minute" maxlength="2"/>
+                                    </div>
+                                    <br>
+                                </div>
+                                <br>
+                                <div class="orange note">
+                                    <center>
+                                        Condition: A hex value representing a <a href="https://tools.ietf.org/html/draft-thomas-crypto-conditions-02#section-8.1">PREIMAGE-SHA-256 crypto-condition</a>. If present, <i>fulfillment</i> is required upon execution.
+                                    </center>
+                                </div>
+                                <div>
+                                    <div class="left">Condition:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_create_condition" placeholder="optional" spellcheck="false" />
                                     </div>
                                 </div>
                             </div>
@@ -357,6 +416,20 @@
                                     <div class="left">Escrow sequence:</div>
                                     <div class="right">
                                         <input type="text" id="escrow_sequence" placeholder="sequence of the escrow to execute" spellcheck="false" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="fields-wide escrow-execution hidden">
+                                <div>
+                                    <div class="left">Condition:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_execute_condition" placeholder="(optional) condition from the escrow creation" spellcheck="false" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="left">Fulfillment:</div>
+                                    <div class="right">
+                                        <input type="text" id="escrow_execute_fulfillment" placeholder="(optional) fulfillment for condition" spellcheck="false" />
                                     </div>
                                 </div>
                             </div>
@@ -538,8 +611,8 @@
                         <div class="fields-wide">
                             <div class="secret-fields mnemonic-fields hidden">
                                 <div class="payment-fields escrow-fields hidden">
-                                    <div class="left">Memo (optional):</div>
-                                    <div class="right"><input type="text" id="memo" placeholder="message" /></div>
+                                    <div class="left">Memo:</div>
+                                    <div class="right"><input type="text" id="memo" placeholder="message (optional)" /></div>
                                 </div>
                             </div>
 
@@ -556,6 +629,7 @@
                             <h3 class="order-fields hidden">Transaction details</h3>
 
                             <div>
+                                <div class="note escrow-creation hidden orange"><center>For escrow we recommend 0.00033 or a higher fee.</center></div>
                                 <div class="left">Fee to pay (XRP):</div>
                                 <div class="right"><input type="text" id="fee" value="0.000012" placeholder="0.000012" spellcheck="false" /></div>
                             </div>

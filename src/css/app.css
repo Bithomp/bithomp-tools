@@ -403,6 +403,18 @@ a:hover {
   margin: 20px auto 0px;
 }
 
+.container-escrow-executeAfter {
+  width: 305px;
+  margin: 20px auto;
+  font-size: 14px;
+}
+
+.container-escrow-cancelAfter {
+  width: 265px;
+  margin: 20px auto;
+  font-size: 14px;
+}
+
 /* checkbox ends */
 
 /* spinner starts */
@@ -411,7 +423,6 @@ a:hover {
   width: 12px;
   height: 12px;
   background-color: #fff;
-
   border-radius: 100%;
   display: inline-block;
   -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
