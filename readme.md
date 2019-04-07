@@ -66,7 +66,8 @@ bithomphw - https://github.com/octillionsa/bithomphw
 
 ## Credits
 
-mraburn
+Michael Raburn, for writing a post how to use this tools in offline mode:
+https://xrpcommunity.blog/bithomp-tools-using-offline-mode/
 
 ## License
 

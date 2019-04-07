@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.4.2';
+var version = '0.4.3';
 var testnet = false;
 var bithomp = 'https://bithomp.com';
 var bithompTestnet = 'https://test.bithomp.com';
@@ -18,6 +18,7 @@ var generationProcesses = [];
 var timer;
 var blobQR = new QRCode(document.getElementById("blobQR"), {width:256,height:256,useSVG:true});
 var submitUrlQR = new QRCode(document.getElementById("submitUrlQR"), {width:100,height:100,useSVG:true});
+var paymentPaths = null;
 
 var DOM = {};
 DOM.body = $('body');
@@ -70,7 +71,9 @@ DOM.paymentDestinationTag = $('#payment_destination_tag');
 DOM.paymentAmount = $('#payment_amount');
 DOM.paymentCurrency = $('#payment_currency');
 DOM.paymentCounterparty = $('#payment_counterparty');
+DOM.paymentPaths = $('#payment_paths');
 DOM.paymentButtonPay = $('#payment_pay');
+DOM.paymentButtonFindAlternatives = $('#payment_find_alternatives');
 DOM.trustlineFields = $('.trustline-fields');
 DOM.trustlineCurrency = $('#trustline_currency');
 DOM.trustlineCounterparty = $('#trustline_counterparty');
@@ -181,6 +184,8 @@ function init() {
   DOM.setAddress.on("click", setAddress);
   DOM.signAddress.on("input", signAddressChanged);
   DOM.paymentButtonPay.on("click", paymentButtonPayClicked);
+  DOM.paymentButtonFindAlternatives.on("click", paymentButtonFindAlternativesClicked);
+  DOM.paymentPaths.on("click", '.pay-path', paymentButtonAlternativeClicked);
   DOM.trustlineButtonAdd.on("click", trustlineButtonAddClicked);
   DOM.trustlineButtonRemove.on("click", trustlineButtonRemoveClicked);
   DOM.settingsButtonSet.on("click", settingsButtonSetClicked);
@@ -188,6 +193,8 @@ function init() {
   DOM.txBlob.on("click", txBlobClicked);
   DOM.paymentDestinationTag.on("keydown", paymentDestinationTagChanged);
   DOM.paymentAmount.on("keydown", paymentAmountChanged);
+  DOM.paymentCurrency.on("keyup", paymentCurrencyChanged);
+  DOM.paymentCounterparty.on("keydown", paymentCounterpartyChanged);
   DOM.trustlineLimit.on("keydown", trustlineLimitChanged);
   DOM.fee.on("keydown", feeChanged);
   DOM.settingsSelect.on("change", settingsSelected);
@@ -558,6 +565,21 @@ function paymentDestinationTagChanged(e) {
 
 function paymentAmountChanged(e) {
   digitize(e);
+  eraseTXresults();
+}
+
+function paymentCurrencyChanged() {
+  var destinationCurrency = DOM.paymentCurrency.val();
+  if (destinationCurrency.length == 3) {
+    DOM.paymentButtonPay.find("span").text(' ' + destinationCurrency.toUpperCase());
+  } else {
+    DOM.paymentButtonPay.find("span").text('');
+  }
+  eraseTXresults();
+}
+
+function paymentCounterpartyChanged() {
+  eraseTXresults();
 }
 
 function digitize(e, allowDot=true) {
@@ -1519,6 +1541,7 @@ function eraseTXresults() {
   DOM.txFeedback.html('');
   DOM.txBlob.val('');
   blobQR.clear();
+  DOM.paymentPaths.html('');
 }
 
 function validateAmount(DOMamount, DOMcurrency, DOMcounterparty) {
@@ -1563,7 +1586,49 @@ function validateAmount(DOMamount, DOMcurrency, DOMcounterparty) {
   };
 }
 
-function paymentButtonPayClicked() {
+function getPaths(pathfind) {
+  paymentPaths = null;
+  var buttonValue = addLoadingState(DOM.paymentButtonFindAlternatives);
+
+  api.getPaths(pathfind).then(function(paths) {
+    paymentPaths = paths;
+    var pathOptions = '';
+    for (var i=0; i<paymentPaths.length; i++) {
+      if (paymentPaths[i]['source']['maxAmount']['currency'] != paymentPaths[i]['destination']['amount']['currency']) {
+        pathOptions += '<button data-path="'+i+'" class="pay-path">Send '+ paymentPaths[i]['source']['maxAmount']['value']+' '+ paymentPaths[i]['source']['maxAmount']['currency'] + '</button>';
+      }
+    }
+    DOM.paymentPaths.html(pathOptions);
+    DOM.paymentButtonFindAlternatives.html('Update alternatives');
+  }).catch(function (error) {
+    var errorMessage = error.message;
+    if (pathfind.destination.amount.currency == 'XRP' && pathfind.destination.amount.value < 20 && errorMessage == 'dstAmtMalformed') {
+      DOM.txFeedback.html('You can not sends amounts lower than 20XRP to a non-activated accounts');
+    } else if (errorMessage == 'No paths found. Please ensure that the source_account has sufficient funds to execute the payment. If it does there may be insufficient liquidity in the network to execute this payment right now') {
+      DOM.txFeedback.html('Please ensure that your account has sufficient funds to execute the payment. If it does there may be insufficient liquidity in the network to execute this payment right now.');
+    } else if (errorMessage.indexOf("No paths found. The destination_account does not accept") > -1) {
+      DOM.txFeedback.html(errorMessage.replace("No paths found. The destination_account", "The Recipient (destination account)"));
+    } else {
+      DOM.txFeedback.html('getPaths: ' + errorMessage);
+    }
+    DOM.paymentButtonFindAlternatives.html(buttonValue);
+  });
+}
+
+function paymentButtonFindAlternativesClicked() {
+  paymentButtonPayClicked(-1);
+}
+
+function paymentButtonAlternativeClicked() {
+  paymentButtonPayClicked($(this).attr('data-path'));
+}
+
+function paymentButtonPayClicked(path=-2) {
+  /* path 
+    -2 = direct payment
+    -1 = look for path
+    0-10 = pay with the specified path
+  */
   eraseTXresults();
   var secret = signingSecret(); //secret or keypair json (pub + priv)
   var account = signingAddress();
@@ -1610,8 +1675,6 @@ function paymentButtonPayClicked() {
     return;
   }
 
-  var memos = txMemos();
-
   var payment = {
     source: {
       address: account,
@@ -1626,8 +1689,7 @@ function paymentButtonPayClicked() {
         value: amount,
         currency: currency
       }
-    },
-    memos: memos
+    }
   };
 
   if (currency != 'XRP') {
@@ -1638,14 +1700,51 @@ function paymentButtonPayClicked() {
     payment.source.maxAmount.value = maxAmount;
   }
 
+  var buttonDom = DOM.paymentButtonPay;
+
+  if (DOM.switchOnline.is(':checked')) {
+    if (path > -1 && paymentPaths) {
+      if (paymentPaths[path].destination.address == payment.destination.address
+        && paymentPaths[path].destination.amount.value == payment.destination.amount.value
+        && paymentPaths[path].destination.amount.currency == payment.destination.amount.currency) {
+        buttonDom = DOM.paymentButtonFindAlternatives;
+        payment = paymentPaths[path];
+      } else {
+        return;
+      }
+    }
+    if (path == -1) {
+      var pathfind = {
+        source: {
+          address: account,
+        },
+        destination: {
+          address: recipient,
+          amount: {
+            value: amount,
+            currency: currency
+          }
+        }
+      };
+      if (currency != 'XRP') {
+        pathfind.destination.amount.counterparty = counterparty;
+      }
+      getPaths(pathfind);
+      return;
+    }
+  }
+
+  var memos = txMemos();
+  payment.memos = memos;
+
   if (destinationTag)
     payment.destination.tag = destinationTag;
 
   if (DOM.switchOnline.is(':checked')) {
     //show error if not activated
     //check if destination tag is required
-    //check if can accept XRP
-    paymentOnline(secret, account, payment, fee);
+    //check if the account can accept XRP
+    paymentOnline(secret, account, payment, fee, buttonDom);
   } else {
     var sequence = txSequence(account);
     if (!sequence) return;
@@ -1829,15 +1928,15 @@ function submitOnline(txJSON, account, secret, buttonElement, buttonValue, showA
   }
 }
 
-function paymentOnline(secret, account, payment, fee) {
+function paymentOnline(secret, account, payment, fee, buttonDom) {
   if (api.isConnected()) {
-    var buttonValue = addLoadingState(DOM.paymentButtonPay);
+    var buttonValue = addLoadingState(buttonDom);
     api.preparePayment(account, payment, {fee: fee}).then(function(tx) {
-      submitOnline(tx.txJSON, account, secret, DOM.paymentButtonPay, buttonValue);
+      submitOnline(tx.txJSON, account, secret, buttonDom, buttonValue);
     }).catch(function (error) {
       DOM.txFeedback.html('preparePayment: ' + error.message);
       console.log(error);
-      DOM.paymentButtonPay.html(buttonValue);
+      buttonDom.html(buttonValue);
     })
   }
 }
@@ -2016,6 +2115,7 @@ function secretHiddenClicked() {
 }
 
 function serverConnect() {
+  var buttonValue = addLoadingState(DOM.serverConnect);
   var node = DOM.server.val();
   DOM.serverFeedback.html('Connecting to: ' + node);
   api = new ripple.RippleAPI({server: node});
@@ -2023,6 +2123,7 @@ function serverConnect() {
   api.on('error', function(errorCode, errorMessage) {
     DOM.serverFeedback.html(errorCode + ': ' + errorMessage);
     switchOnline();
+    DOM.serverConnect.html(buttonValue);
   });
   api.on('connected', function() {
     DOM.serverFeedback.html('Connected to: ' + node);
@@ -2030,14 +2131,17 @@ function serverConnect() {
     DOM.serverNotConnectedFields.hide();
     addressFeedback();
     signAddressChanged();
+    DOM.serverConnect.html(buttonValue);
   });
   api.on('disconnected', function(code) {
     DOM.serverFeedback.html('Disconnected, code: ' + code);
     switchOnline();
+    DOM.serverConnect.html(buttonValue);
   });
 
   api.connect().catch(function(err) {
     DOM.serverFeedback.html('Error: ' + err);
+    DOM.serverConnect.html(buttonValue);
   });
 }
 

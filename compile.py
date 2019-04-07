@@ -4,13 +4,11 @@ import datetime
 from io import open
 
 # This script generates the index.html file.
-
 # It removes script and style tags and replaces with the file content.
 
 f = open('src/index.html', "r", encoding="utf-8")
 page = f.read()
 f.close()
-
 
 # Script tags
 
@@ -25,7 +23,6 @@ for script in scripts:
     scriptTag = """<script src="%s"></script>""" % script
     page = page.replace(scriptTag, scriptContent)
 
-
 # Style tags
 
 stylesFinder = re.compile("""<link rel="stylesheet" href="(.*)">""")
@@ -38,7 +35,6 @@ for style in styles:
     s.close()
     styleTag = """<link rel="stylesheet" href="%s">""" % style
     page = page.replace(styleTag, styleContent)
-
 
 # Write the standalone file
 

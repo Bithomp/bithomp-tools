@@ -332,6 +332,7 @@ a:hover {
 
 .main-box .footer {
   margin: 20px auto;
+  font-size: 12px;
 }
 
 /* checkbox starts */
@@ -525,6 +526,14 @@ a:hover {
   display: none;
 }
 /* select ends */
+
+/* extentions */
+.main-box button.payment-find-alternatives {
+  width: 160px;
+}
+.main-box .wide-buttons button {
+  width: 400px;
+}
 
 @media (max-width: 470px) {
   body {
