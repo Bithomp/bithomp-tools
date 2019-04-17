@@ -235,6 +235,11 @@ a:hover {
   width: 266px;
 }
 
+.main-box .fields-wide .fields-group-header {
+  text-align: left;
+  padding-left: 3px;
+}
+
 .main-box .line-with-button {
   margin-bottom: 25px;
 }

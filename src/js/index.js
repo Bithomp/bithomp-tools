@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.4.3';
+var version = '0.4.4';
 var testnet = false;
 var bithomp = 'https://bithomp.com';
 var bithompTestnet = 'https://test.bithomp.com';
@@ -71,6 +71,7 @@ DOM.paymentDestinationTag = $('#payment_destination_tag');
 DOM.paymentAmount = $('#payment_amount');
 DOM.paymentCurrency = $('#payment_currency');
 DOM.paymentCounterparty = $('#payment_counterparty');
+DOM.paymentInvoiceId = $('#payment_invoiceid');
 DOM.paymentPaths = $('#payment_paths');
 DOM.paymentButtonPay = $('#payment_pay');
 DOM.paymentButtonFindAlternatives = $('#payment_find_alternatives');
@@ -195,7 +196,9 @@ function init() {
   DOM.paymentAmount.on("keydown", paymentAmountChanged);
   DOM.paymentCurrency.on("keyup", paymentCurrencyChanged);
   DOM.paymentCounterparty.on("keydown", paymentCounterpartyChanged);
+  DOM.paymentInvoiceId.on("keydown", paymentInvoiceIdChanged);
   DOM.trustlineLimit.on("keydown", trustlineLimitChanged);
+  DOM.sequence.on("keydown", sequenceChanged);
   DOM.fee.on("keydown", feeChanged);
   DOM.settingsSelect.on("change", settingsSelected);
   settingsSelected();
@@ -312,8 +315,7 @@ function settingsSignersButtonAddClicked() {
 }
 
 function signersThresholdChanged(e) {
-  var allowDots = false;
-  digitize(e, allowDots);
+  digitize(e, 'numberWithoutDot');
 }
 
 function orderQuantityAmountChanged(e) {
@@ -550,6 +552,10 @@ function settingsSelected() {
   eraseTXresults();
 }
 
+function sequenceChanged(e) {
+  digitize(e, 'numberWithoutDot');
+}
+
 function feeChanged(e) {
   digitize(e);
 }
@@ -559,8 +565,7 @@ function trustlineLimitChanged(e) {
 }
 
 function paymentDestinationTagChanged(e) {
-  var allowDots = false;
-  digitize(e, allowDots);
+  digitize(e, 'numberWithoutDot');
 }
 
 function paymentAmountChanged(e) {
@@ -582,13 +587,25 @@ function paymentCounterpartyChanged() {
   eraseTXresults();
 }
 
-function digitize(e, allowDot=true) {
+function paymentInvoiceIdChanged(e) {
+  digitize(e, 'hex');
+  eraseTXresults();
+}
+
+function digitize(e, allow='numberWithDot') {
   // Allow: backspace, delete, tab, escape, enter
   var keyList = [46, 8, 9, 27, 13, 110];
 
-  if (allowDot) {
+  if (allow == 'numberWithDot') {
     //add . (dot)
     keyList.push(190);
+  }
+
+  if (allow == 'hex') {
+    //a-f, A-F
+    if (e.keyCode >= 65 && e.keyCode <= 70) {
+      return;
+    }
   }
 
   if ($.inArray(e.keyCode, keyList) !== -1 ||
@@ -596,6 +613,8 @@ function digitize(e, allowDot=true) {
     (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
      // Allow: Ctrl/cmd+C
     (e.keyCode == 67 && (e.ctrlKey === true || e.metaKey === true)) ||
+     // Allow: Ctrl/cmd+V
+    (e.keyCode == 86 && (e.ctrlKey === true || e.metaKey === true)) ||
      // Allow: Ctrl/cmd+X
     (e.keyCode == 88 && (e.ctrlKey === true || e.metaKey === true)) ||
      // Allow: home, end, left, right
@@ -989,8 +1008,7 @@ function escrowCancelAfterClicked() {
 }
 
 function escrowDestinationTagChanged(e) {
-  var allowDots = false;
-  digitize(e, allowDots);
+  digitize(e, 'numberWithoutDot');
 }
 
 function escrowAmountChanged(e) {
@@ -998,28 +1016,23 @@ function escrowAmountChanged(e) {
 }
 
 function escrowYearChanged(e) {
-  var allowDots = false;
-  digitize(e, allowDots);
+  digitize(e, 'numberWithoutDot');
 }
 
 function escrowMonthChanged(e) {
-  var allowDots = false;
-  digitize(e, allowDots);
+  digitize(e, 'numberWithoutDot');
 }
 
 function escrowDayChanged(e) {
-  var allowDots = false;
-  digitize(e, allowDots);
+  digitize(e, 'numberWithoutDot');
 }
 
 function escrowHourChanged(e) {
-  var allowDots = false;
-  digitize(e, allowDots);
+  digitize(e, 'numberWithoutDot');
 }
 
 function escrowMinuteChanged(e) {
-  var allowDots = false;
-  digitize(e, allowDots);
+  digitize(e, 'numberWithoutDot');
 }
 
 function escrowButtonSubmitClicked() {
@@ -1669,6 +1682,14 @@ function paymentButtonPayClicked(path=-2) {
     return;
   }
 
+  var paymentInvoiceId = DOM.paymentInvoiceId.val();
+  if (paymentInvoiceId && !isSha256(paymentInvoiceId)) {
+    DOM.txFeedback.html("Invoice ID must be a valid 256-bit hash.");
+    DOM.paymentInvoiceId.focus();
+    return;
+  }
+  paymentInvoiceId = paymentInvoiceId.toUpperCase();
+
   var fee = txFee();
   if (!fee) {
     DOM.fee.focus();
@@ -1740,6 +1761,9 @@ function paymentButtonPayClicked(path=-2) {
   if (destinationTag)
     payment.destination.tag = destinationTag;
 
+  if (paymentInvoiceId)
+    payment.invoiceID = paymentInvoiceId;
+
   if (DOM.switchOnline.is(':checked')) {
     //show error if not activated
     //check if destination tag is required
@@ -1790,7 +1814,7 @@ function signingSecret() {
 
 function submitLink() {
   var address = signingAddress();
-  var url = 'https://bithomp.com/submit/' + address;
+  var url = bithomp + '/submit/' + address;
   DOM.submitLink.html('<a href="' + url + '" target="_blank">' + url + '</a>');
   submitUrlQR.makeCode(url);
 }
@@ -1865,18 +1889,6 @@ function txMemos() {
   return memos;
 }
 
-function paymentOffline(secret, account, payment, fee, sequence) {
-  api.preparePayment(account, payment, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
-    var options = signingOptions();
-    var signed = api.sign(tx.txJSON, secret, options);
-    showSignedTX(signed);
-    //hash signed.id
-  }).catch(function (error) {
-    DOM.txFeedback.html('preparePayment: ' + error.message);
-    console.log(error);
-  })
-}
-
 function submitOnlineShowLink(blob, showItem, buttonElement, buttonValue) {
   api.submit(
     blob
@@ -1941,6 +1953,18 @@ function paymentOnline(secret, account, payment, fee, buttonDom) {
   }
 }
 
+function paymentOffline(secret, account, payment, fee, sequence) {
+  api.preparePayment(account, payment, {fee: fee, sequence: sequence, maxLedgerVersion: null}).then(function(tx) {
+    var options = signingOptions();
+    var signed = api.sign(tx.txJSON, secret, options);
+    showSignedTX(signed);
+    //hash signed.id
+  }).catch(function (error) {
+    DOM.txFeedback.html('preparePayment: ' + error.message);
+    console.log(error);
+  })
+}
+
 function validateRegularKey() {
   if (DOM.setAddress.is(':checked')) {
     var address = DOM.address.val();
@@ -1970,7 +1994,7 @@ function validateRegularKey() {
         }
       }).catch(function (error) {
         if (error.message == 'actNotFound') {
-          DOM.signAddressFeedback.html('This account is not activated yet. <a href="https://bithomp.com/activation/' + signAddress + '" target="_blank">Activate</a>');
+          DOM.signAddressFeedback.html('This account is not activated yet. <a href="' + bithomp + '/activation/' + signAddress + '" target="_blank">Activate</a>');
         } else if (error.message == 'instance.address does not conform to the "address" format') {
           DOM.signAddressFeedback.html('Incorrect address');
         } else {
@@ -2070,7 +2094,7 @@ function checkBalance(accountDOM, feedbackFieldDOM) {
         }
       }).catch(function (error) {
         if (error.message == 'actNotFound') {
-          feedbackFieldDOM.html('This account is not activated yet. <a href="https://bithomp.com/activation/' + account + '" target="_blank">Activate</a>');
+          feedbackFieldDOM.html('This account is not activated yet. <a href="' + bithomp + '/activation/' + account + '" target="_blank">Activate</a>');
         } else if (error.message == 'instance.address does not conform to the "address" format') {
           feedbackFieldDOM.html('Incorrect address');
         } else {
@@ -2785,6 +2809,10 @@ function validateFulfillment(fulfillment) {
 function isHex(h) {
   var re = /[0-9A-Fa-f]/g;
   return re.test(h);
+}
+
+function isSha256(s) {
+  return isHex(s) && s.length == 64;
 }
 
 init();

@@ -426,7 +426,11 @@
                                 <div class="left">Destination tag:</div>
                                 <div class="right"><input type="text" id="payment_destination_tag" placeholder="If it's required" spellcheck="false" /></div>
                             </div>
-                            Recipient will receive
+                            <br>
+                            <div class="fields-group-header">
+                                <div class="left"></div>
+                                <div class="right">Recipient will receive</div>
+                            </div>
                             <div>
                                 <div class="left">Amount:</div>
                                 <div class="right"><input type="text" id="payment_amount" spellcheck="false" /></div>
@@ -443,6 +447,11 @@
                             <div class="secret-fields mnemonic-fields hidden">
                                 <div class="left">Counterparty:</div>
                                 <div class="right"><input type="text" id="payment_counterparty" placeholder="If the currency is different from XRP" spellcheck="false" /></div>
+                            </div>
+                            <br>
+                            <div class="secret-fields mnemonic-fields hidden">
+                                <div class="left">Invoice ID:</div>
+                                <div class="right"><input type="text" id="payment_invoiceid" placeholder="(optional)" spellcheck="false" /></div>
                             </div>
                         </div>
 
