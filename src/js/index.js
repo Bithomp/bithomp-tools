@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.4.4';
+var version = '0.4.5';
 var testnet = false;
 var bithomp = 'https://bithomp.com';
 var bithompTestnet = 'https://test.bithomp.com';
