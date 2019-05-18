@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.4.5';
+var version = '0.4.6';
 var testnet = false;
 var bithomp = 'https://bithomp.com';
 var bithompTestnet = 'https://test.bithomp.com';
@@ -254,7 +254,7 @@ function showHwOptionWhenItWorks() {
 function ledgerhwConnectButtonClicked() {
   DOM.ledgerhwNotConnectedFields.hide();
   DOM.feedback.html('Trying to connect to your Ledger Hardware Wallet...');
-  bithomphw.getXrpAddress().then(function(data) {
+  bithomphw.ledgerGetAddress().then(function(data) {
     DOM.feedback.html(showAddress(data.address));
     DOM.address.val(data.address);
     DOM.pubkey.val(data.publicKey);
@@ -266,7 +266,7 @@ function ledgerhwConnectButtonClicked() {
     var error = err.message;
     if (error) {
       if (error.indexOf('browser support is needed') > -1) {
-        DOM.feedback.text('In order to use this functionality you need to open this page in Chrome, Opera or Firefox with a U2F extension');
+        DOM.feedback.text('Problem with U2F, try to use Opera or Brave Browser');
       } else if (error.indexOf('U2F TIMEOUT') > -1) {
         DOM.ledgerhwNotConnectedFields.show();
         DOM.feedback.html(
@@ -286,7 +286,7 @@ function ledgerhwConnectButtonClicked() {
     }
     //Ledger device: UNKNOWN_ERROR (0x6804)
     //Failed to sign with Ledger device: U2F TIMEOUT
-    //U2F browser support is needed for Ledger. Please use Chrome, Opera or Firefox with a U2F extension. Also make sure you're on an HTTPS connection
+    //U2F browser support is needed for Ledger. Please use Opera or Brave with a U2F extension. Also make sure you're on an HTTPS connection
   });
 }
 
@@ -1918,7 +1918,7 @@ function ledgerhwSubmitOnline(txJSON, account, buttonElement, buttonValue, showA
   preparedTx.SigningPubKey = publicKey;
   delete preparedTx.Memos;
   DOM.txFeedback.html('Transaction sent for signing to your Hardware Wallet!<br>Check it and Confirm.');
-  bithomphw.signXrpTransaction(preparedTx).then(function(signed) {
+  bithomphw.ledgerSignTransaction(preparedTx).then(function(signed) {
     var blob = signed.signedTransaction;
     var showItem = signed.id;
     if (showAccount) {
@@ -1926,7 +1926,7 @@ function ledgerhwSubmitOnline(txJSON, account, buttonElement, buttonValue, showA
     }
     submitOnlineShowLink(blob, showItem, buttonElement, buttonValue);
   }).catch(function(err) {
-    DOM.txFeedback.html('Error on signing');
+    DOM.txFeedback.html('Error on signing, try to use Opera or Brave browser.');
     buttonElement.html(buttonValue);
     console.log(err.message);
   });
