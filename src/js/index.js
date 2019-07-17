@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.4.8';
+var version = '0.4.9';
 var testnet = false;
 var bithomp = 'https://bithomp.com';
 var bithompTestnet = 'https://test.bithomp.com';
@@ -301,8 +301,8 @@ function signingOptions() {
 function settingsSignersButtonAddClicked() {
   var signerAddressList = $('[name="settings_signers_address"]');
   var countSigners = signerAddressList.length;
-  //max 20 fields, hide button to add more
-  if (countSigners == 19) {
+  //max 8 fields, hide button to add more
+  if (countSigners == 7) {
     DOM.settingsSignersButtonAdd.hide();
   }
   var lastSignerAddress = signerAddressList.eq(countSigners-1);
