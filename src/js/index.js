@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.4.9';
+var version = '0.4.10';
 var testnet = false;
 var bithomp = 'https://bithomp.com';
 var bithompTestnet = 'https://test.bithomp.com';
@@ -235,7 +235,6 @@ function mainOrTestNet() {
     $("a[href='" + bithomp + "']").attr("href", bithompTestnet);
     DOM.body.addClass('testnet');
     DOM.server.val(wsTestnet);
-    DOM.server.prop("readonly", true);
     bithomp = bithompTestnet;
   } else {
     DOM.server.val(wsProduction);
@@ -899,7 +898,7 @@ function settings(action) {
     var sequence = txSequence(account);
     if (!sequence) return;
     settingsUpdateOffline(secret, account, settings, fee, sequence);
-  } 
+  }
 }
 
 function settingsUpdateOnline(secret, account, settings, fee, action) {
@@ -1049,20 +1048,50 @@ function isValidDate(year, month, day) {
 }
 
 function validateDateAndTime(DateLabel, DOMyear, DOMmonth, DOMday, DOMhour, DOMminute) {
-  var today = new Date();
-  var todayYear = today.getFullYear();
+  var year = DOMyear.val().trim();
+  var month = DOMmonth.val().trim();
+  var day = DOMday.val().trim();
+  var hour = DOMhour.val().trim();
+  var minute = DOMminute.val().trim();
 
-  var year = Number(DOMyear.val());
-  var month = Number(DOMmonth.val());
-  var day = Number(DOMday.val());
-  var hour = Number(DOMhour.val());
-  var minute = Number(DOMminute.val());
-
-  if (!year) {
+  if (year == "") {
     DOM.txFeedback.html('Please fill in the ' + DateLabel + ' Year.');
     DOMyear.focus();
     return false;
   }
+
+  if (month == "") {
+    DOM.txFeedback.html('Please fill in the ' + DateLabel + ' Month.');
+    DOMmonth.focus();
+    return false;
+  }
+
+  if (day == "") {
+    DOM.txFeedback.html('Please fill in the ' + DateLabel + ' Day.');
+    DOMday.focus();
+    return false;
+  }
+
+  if (hour == "") {
+    DOM.txFeedback.html('Please fill in the ' + DateLabel + ' Hour.');
+    DOM.escrowExecuteHour.focus();
+    return false;
+  }
+
+  if (minute == "") {
+    DOM.txFeedback.html('Please fill in the ' + DateLabel + ' Minute.');
+    DOMminute.focus();
+    return false;
+  }
+
+  year = Number(year);
+  month = Number(month);
+  day = Number(day);
+  hour = Number(hour);
+  minute = Number(minute);
+
+  var today = new Date();
+  var todayYear = today.getFullYear();
 
   if (year < todayYear) {
     DOM.txFeedback.html('The ' + DateLabel + ' Year should be current or in the feature.');
@@ -1076,21 +1105,9 @@ function validateDateAndTime(DateLabel, DOMyear, DOMmonth, DOMday, DOMhour, DOMm
     return false;
   }
 
-  if (!month) {
-    DOM.txFeedback.html('Please fill in the ' + DateLabel + ' Month.');
-    DOMmonth.focus();
-    return false;
-  }
-
   if (month < 1 || month > 12) {
     DOM.txFeedback.html('Enter correct ' + DateLabel + ' Month, example: 09 (for September).');
     DOMmonth.focus();
-    return false;
-  }
-
-  if (!day) {
-    DOM.txFeedback.html('Please fill in the ' + DateLabel + ' Day.');
-    DOMday.focus();
     return false;
   }
 
@@ -1105,25 +1122,13 @@ function validateDateAndTime(DateLabel, DOMyear, DOMmonth, DOMday, DOMhour, DOMm
     return false;
   }
 
-  if (!hour) {
-    DOM.txFeedback.html('Please fill in the ' + DateLabel + ' Hour.');
-    DOM.escrowExecuteHour.focus();
-    return false;
-  }
-
-  if (hour < 1 || hour > 24) {
+  if (hour < 0 || hour > 23) {
     DOM.txFeedback.html('Enter correct ' + DateLabel + ' Hour, example: 19 (for 7pm)');
     DOMhour.focus();
     return false;
   }
 
-  if (!minute) {
-    DOM.txFeedback.html('Please fill in the ' + DateLabel + ' Minute.');
-    DOMminute.focus();
-    return false;
-  }
-
-  if (minute < 1 || minute > 60) {
+  if (minute < 0 || minute > 59) {
     DOM.txFeedback.html('Enter correct ' + DateLabel + ' Minute');
     DOMminute.focus();
     return false;
@@ -1214,7 +1219,7 @@ function escrow() {
           return false;
         }
       }
-    } 
+    }
 
   } else if (selected == 'creation') {
 
@@ -1356,7 +1361,7 @@ function escrowCreateOffline(secret, account, escrow, fee, sequence) {
     DOM.txFeedback.html('prepareEscrowCreation: ' + error.message);
     console.log(error);
   });
-}  
+}
 
 function escrowCancelOnline(secret, account, escrow, fee) {
   if (api.isConnected()) {
@@ -1468,7 +1473,7 @@ function trustline(action) {
     DOM.txFeedback.html('Error: invalid counterparty address.');
     DOM.trustlineCounterparty.focus();
     return;
-  } 
+  }
 
   var limit = DOM.trustlineLimit.val();
   limit = limit.trim();
@@ -1637,7 +1642,7 @@ function paymentButtonAlternativeClicked() {
 }
 
 function paymentButtonPayClicked(path=-2) {
-  /* path 
+  /* path
     -2 = direct payment
     -1 = look for path
     0-10 = pay with the specified path
@@ -2599,7 +2604,7 @@ function str2blks_MD5(str)
 }
 
 /*
- * Add integers, wrapping at 2^32. This uses 16-bit operations internally 
+ * Add integers, wrapping at 2^32. This uses 16-bit operations internally
  * to work around bugs in some JS interpreters.
  */
 function add(x, y)
@@ -2675,7 +2680,7 @@ function calcMD5(str)
     a = ff(a, b, c, d, x[i+12], 7 ,  1804603682);
     d = ff(d, a, b, c, x[i+13], 12, -40341101);
     c = ff(c, d, a, b, x[i+14], 17, -1502002290);
-    b = ff(b, c, d, a, x[i+15], 22,  1236535329);    
+    b = ff(b, c, d, a, x[i+15], 22,  1236535329);
 
     a = gg(a, b, c, d, x[i+ 1], 5 , -165796510);
     d = gg(d, a, b, c, x[i+ 6], 9 , -1069501632);
@@ -2693,7 +2698,7 @@ function calcMD5(str)
     d = gg(d, a, b, c, x[i+ 2], 9 , -51403784);
     c = gg(c, d, a, b, x[i+ 7], 14,  1735328473);
     b = gg(b, c, d, a, x[i+12], 20, -1926607734);
-    
+
     a = hh(a, b, c, d, x[i+ 5], 4 , -378558);
     d = hh(d, a, b, c, x[i+ 8], 11, -2022574463);
     c = hh(c, d, a, b, x[i+11], 16,  1839030562);
@@ -2742,7 +2747,7 @@ function calcMD5(str)
 $('select').each(function(){
   var $this = $(this), numberOfOptions = $(this).children('option').length;
 
-  $this.addClass('select-hidden'); 
+  $this.addClass('select-hidden');
   $this.wrap('<div class="select"></div>');
   $this.after('<div class="select-styled"></div>');
 
@@ -2791,8 +2796,8 @@ function validateEmail(email) {
   return re.test(email);
 }
 
-function validateDomain(domain) { 
-  var re = /^((?:(?:(?:\w[\.\-\+]?)*)\w)+)((?:(?:(?:\w[\.\-\+]?){0,62})\w)+)\.(\w{2,6})$/; 
+function validateDomain(domain) {
+  var re = /^((?:(?:(?:\w[\.\-\+]?)*)\w)+)((?:(?:(?:\w[\.\-\+]?){0,62})\w)+)\.(\w{2,6})$/;
   return re.test(domain);
 }
 

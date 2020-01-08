@@ -66,8 +66,10 @@ bithompHW - https://github.com/Bithomp/bithompHW
 
 ## Credits
 
-Michael Raburn, for writing a post how to use this tools in offline mode:
+https://twitter.com/mraburn, for writing a post how to use this tools in offline mode:
 https://xrpcommunity.blog/bithomp-tools-using-offline-mode/
+
+https://twitter.com/nixerffm, for testing and reporting issues on Escrow implementation.
 
 ## License
 
