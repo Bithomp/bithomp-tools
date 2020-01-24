@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.4.10';
+var version = '0.4.11';
 var testnet = false;
 var bithomp = 'https://bithomp.com';
 var bithompTestnet = 'https://test.bithomp.com';
@@ -231,6 +231,10 @@ function init() {
 }
 
 function mainOrTestNet() {
+  var hostname = window.location.hostname;
+  if (hostname.indexOf("test.") > -1) {
+    testnet = true;
+  }
   if (testnet) {
     $("a[href='" + bithomp + "']").attr("href", bithompTestnet);
     DOM.body.addClass('testnet');
