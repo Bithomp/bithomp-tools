@@ -1,10 +1,10 @@
 (function() {
 
-var version = '0.4.11';
+var version = '0.4.12';
 var testnet = false;
 var bithomp = 'https://bithomp.com';
 var bithompTestnet = 'https://test.bithomp.com';
-var wsProduction = 'wss://s3.ripple.com';
+var wsProduction = 'wss://xrpl.ws';
 var wsTestnet = 'wss://s.altnet.rippletest.net:51233';
 
 var api = new ripple.RippleAPI();
@@ -2131,7 +2131,7 @@ function addressFeedback() {
 function thisYear() {
   var d = new Date();
   var n = d.getFullYear();
-  DOM.thisYear.html(" - " + n);
+  DOM.thisYear.html(n);
 }
 
 function termsAgreed() {
@@ -2309,6 +2309,7 @@ function switchSecret() {
   if (DOM.switchSecret.is(':checked')) {
     DOM.mnemonicFields.hide();
     DOM.HwFields.hide();
+    DOM.paymentCurrency.prop('readonly', false);
     DOM.secretFields.show();
     secretChanged();
   }
@@ -2318,6 +2319,7 @@ function switchMnemonic() {
   if (DOM.switchMnemonic.is(':checked')) {
     DOM.secretFields.hide();
     DOM.HwFields.hide();
+    DOM.paymentCurrency.prop('readonly', false);
     DOM.mnemonicFields.show();
     delayedPhraseChanged();
   }
@@ -2328,6 +2330,7 @@ function switchHW() {
     DOM.secretFields.hide();
     DOM.mnemonicFields.hide();
     DOM.HwFields.show();
+    DOM.paymentCurrency.prop('readonly', true);
     //reset connection to ledgerhw
     clearAddressesList();
     hideValidationError();

@@ -317,7 +317,7 @@
 
         <fieldset class="server">
           <div>
-            <input type="text" id="server" placeholder="Enter XRPL ws here" value="wss://s1.ripple.com" spellcheck="false" class="bordered-centered" />
+            <input type="text" id="server" placeholder="Enter XRPL ws here" value="wss://xrpl.ws" spellcheck="false" class="bordered-centered" />
             <button type="button" id="server_connect" class="server-not-connected">Connect</button>
             <div class="feedback" id="server_feedback"></div>
           </div>
@@ -427,15 +427,14 @@
               </div>
               <div>
                 <div class="left">Amount:</div>
-                <div class="right"><input type="text" id="payment_amount" spellcheck="false" /></div>
+                <div class="right">
+                  <input type="text" id="payment_amount" spellcheck="false" />
+                </div>
               </div>
               <div>
                 <div class="left">Currency:</div>
-                <div class="right secret-fields mnemonic-fields hidden">
+                <div class="right">
                   <input type="text" id="payment_currency" value="XRP" spellcheck="false" />
-                </div>
-                <div class="right hw-fields hidden">
-                  <input type="text" id="payment_currency" value="XRP" spellcheck="false" readonly="readonly"/>
                 </div>
               </div>
               <div class="secret-fields mnemonic-fields hidden">
@@ -656,7 +655,7 @@
                 <div class="orange note">
                   Here you can assign another keypair to manage your account.<br><br>
                   <span class="red">
-                    DANGER: You may lose all your XRP and other assets if you assign an address you are not in control of. 
+                    DANGER: You may lose all your XRP and other assets if you assign an address you are not in control of.
                     Please do not use this tool unless you know what you are doing!
                   </span>
                 </div>
@@ -667,12 +666,12 @@
                   Here you can assign/remove sets of accounts can be used to sign a transaction on behalf of this account using multisigning.
                 </div>
                 <div class="note red">
-                  DANGER: You may lose all your XRP and other assets if you assign addresses you are not in control of. 
+                  DANGER: You may lose all your XRP and other assets if you assign addresses you are not in control of.
                   Please do not use this tool unless you know what you are doing!
                 </div>
                 <div class="note orange">
-                  NOTE: To assign a List of Signers you need to have at least 15 XRP available. 
-                  (10 XRP + 5 XRP for each signer, for ex. 3 signers: 10 + 3*5 = 25 XRP. 
+                  NOTE: To assign a List of Signers you need to have at least 15 XRP available.
+                  (10 XRP + 5 XRP for each signer, for ex. 3 signers: 10 + 3*5 = 25 XRP.
                 </div>
                 <div class="note">
                   THRESHOLD - a target number for the signer weights. A multi-signature from this list is valid only if the sum weights of the signatures provided is equal or greater than this value.
@@ -801,7 +800,7 @@
 
               <div class="note offline-fields hidden">
                 <hr>
-                On your phone or another connected computer open a page: 
+                On your phone or another connected computer open a page:
                 <span id="submit-link" class="small">https://bithomp.com/submit</span>
                 You can use a Phone QR Reader to scan the above URL:
                 <div id="submitUrlQR" class="submitUrlQR"></div>
@@ -869,7 +868,7 @@
       <hr>
 
       <div class="footer">
-        © 2015 <span id="thisYear"> - 2018</span> <a href="http://octillion.info" target="_blank">Octillion S.A.</a> All Rights Reserved
+        © 2015 - <span id="thisYear">2020</span> <a href="http://octillion.info" target="_blank">Octillion S.A.</a> All Rights Reserved
       </div>
 
     </div>
