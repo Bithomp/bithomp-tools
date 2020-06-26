@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.4.12';
+var version = '0.5.0';
 var testnet = false;
 var bithomp = 'https://bithomp.com';
 var bithompTestnet = 'https://test.bithomp.com';
@@ -1925,7 +1925,8 @@ function ledgerhwSubmitOnline(txJSON, account, buttonElement, buttonValue, showA
   var preparedTx = JSON.parse(txJSON);
   var publicKey = DOM.pubkey.val();
   preparedTx.SigningPubKey = publicKey;
-  delete preparedTx.Memos;
+  //add extra time to sign transaction (30 ledgers).
+  preparedTx.LastLedgerSequence = preparedTx.LastLedgerSequence + 30;
   DOM.txFeedback.html('Transaction sent for signing to your Hardware Wallet!<br>Check it and Confirm.');
   bithomphw.ledgerSignTransaction(preparedTx).then(function(signed) {
     var blob = signed.signedTransaction;
@@ -2330,7 +2331,6 @@ function switchHW() {
     DOM.secretFields.hide();
     DOM.mnemonicFields.hide();
     DOM.HwFields.show();
-    DOM.paymentCurrency.prop('readonly', true);
     //reset connection to ledgerhw
     clearAddressesList();
     hideValidationError();

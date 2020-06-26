@@ -347,7 +347,7 @@
           <div class="hw-fields hidden">
             <div class="ledgerhw-not-connected note bordered">
               1. Connect Ledger Wallet to your computer<br>
-              2. Start XRP app on it (1.0.6 or higher)<br>
+              2. Start XRP app on it (2.0.1 or higher)<br>
               3. Press "Connect" button<br>
               <center><input type="button" value="connect" id="ledgerhw_connect" /></center>
             </div>
@@ -390,9 +390,9 @@
             <div class="switch-field">
               <input type="radio" id="switch_payment" name="tx_type" value="payment" checked/>
               <label for="switch_payment">Payment</label>
+              <input type="radio" id="switch_trustline" name="tx_type" value="trustline" />
+              <label for="switch_trustline">Trustline</label>
               <div class="inline secret-fields mnemonic-fields hidden">
-                <input type="radio" id="switch_trustline" name="tx_type" value="trustline" />
-                <label for="switch_trustline">Trustline</label>
                 <input type="radio" id="switch_settings" name="tx_type" value="settings" />
                 <label for="switch_settings">Settings</label>
               </div>
@@ -437,12 +437,12 @@
                   <input type="text" id="payment_currency" value="XRP" spellcheck="false" />
                 </div>
               </div>
-              <div class="secret-fields mnemonic-fields hidden">
+              <div>
                 <div class="left">Counterparty:</div>
                 <div class="right"><input type="text" id="payment_counterparty" placeholder="If the currency is different from XRP" spellcheck="false" /></div>
               </div>
               <br>
-              <div class="secret-fields mnemonic-fields hidden">
+              <div>
                 <div class="left">Invoice ID:</div>
                 <div class="right"><input type="text" id="payment_invoiceid" placeholder="(optional)" spellcheck="false" /></div>
               </div>
@@ -791,11 +791,9 @@
             </div>
 
             <div class="fields-wide">
-              <div class="secret-fields mnemonic-fields hidden">
-                <div class="payment-fields escrow-fields hidden">
-                  <div class="left">Memo:</div>
-                  <div class="right"><input type="text" id="memo" placeholder="message (optional)" /></div>
-                </div>
+              <div class="payment-fields escrow-fields hidden">
+                <div class="left">Memo:</div>
+                <div class="right"><input type="text" id="memo" placeholder="message (optional)" /></div>
               </div>
 
               <div class="note offline-fields hidden">
