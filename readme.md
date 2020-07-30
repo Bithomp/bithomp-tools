@@ -1,10 +1,11 @@
+The project "Bithomp tools" is discontinued because it's technical capabilities no longer meet the needs of the modern marketplace.
+--------------------------------------------------------------------------------------------------------
+You can still download and use it offline on a separate secure offline computer/phone, but for online transactions it's recommended to use hardware wallets.
+https://bithomp.com/wallets/hardware
+
 # Bithomp Tools
 
-A tool to sign (and submit) simple transactions for xrp accounts, you can use secret or mnemonic.
-
-## Online Version
-
-https://bithomp.github.io/bithomp-tools/
+A tool to sign (and submit) simple transactions for xrp accounts, you can use secret, mnemonic or ledger hardware wallet.
 
 ## Standalone offline version
 
