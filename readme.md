@@ -1,11 +1,11 @@
 The project "Bithomp tools" is discontinued because it's technical capabilities no longer meet the needs of the modern marketplace.
 --------------------------------------------------------------------------------------------------------
-You can still download and use it offline on a separate secure offline computer/phone, but for online transactions it's recommended to use hardware wallets.
+You can still download and use it offline on a separate secure offline computer/phone, but for online transactions it's recommended to use hardware wallets or a mobile app XUMM.
 https://bithomp.com/wallets/hardware
 
 # Bithomp Tools
 
-A tool to sign (and submit) simple transactions for xrp accounts, you can use secret, mnemonic or ledger hardware wallet.
+A tool to sign (and submit) transactions for XRPL, you can use secret, mnemonic or ledger hardware wallet.
 
 ## Standalone offline version
 
@@ -21,7 +21,7 @@ Choose a type of transaction: Payment, Trustline, Escrow, Settings
 
 Choose a tool mode: Online or Offline
 
-Enter your secret or a mnemonic (24 recovery words from your Hard Wallet)
+Enter your secret or a mnemonic (24 recovery words from your HardWare Wallet)
 
 Fill in data in the requested fields.
 
@@ -74,7 +74,7 @@ https://twitter.com/nixerffm, for testing and reporting issues on Escrow impleme
 
 ## License
 
-2018 Octillion S.A. All Rights Reserved
+2018-2021 Octillion S.A. All Rights Reserved
 
 The software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
 
