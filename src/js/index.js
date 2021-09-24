@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.5.0';
+var version = '0.5.1';
 var testnet = false;
 var bithomp = 'https://bithomp.com';
 var bithompTestnet = 'https://test.bithomp.com';
@@ -43,6 +43,7 @@ DOM.secretHidden = $('#secret_hidden');
 DOM.switchMnemonic = $('#switch_mnemonic');
 DOM.mnemonicFields = $('.mnemonic-fields');
 DOM.phrase = $("#phrase");
+DOM.mnemonicPassphrase = $("#mnemonic_passphrase");
 DOM.switchHwElement = $('.switch_hw');
 DOM.switchHW = $('#switch_hw');
 DOM.HwFields = $('.hw-fields');
@@ -156,6 +157,7 @@ function init() {
   thisYear();
   DOM.termsButton.on("click", termsAgreed);
   DOM.phrase.on("input", delayedPhraseChanged);
+  DOM.mnemonicPassphrase.on("input", delayedPhraseChanged);
   hideValidationError();
   DOM.switchOnline.on("click", switchOnline);
   DOM.switchOffline.on("click", switchOffline);
@@ -2471,7 +2473,8 @@ function calcBip32ExtendedKey(path) {
 }
 
 function calcBip32RootKeyFromSeed(phrase) {
-  seed = mnemonic.toSeed(phrase, '');
+  var passphrase = DOM.mnemonicPassphrase.val().trim();
+  seed = mnemonic.toSeed(phrase, passphrase);
   bip32RootKey = bitcoinjs.bitcoin.HDNode.fromSeedHex(seed, network);
 }
 
