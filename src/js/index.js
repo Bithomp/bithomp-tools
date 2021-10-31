@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.5.1';
+var version = '0.5.2';
 var testnet = false;
 var bithomp = 'https://bithomp.com';
 var bithompTestnet = 'https://test.bithomp.com';
@@ -1460,8 +1460,8 @@ function trustline(action) {
   var currency = DOM.trustlineCurrency.val();
   currency = currency.trim().toUpperCase();
 
-  if (!currency || currency.lenght > 3) {
-    DOM.txFeedback.html('Incorrect currency: empty or wrong format');
+  if (!currency) {
+    DOM.txFeedback.html('Please enter the currency');
     DOM.trustlineCurrency.focus();
     return;
   }
@@ -1582,8 +1582,8 @@ function validateAmount(DOMamount, DOMcurrency, DOMcounterparty) {
   var currency = DOMcurrency.val();
   currency = currency.trim().toUpperCase();
 
-  if (!currency || currency.lenght > 3) {
-    DOM.txFeedback.html('Incorrect currency: empty or wrong format');
+  if (!currency) {
+    DOM.txFeedback.html('Please enter the currency');
     DOMcurrency.focus();
     return false;
   }
