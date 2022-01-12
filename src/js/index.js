@@ -2,10 +2,13 @@
 
 var version = '0.5.2';
 var testnet = false;
+//var testnet = true;
 var bithomp = 'https://bithomp.com';
 var bithompTestnet = 'https://test.bithomp.com';
 var wsProduction = 'wss://xrpl.ws';
 var wsTestnet = 'wss://s.altnet.rippletest.net:51233';
+//var wsTestnet = 'wss://hooks-testnet.xrpl-labs.com'; //hooks
+//var wsTestnet = 'wss://xls20-sandbox.rippletest.net:51233'; //xls20
 
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
@@ -233,10 +236,6 @@ function init() {
 }
 
 function mainOrTestNet() {
-  var hostname = window.location.hostname;
-  if (hostname.indexOf("test.") > -1) {
-    testnet = true;
-  }
   if (testnet) {
     $("a[href='" + bithomp + "']").attr("href", bithompTestnet);
     DOM.body.addClass('testnet');
