@@ -1,14 +1,22 @@
 (function() {
 
-var version = '0.5.2';
+var version = '0.5.3';
 var testnet = false;
 //var testnet = true;
+
 var bithomp = 'https://bithomp.com';
-var bithompTestnet = 'https://test.bithomp.com';
 var wsProduction = 'wss://xrpl.ws';
+
+var bithompTestnet = 'https://test.bithomp.com';
 var wsTestnet = 'wss://s.altnet.rippletest.net:51233';
-//var wsTestnet = 'wss://hooks-testnet.xrpl-labs.com'; //hooks
-//var wsTestnet = 'wss://xls20-sandbox.rippletest.net:51233'; //xls20
+
+//HOOKS
+//var bithompTestnet = 'https://hooks.bithomp.com';
+//var wsTestnet = 'wss://hooks-testnet.xrpl-labs.com';
+
+//XLS20
+//var bithompTestnet = 'https://xls20.bithomp.com';
+//var wsTestnet = 'wss://xls20-sandbox.rippletest.net:51233';
 
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
