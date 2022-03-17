@@ -10,6 +10,10 @@ var wsProduction = 'wss://xrpl.ws';
 var bithompTestnet = 'https://test.bithomp.com';
 var wsTestnet = 'wss://s.altnet.rippletest.net:51233';
 
+//HOOKS V2
+//var bithompTestnet = 'https://beta.bithomp.com';
+//var wsTestnet = 'wss://hooks-testnet-v2.xrpl-labs.com';
+
 //HOOKS
 //var bithompTestnet = 'https://hooks.bithomp.com';
 //var wsTestnet = 'wss://hooks-testnet.xrpl-labs.com';
