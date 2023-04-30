@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.5.4';
+var version = '0.5.5';
 var testnet = false;
 //var testnet = true;
 
@@ -161,6 +161,7 @@ function init() {
   DOM.termsButton.on("click", termsAgreed);
   DOM.phrase.on("input", delayedPhraseChanged);
   DOM.mnemonicPassphrase.on("input", delayedPhraseChanged);
+  DOM.bip32path.on("input", delayedPhraseChanged);
   hideValidationError();
   DOM.switchOnline.on("click", switchOnline);
   DOM.switchOffline.on("click", switchOffline);
@@ -2374,7 +2375,8 @@ function phraseChanged() {
 function calcForDerivationPath() {
   clearAddressesList();
   showPending();
-  var derivationPath = DOM.bip32path.val(); //"m/44'/144'/0'/0";
+  var derivationPath = DOM.bip32path.val(); //"m/44'/144'/0'/0/0";
+  derivationPath = derivationPath.substring(0, derivationPath.lastIndexOf("/")); //"m/44'/144'/0'/0";
   bip32ExtendedKey = calcBip32ExtendedKey(derivationPath);
   displayAddresses();
 }
@@ -2389,7 +2391,10 @@ function displayAddresses() {
       }
     }
 
-    rows.push(new TableRow(0));
+    var derivationPath = DOM.bip32path.val(); //"m/44'/144'/0'/0/0";
+    var arr = derivationPath.split("/");
+    var index = Number(arr.pop()); //0
+    rows.push(new TableRow(index));
   })());
 }
 
@@ -2416,7 +2421,7 @@ function TableRow(index) {
       var hasPrivkey = !key.isNeutered();
       var privkey = "NA";
       if (hasPrivkey) {
-          privkey = keyPair.toWIF(network);
+        privkey = keyPair.toWIF(network);
       }
       // get pubkey
       var pubkey = keyPair.getPublicKeyBuffer().toString('hex');
