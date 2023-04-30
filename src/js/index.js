@@ -1,6 +1,6 @@
 (function() {
 
-var version = '0.5.3';
+var version = '0.5.4';
 var testnet = false;
 //var testnet = true;
 
@@ -10,18 +10,6 @@ var wsProduction = 'wss://xrpl.ws';
 var bithompTestnet = 'https://test.bithomp.com';
 var wsTestnet = 'wss://s.altnet.rippletest.net:51233';
 
-//HOOKS V2
-//var bithompTestnet = 'https://beta.bithomp.com';
-//var wsTestnet = 'wss://hooks-testnet-v2.xrpl-labs.com';
-
-//HOOKS
-//var bithompTestnet = 'https://hooks.bithomp.com';
-//var wsTestnet = 'wss://hooks-testnet.xrpl-labs.com';
-
-//XLS20
-//var bithompTestnet = 'https://xls20.bithomp.com';
-//var wsTestnet = 'wss://xls20-sandbox.rippletest.net:51233';
-
 var api = new ripple.RippleAPI();
 var mnemonic = new Mnemonic("english");
 var seed = null;
@@ -30,7 +18,6 @@ var bip32ExtendedKey = null;
 var network = bitcoinjs.bitcoin.networks.bitcoin;
 var phraseChangeTimeoutEvent = null;
 var generationProcesses = [];
-var timer;
 var blobQR = new QRCode(document.getElementById("blobQR"), {width:256,height:256,useSVG:true});
 var submitUrlQR = new QRCode(document.getElementById("submitUrlQR"), {width:100,height:100,useSVG:true});
 var paymentPaths = null;
@@ -68,6 +55,7 @@ DOM.feedback = $('#feedback');
 DOM.address = $('#address');
 DOM.privkey = $('#privkey');
 DOM.pubkey = $('#pubkey');
+DOM.bip32path = $("#bip32-path");
 DOM.addressFeedback = $('#account_feedback');
 DOM.setAddressFields = $('.set-address');
 DOM.setAddress = $('#set_address');
@@ -2386,7 +2374,7 @@ function phraseChanged() {
 function calcForDerivationPath() {
   clearAddressesList();
   showPending();
-  var derivationPath = "m/44'/144'/0'/0";
+  var derivationPath = DOM.bip32path.val(); //"m/44'/144'/0'/0";
   bip32ExtendedKey = calcBip32ExtendedKey(derivationPath);
   displayAddresses();
 }

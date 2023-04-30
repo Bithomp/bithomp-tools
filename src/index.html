@@ -1,888 +1,885 @@
 <!DOCTYPE html>
 <html>
-  <head lang="en">
-    <meta charset="utf-8" />
-    <title>Bithomp tools</title>
-    <link rel="stylesheet" href="css/app.css">
-    <meta content="Bithomp tools" name="description"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="monetization" content="$twitter.xrptipbot.com/bithomp">
-    <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAnxQTFRFAAAAIqm8IKu8I6e8K6C8Jaa8JKe8Iaq9IqK8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8////egTc6QAAANJ0Uk5TAAAAAAAAAAAAMKCcKAeQ/NBrEQlcXQoUatX6u1AGAj6r9fauQAElienwojWM5/OTJjul4YQeEnDUvE9Hr/nXdBMIU8H9/s1LvmwLEA3KVxZv3xkxo/EkSLbFYRt69Ko2mI8nkjoumu33sUKblX/epOsEuG5ky8RWSvvYA0n4dxplQ9HvlCwFkWkj5pbHRsA5oYpbdr9VZnW3DGJFsuN+HGgq6vK0chXsjSFxZ1rZe4MgwsgyOKdYw4uG4IIOL+VEzGMindrTuk2z7imIYMnOF9s8toonBwAAAAFiS0dE05ffniYAAAAJcEhZcwAAHsIAAB7CAW7QdT4AAAKSSURBVDjLddP5P9NxHAdw727H+qbJsfp+2eprM7lGciSLLWwjWTItWm5hEZG2yblEOcsRkhSp6C4diu5D1/svaluqfbHPr+/n4/14P96f98vOzuoB2Ds4OgHY2XrAWk/gBueNywtgu2xydXP3QM7mLeRSApSnF5e3dRvtzRegj9CXZhIA7+1+yPVHQUAgHSTiYXDIDutRIHRnGBLhEZG7onB3tHhPTKxEujcOVvwtkzHxHPRIEMvkCpdEKRGbxNqXvB/5K1NYliagPJCKAv5BKk2VfshVfTgYMzKPgAb5q446ZJkFZCNPlEPl5uUjFhQeo+w1PlgExchfLcQECwhIj2GnlGix4HhRKpYWZ5VFnnBcAOUWoEyRVZyUSiurXMlTqmo8HS2W5zKATq8yoLbmDLu2DkIr6pGIrWIxgHsDNjQ2gfEspxkAzoW0ILeGAVrx/AVjky+7DZvBvNL2jijhItAJXdpu1kULMH/KpR56MdBg7z9g7qLuw07bAPovJ0qwZE3H8gB0A4M8HLoyrBhcAq6C6V9HAq7haJ6SGrhegM5W4AZpBjDWexqrVXqjU2Mpjt+csAK3TOA2faeSwPoeubh3Eg1enjp67SJATpX63b1nrLpP4IMumbgmjtGhDfseUu2PdDmP/TF4Sk0+eSr5M0NP6rQZwDMuPn8xDC+FOKqZoYMyM/CV3gLKXqeZQOYwGREvkc7WKsbm9MY30y3o/9aXWlgMDXyUzs7JxpLfoUGl18nL3yPx4SMb/h+1uluLhk8D1Ej2Z8wXhXMwzNmNkTCgZ1obcFzzhaorjEIUfA1cEkAwRg5ycLLbTTH/TRSkWy59IJ//jkR6UtmPfhvxBZgoGfpZy7KdbtMh/FKuY9Z/A5BpFQDfw7IqAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE4LTA1LTI3VDEyOjEzOjMyKzAwOjAwGo+68wAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOC0wNS0yN1QxMjoxMzozMiswMDowMGvSAk8AAABGdEVYdHNvZnR3YXJlAEltYWdlTWFnaWNrIDYuNy44LTkgMjAxNC0wNS0xMiBRMTYgaHR0cDovL3d3dy5pbWFnZW1hZ2ljay5vcmfchu0AAAAAGHRFWHRUaHVtYjo6RG9jdW1lbnQ6OlBhZ2VzADGn/7svAAAAGHRFWHRUaHVtYjo6SW1hZ2U6OmhlaWdodAAxOTIPAHKFAAAAF3RFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADE5MtOsIQgAAAAZdEVYdFRodW1iOjpNaW1ldHlwZQBpbWFnZS9wbmc/slZOAAAAF3RFWHRUaHVtYjo6TVRpbWUAMTUyNzQyMzIxMrt1QM4AAAAPdEVYdFRodW1iOjpTaXplADBCQpSiPuwAAABWdEVYdFRodW1iOjpVUkkAZmlsZTovLy9tbnRsb2cvZmF2aWNvbnMvMjAxOC0wNS0yNy9lYzg4MmQzYzExN2JiMjM1NWU1NTYxYTUzNzdmYzZlMy5pY28ucG5nwabHRwAAAABJRU5ErkJggg==">
-  </head>
-  <body>
-    <div class="main-box">
-      <div class="box-header">
-        <a href="/">
-          <div class="logo">
-            <svg
-              id="bithomp-logotext"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              viewBox="0 0 181 52"
-            >
-              <defs>
-                <filter
-                  id="logo-shine-filter"
-                  x="-20%"
-                  y="-20%"
-                  width="140%"
-                  height="140%"
-                  filterUnits="objectBoundingBox"
-                  primitiveUnits="userSpaceOnUse"
-                  color-interpolation-filters="linearRGB"
-                >
-                  <feGaussianBlur
-                    stdDeviation="3 3"
-                    x="0%"
-                    y="0%"
-                    width="100%"
-                    height="100%"
-                    in="SourceGraphic"
-                    edgeMode="wrap"
-                    result="blur2"
-                  >
-                  </feGaussianBlur>
-                </filter>
-                <mask
-                  id="logo-mask"
-                  x="0"
-                  y="-9.03"
-                  width="45"
-                  height="69.77"
-                  maskUnits="userSpaceOnUse"
-                >
-                  <path
-                    id="logo-mask"
-                    d="M.5,13.5,16.1,4.6l15.7,9v3.9L16.2,8.6.5,17.5ZM4,22.7l12.2-6.9,15.6,8.9v-4L16.3,11.8.5,20.7V38.5l3.5,2ZM41,11.5l-.1,17.8L25.3,38.2l3.5,2,15.7-9V13.5Zm-6.3.4V25.7L19,34.6l3.6,2.1,15.6-8.9V9.9L22.5,1,19,3ZM26,49,10.4,40.1V22.2l-3.5,2V42.1L22.5,51Zm2.8-5.6L16.6,36.5l.1-17.8-3.6,2V38.4l15.6,9,15.7-8.9v-4Z"
-                    fill="#fff"
-                  >
-                  </path>
-                </mask>
-              </defs>
-              <g>
-                <path
-                  id="logo-fill"
+
+<head lang="en">
+  <meta charset="utf-8" />
+  <title>Bithomp tools</title>
+  <link rel="stylesheet" href="css/app.css">
+  <meta content="Bithomp tools" name="description" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="monetization" content="$twitter.xrptipbot.com/bithomp">
+  <link rel="shortcut icon" type="image/png"
+    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAnxQTFRFAAAAIqm8IKu8I6e8K6C8Jaa8JKe8Iaq9IqK8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8Iqm8////egTc6QAAANJ0Uk5TAAAAAAAAAAAAMKCcKAeQ/NBrEQlcXQoUatX6u1AGAj6r9fauQAElienwojWM5/OTJjul4YQeEnDUvE9Hr/nXdBMIU8H9/s1LvmwLEA3KVxZv3xkxo/EkSLbFYRt69Ko2mI8nkjoumu33sUKblX/epOsEuG5ky8RWSvvYA0n4dxplQ9HvlCwFkWkj5pbHRsA5oYpbdr9VZnW3DGJFsuN+HGgq6vK0chXsjSFxZ1rZe4MgwsgyOKdYw4uG4IIOL+VEzGMindrTuk2z7imIYMnOF9s8toonBwAAAAFiS0dE05ffniYAAAAJcEhZcwAAHsIAAB7CAW7QdT4AAAKSSURBVDjLddP5P9NxHAdw727H+qbJsfp+2eprM7lGciSLLWwjWTItWm5hEZG2yblEOcsRkhSp6C4diu5D1/svaluqfbHPr+/n4/14P96f98vOzuoB2Ds4OgHY2XrAWk/gBueNywtgu2xydXP3QM7mLeRSApSnF5e3dRvtzRegj9CXZhIA7+1+yPVHQUAgHSTiYXDIDutRIHRnGBLhEZG7onB3tHhPTKxEujcOVvwtkzHxHPRIEMvkCpdEKRGbxNqXvB/5K1NYliagPJCKAv5BKk2VfshVfTgYMzKPgAb5q446ZJkFZCNPlEPl5uUjFhQeo+w1PlgExchfLcQECwhIj2GnlGix4HhRKpYWZ5VFnnBcAOUWoEyRVZyUSiurXMlTqmo8HS2W5zKATq8yoLbmDLu2DkIr6pGIrWIxgHsDNjQ2gfEspxkAzoW0ILeGAVrx/AVjky+7DZvBvNL2jijhItAJXdpu1kULMH/KpR56MdBg7z9g7qLuw07bAPovJ0qwZE3H8gB0A4M8HLoyrBhcAq6C6V9HAq7haJ6SGrhegM5W4AZpBjDWexqrVXqjU2Mpjt+csAK3TOA2faeSwPoeubh3Eg1enjp67SJATpX63b1nrLpP4IMumbgmjtGhDfseUu2PdDmP/TF4Sk0+eSr5M0NP6rQZwDMuPn8xDC+FOKqZoYMyM/CV3gLKXqeZQOYwGREvkc7WKsbm9MY30y3o/9aXWlgMDXyUzs7JxpLfoUGl18nL3yPx4SMb/h+1uluLhk8D1Ej2Z8wXhXMwzNmNkTCgZ1obcFzzhaorjEIUfA1cEkAwRg5ycLLbTTH/TRSkWy59IJ//jkR6UtmPfhvxBZgoGfpZy7KdbtMh/FKuY9Z/A5BpFQDfw7IqAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE4LTA1LTI3VDEyOjEzOjMyKzAwOjAwGo+68wAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOC0wNS0yN1QxMjoxMzozMiswMDowMGvSAk8AAABGdEVYdHNvZnR3YXJlAEltYWdlTWFnaWNrIDYuNy44LTkgMjAxNC0wNS0xMiBRMTYgaHR0cDovL3d3dy5pbWFnZW1hZ2ljay5vcmfchu0AAAAAGHRFWHRUaHVtYjo6RG9jdW1lbnQ6OlBhZ2VzADGn/7svAAAAGHRFWHRUaHVtYjo6SW1hZ2U6OmhlaWdodAAxOTIPAHKFAAAAF3RFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADE5MtOsIQgAAAAZdEVYdFRodW1iOjpNaW1ldHlwZQBpbWFnZS9wbmc/slZOAAAAF3RFWHRUaHVtYjo6TVRpbWUAMTUyNzQyMzIxMrt1QM4AAAAPdEVYdFRodW1iOjpTaXplADBCQpSiPuwAAABWdEVYdFRodW1iOjpVUkkAZmlsZTovLy9tbnRsb2cvZmF2aWNvbnMvMjAxOC0wNS0yNy9lYzg4MmQzYzExN2JiMjM1NWU1NTYxYTUzNzdmYzZlMy5pY28ucG5nwabHRwAAAABJRU5ErkJggg==">
+</head>
+
+<body>
+  <div class="main-box">
+    <div class="box-header">
+      <a href="/">
+        <div class="logo">
+          <svg id="bithomp-logotext" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 181 52">
+            <defs>
+              <filter id="logo-shine-filter" x="-20%" y="-20%" width="140%" height="140%"
+                filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" color-interpolation-filters="linearRGB">
+                <feGaussianBlur stdDeviation="3 3" x="0%" y="0%" width="100%" height="100%" in="SourceGraphic"
+                  edgeMode="wrap" result="blur2">
+                </feGaussianBlur>
+              </filter>
+              <mask id="logo-mask" x="0" y="-9.03" width="45" height="69.77" maskUnits="userSpaceOnUse">
+                <path id="logo-mask"
                   d="M.5,13.5,16.1,4.6l15.7,9v3.9L16.2,8.6.5,17.5ZM4,22.7l12.2-6.9,15.6,8.9v-4L16.3,11.8.5,20.7V38.5l3.5,2ZM41,11.5l-.1,17.8L25.3,38.2l3.5,2,15.7-9V13.5Zm-6.3.4V25.7L19,34.6l3.6,2.1,15.6-8.9V9.9L22.5,1,19,3ZM26,49,10.4,40.1V22.2l-3.5,2V42.1L22.5,51Zm2.8-5.6L16.6,36.5l.1-17.8-3.6,2V38.4l15.6,9,15.7-8.9v-4Z"
-                  fill="#63a6b9"
-                >
+                  fill="#fff">
                 </path>
-                <g mask="url(#logo-mask)">
-                  <g id="logo-stroke">
-                    <g id="part-1">
-                      <path
-                        d="M.5,13.5,16.1,4.6l15.7,9v3.9L16.2,8.6.5,17.5Z"
-                        fill="none"
-                        stroke="#63a6b9"
-                        stroke-miterlimit="10"
-                        stroke-dashoffset="79.96430969238281"
-                        stroke-dasharray="79.96430969238281"
-                      >
-                      </path>
-                      <path
-                        d="M4,40.5l-3.5-2V20.7l15.8-8.9,15.5,8.9v4L16.2,15.8,4,22.7Z"
-                        fill="none"
-                        stroke="#63a6b9"
-                        stroke-miterlimit="10"
-                        stroke-dashoffset="111.61508178710938"
-                        stroke-dasharray="111.61508178710938"
-                      >
-                      </path>
-                    </g>
-                    <g id="part-2">
-                      <path
-                        d="M44.5,13.5V31.2l-15.7,9-3.5-2,15.6-8.9L41,11.5Z"
-                        fill="none"
-                        stroke="#63a6b9"
-                        stroke-miterlimit="10"
-                        stroke-dashoffset="79.61946105957031"
-                        stroke-dasharray="79.61946105957031"
-                      >
-                      </path>
-                      <path
-                        d="M19,3l3.5-2L38.2,9.9V27.8L22.6,36.7,19,34.6l15.7-8.9V11.9Z"
-                        fill="none"
-                        stroke="#63a6b9"
-                        stroke-miterlimit="10"
-                        stroke-dashoffset="112.00057983398438"
-                        stroke-dasharray="112.00057983398438"
-                      >
-                      </path>
-                    </g>
-                    <g id="part-3">
-                      <path
-                        d="M22.5,51,6.9,42.1V24.2l3.5-2V40.1L26,49Z"
-                        fill="none"
-                        stroke="#63a6b9"
-                        stroke-miterlimit="10"
-                        stroke-dashoffset="79.78272247314453"
-                        stroke-dasharray="79.78272247314453"
-                      >
-                      </path>
-                      <path
-                        d="M44.4,34.5v4L28.7,47.4l-15.6-9V20.7l3.6-2-.1,17.8,12.2,6.9Z"
-                        fill="none"
-                        stroke="#63a6b9"
-                        stroke-miterlimit="10"
-                        stroke-dashoffset="111.65198516845703"
-                        stroke-dasharray="111.65198516845703"
-                      >
-                      </path>
-                    </g>
-                    <path
-                      id="shine"
-                      filter="url(#logo-shine-filter)"
-                      opacity=".5"
-                      d="M38.69,57.82l-8,2.91L6.31-6.12,14.3-9Z"
-                      fill="#fff"
-                      stroke-dashoffset="159.29510498046875"
-                      stroke-dasharray="159.29510498046875"
-                    >
+              </mask>
+            </defs>
+            <g>
+              <path id="logo-fill"
+                d="M.5,13.5,16.1,4.6l15.7,9v3.9L16.2,8.6.5,17.5ZM4,22.7l12.2-6.9,15.6,8.9v-4L16.3,11.8.5,20.7V38.5l3.5,2ZM41,11.5l-.1,17.8L25.3,38.2l3.5,2,15.7-9V13.5Zm-6.3.4V25.7L19,34.6l3.6,2.1,15.6-8.9V9.9L22.5,1,19,3ZM26,49,10.4,40.1V22.2l-3.5,2V42.1L22.5,51Zm2.8-5.6L16.6,36.5l.1-17.8-3.6,2V38.4l15.6,9,15.7-8.9v-4Z"
+                fill="#63a6b9">
+              </path>
+              <g mask="url(#logo-mask)">
+                <g id="logo-stroke">
+                  <g id="part-1">
+                    <path d="M.5,13.5,16.1,4.6l15.7,9v3.9L16.2,8.6.5,17.5Z" fill="none" stroke="#63a6b9"
+                      stroke-miterlimit="10" stroke-dashoffset="79.96430969238281" stroke-dasharray="79.96430969238281">
+                    </path>
+                    <path d="M4,40.5l-3.5-2V20.7l15.8-8.9,15.5,8.9v4L16.2,15.8,4,22.7Z" fill="none" stroke="#63a6b9"
+                      stroke-miterlimit="10" stroke-dashoffset="111.61508178710938"
+                      stroke-dasharray="111.61508178710938">
                     </path>
                   </g>
-                </g>
-                <g id="text">
-                  <path
-                    id="letter-1"
-                    d="M68.7,25A9.74,9.74,0,0,0,67,21.8a7.05,7.05,0,0,0-2.7-2.1,8,8,0,0,0-3.6-.7,8.48,8.48,0,0,0-2.9.4,4.89,4.89,0,0,0-1.9.8V11.4l-3.4,1.9V38a16.7,16.7,0,0,0,3,.7,25.84,25.84,0,0,0,4.2.3,10.19,10.19,0,0,0,4-.7,7.91,7.91,0,0,0,3-2,9.55,9.55,0,0,0,1.9-3.1,11.58,11.58,0,0,0,.7-4.2A12.9,12.9,0,0,0,68.7,25ZM64,34.1a5.73,5.73,0,0,1-4.4,1.8,15.51,15.51,0,0,1-2.3-.1,10.62,10.62,0,0,1-1.4-.3h-.2V23.4a5,5,0,0,1,1.8-1,7.51,7.51,0,0,1,2.6-.5,4.87,4.87,0,0,1,2.5.5,5.6,5.6,0,0,1,2.7,3.7,12.65,12.65,0,0,1,.3,2.8A7.37,7.37,0,0,1,64,34.1Z"
-                    fill="#fff"
-                  >
-                  </path>
-                  <path
-                    id="letter-2"
-                    d="M74.6,15.9a2.45,2.45,0,0,1-1.6-.6,2.11,2.11,0,0,1-.6-1.6,2.06,2.06,0,0,1,2.2-2.2,2.45,2.45,0,0,1,1.6.6,2.11,2.11,0,0,1,.6,1.6,2.11,2.11,0,0,1-.6,1.6A2.45,2.45,0,0,1,74.6,15.9Zm1.7,22.6H72.9V19.4h3.4Z"
-                    fill="#fff"
-                  >
-                  </path>
-                  <path
-                    id="letter-3"
-                    d="M82.9,19.4v-8l-3.5,1.9v18a17.19,17.19,0,0,0,.3,3.4,6.59,6.59,0,0,0,1.1,2.4,4.08,4.08,0,0,0,2.1,1.5,10.42,10.42,0,0,0,3.3.5,9.48,9.48,0,0,0,3-.4,7.69,7.69,0,0,0,1.2-.4V35.2a12.25,12.25,0,0,1-1.3.5,8.07,8.07,0,0,1-2.5.3,7.77,7.77,0,0,1-1.6-.2,2.84,2.84,0,0,1-1.1-.8,5.23,5.23,0,0,1-.7-1.5,15.42,15.42,0,0,1-.2-2.4V22.3h7.4V19.4H82.9Z"
-                    fill="#fff"
-                  >
-                  </path>
-                  <path
-                    id="letter-4"
-                    d="M93.5,38.6H97V22.7c.1-.1.3-.1.6-.2s.6-.1,1-.2a5,5,0,0,1,1.2-.2A4.87,4.87,0,0,1,101,22a7.8,7.8,0,0,1,2.4.3,3.27,3.27,0,0,1,1.5,1.1,5.24,5.24,0,0,1,.8,2,23.64,23.64,0,0,1,.2,3v10h3.5V27.7a13.7,13.7,0,0,0-.4-3.6,6.58,6.58,0,0,0-1.3-2.8,5.77,5.77,0,0,0-2.5-1.8,10.65,10.65,0,0,0-3.9-.6,16.35,16.35,0,0,0-2.2.2l-2.1.6V11.4l-3.5,1.9V38.6Z"
-                    fill="#fff"
-                  >
-                  </path>
-                  <path
-                    id="letter-5"
-                    d="M129.8,24.9a10.06,10.06,0,0,0-1.9-3.2,10,10,0,0,0-2.9-2,9.61,9.61,0,0,0-7.2,0,7.22,7.22,0,0,0-2.9,2,9.38,9.38,0,0,0-1.9,3.2,11,11,0,0,0-.7,4.1,13,13,0,0,0,.7,4.1,10.75,10.75,0,0,0,1.9,3.1,10,10,0,0,0,2.9,2,9.61,9.61,0,0,0,7.2,0,7.22,7.22,0,0,0,2.9-2,8.11,8.11,0,0,0,1.9-3.1,10.7,10.7,0,0,0,.7-4.1A10.7,10.7,0,0,0,129.8,24.9Zm-4.4,9.2a5.16,5.16,0,0,1-8,0,8.14,8.14,0,0,1-1.5-5.1,8.14,8.14,0,0,1,1.5-5.1,5.16,5.16,0,0,1,8,0,8.14,8.14,0,0,1,1.5,5.1A8.14,8.14,0,0,1,125.4,34.1Z"
-                    fill="#fff"
-                  >
-                  </path>
-                  <path
-                    id="letter-6"
-                    d="M133.5,39H137V22.4a1.76,1.76,0,0,0,.6-.1c.3,0,.6-.1,1-.1s.7-.1,1.1-.1h1.1a4,4,0,0,1,2,.4,2.33,2.33,0,0,1,1.2,1.2,6.46,6.46,0,0,1,.6,2.1,25.06,25.06,0,0,1,.2,3V38.9h3.4v-11a19.27,19.27,0,0,0-.1-2.4,15.52,15.52,0,0,0-.4-2.1,6.28,6.28,0,0,1,1.5-.8,8,8,0,0,1,2.9-.5,4,4,0,0,1,2,.4,2.19,2.19,0,0,1,1.3,1.2,6.46,6.46,0,0,1,.6,2.1,25.06,25.06,0,0,1,.2,3V39.2h3.4v-11a20.16,20.16,0,0,0-.3-3.6,8.35,8.35,0,0,0-1.1-2.9,5.1,5.1,0,0,0-2.2-1.9,10.11,10.11,0,0,0-5.7-.5,18.88,18.88,0,0,0-1.8.6l-1.4.7c-.4.2-.6.4-.8.5a5.11,5.11,0,0,0-2.1-1.5,9.14,9.14,0,0,0-3.1-.5,29.9,29.9,0,0,0-4.5.3c-1.3.2-2.3.4-3.1.6Z"
-                    fill="#fff"
-                  >
-                  </path>
-                  <path
-                    id="letter-7"
-                    d="M179.7,24.9a8.94,8.94,0,0,0-1.9-3.1,7.91,7.91,0,0,0-3-2,10.19,10.19,0,0,0-4-.7,25.84,25.84,0,0,0-4.2.3c-1.3.2-2.3.4-3.1.6V46l3.4-1.8V37.5a13.46,13.46,0,0,0,1.9.8,9.47,9.47,0,0,0,3,.4,8.73,8.73,0,0,0,3.7-.7,6.59,6.59,0,0,0,2.7-2,7.77,7.77,0,0,0,1.7-3.1,12.9,12.9,0,0,0,.6-4A8.42,8.42,0,0,0,179.7,24.9Zm-3.2,6.7a6.39,6.39,0,0,1-1,2.2,4.12,4.12,0,0,1-1.7,1.5,6.17,6.17,0,0,1-2.5.5,7.51,7.51,0,0,1-2.6-.5,7.19,7.19,0,0,1-1.8-1V22.4c.4-.1.8-.2,1.4-.3a16.27,16.27,0,0,1,2.4-.1,5.8,5.8,0,0,1,4.5,1.8,7.29,7.29,0,0,1,1.7,5.1A7.66,7.66,0,0,1,176.5,31.6Z"
-                    fill="#fff"
-                  >
+                  <g id="part-2">
+                    <path d="M44.5,13.5V31.2l-15.7,9-3.5-2,15.6-8.9L41,11.5Z" fill="none" stroke="#63a6b9"
+                      stroke-miterlimit="10" stroke-dashoffset="79.61946105957031" stroke-dasharray="79.61946105957031">
+                    </path>
+                    <path d="M19,3l3.5-2L38.2,9.9V27.8L22.6,36.7,19,34.6l15.7-8.9V11.9Z" fill="none" stroke="#63a6b9"
+                      stroke-miterlimit="10" stroke-dashoffset="112.00057983398438"
+                      stroke-dasharray="112.00057983398438">
+                    </path>
+                  </g>
+                  <g id="part-3">
+                    <path d="M22.5,51,6.9,42.1V24.2l3.5-2V40.1L26,49Z" fill="none" stroke="#63a6b9"
+                      stroke-miterlimit="10" stroke-dashoffset="79.78272247314453" stroke-dasharray="79.78272247314453">
+                    </path>
+                    <path d="M44.4,34.5v4L28.7,47.4l-15.6-9V20.7l3.6-2-.1,17.8,12.2,6.9Z" fill="none" stroke="#63a6b9"
+                      stroke-miterlimit="10" stroke-dashoffset="111.65198516845703"
+                      stroke-dasharray="111.65198516845703">
+                    </path>
+                  </g>
+                  <path id="shine" filter="url(#logo-shine-filter)" opacity=".5"
+                    d="M38.69,57.82l-8,2.91L6.31-6.12,14.3-9Z" fill="#fff" stroke-dashoffset="159.29510498046875"
+                    stroke-dasharray="159.29510498046875">
                   </path>
                 </g>
               </g>
-              <style>
-                @keyframes draw-in {
-                  to {
-                    stroke-dashoffset: 0;
-                  }
+              <g id="text">
+                <path id="letter-1"
+                  d="M68.7,25A9.74,9.74,0,0,0,67,21.8a7.05,7.05,0,0,0-2.7-2.1,8,8,0,0,0-3.6-.7,8.48,8.48,0,0,0-2.9.4,4.89,4.89,0,0,0-1.9.8V11.4l-3.4,1.9V38a16.7,16.7,0,0,0,3,.7,25.84,25.84,0,0,0,4.2.3,10.19,10.19,0,0,0,4-.7,7.91,7.91,0,0,0,3-2,9.55,9.55,0,0,0,1.9-3.1,11.58,11.58,0,0,0,.7-4.2A12.9,12.9,0,0,0,68.7,25ZM64,34.1a5.73,5.73,0,0,1-4.4,1.8,15.51,15.51,0,0,1-2.3-.1,10.62,10.62,0,0,1-1.4-.3h-.2V23.4a5,5,0,0,1,1.8-1,7.51,7.51,0,0,1,2.6-.5,4.87,4.87,0,0,1,2.5.5,5.6,5.6,0,0,1,2.7,3.7,12.65,12.65,0,0,1,.3,2.8A7.37,7.37,0,0,1,64,34.1Z"
+                  fill="#fff">
+                </path>
+                <path id="letter-2"
+                  d="M74.6,15.9a2.45,2.45,0,0,1-1.6-.6,2.11,2.11,0,0,1-.6-1.6,2.06,2.06,0,0,1,2.2-2.2,2.45,2.45,0,0,1,1.6.6,2.11,2.11,0,0,1,.6,1.6,2.11,2.11,0,0,1-.6,1.6A2.45,2.45,0,0,1,74.6,15.9Zm1.7,22.6H72.9V19.4h3.4Z"
+                  fill="#fff">
+                </path>
+                <path id="letter-3"
+                  d="M82.9,19.4v-8l-3.5,1.9v18a17.19,17.19,0,0,0,.3,3.4,6.59,6.59,0,0,0,1.1,2.4,4.08,4.08,0,0,0,2.1,1.5,10.42,10.42,0,0,0,3.3.5,9.48,9.48,0,0,0,3-.4,7.69,7.69,0,0,0,1.2-.4V35.2a12.25,12.25,0,0,1-1.3.5,8.07,8.07,0,0,1-2.5.3,7.77,7.77,0,0,1-1.6-.2,2.84,2.84,0,0,1-1.1-.8,5.23,5.23,0,0,1-.7-1.5,15.42,15.42,0,0,1-.2-2.4V22.3h7.4V19.4H82.9Z"
+                  fill="#fff">
+                </path>
+                <path id="letter-4"
+                  d="M93.5,38.6H97V22.7c.1-.1.3-.1.6-.2s.6-.1,1-.2a5,5,0,0,1,1.2-.2A4.87,4.87,0,0,1,101,22a7.8,7.8,0,0,1,2.4.3,3.27,3.27,0,0,1,1.5,1.1,5.24,5.24,0,0,1,.8,2,23.64,23.64,0,0,1,.2,3v10h3.5V27.7a13.7,13.7,0,0,0-.4-3.6,6.58,6.58,0,0,0-1.3-2.8,5.77,5.77,0,0,0-2.5-1.8,10.65,10.65,0,0,0-3.9-.6,16.35,16.35,0,0,0-2.2.2l-2.1.6V11.4l-3.5,1.9V38.6Z"
+                  fill="#fff">
+                </path>
+                <path id="letter-5"
+                  d="M129.8,24.9a10.06,10.06,0,0,0-1.9-3.2,10,10,0,0,0-2.9-2,9.61,9.61,0,0,0-7.2,0,7.22,7.22,0,0,0-2.9,2,9.38,9.38,0,0,0-1.9,3.2,11,11,0,0,0-.7,4.1,13,13,0,0,0,.7,4.1,10.75,10.75,0,0,0,1.9,3.1,10,10,0,0,0,2.9,2,9.61,9.61,0,0,0,7.2,0,7.22,7.22,0,0,0,2.9-2,8.11,8.11,0,0,0,1.9-3.1,10.7,10.7,0,0,0,.7-4.1A10.7,10.7,0,0,0,129.8,24.9Zm-4.4,9.2a5.16,5.16,0,0,1-8,0,8.14,8.14,0,0,1-1.5-5.1,8.14,8.14,0,0,1,1.5-5.1,5.16,5.16,0,0,1,8,0,8.14,8.14,0,0,1,1.5,5.1A8.14,8.14,0,0,1,125.4,34.1Z"
+                  fill="#fff">
+                </path>
+                <path id="letter-6"
+                  d="M133.5,39H137V22.4a1.76,1.76,0,0,0,.6-.1c.3,0,.6-.1,1-.1s.7-.1,1.1-.1h1.1a4,4,0,0,1,2,.4,2.33,2.33,0,0,1,1.2,1.2,6.46,6.46,0,0,1,.6,2.1,25.06,25.06,0,0,1,.2,3V38.9h3.4v-11a19.27,19.27,0,0,0-.1-2.4,15.52,15.52,0,0,0-.4-2.1,6.28,6.28,0,0,1,1.5-.8,8,8,0,0,1,2.9-.5,4,4,0,0,1,2,.4,2.19,2.19,0,0,1,1.3,1.2,6.46,6.46,0,0,1,.6,2.1,25.06,25.06,0,0,1,.2,3V39.2h3.4v-11a20.16,20.16,0,0,0-.3-3.6,8.35,8.35,0,0,0-1.1-2.9,5.1,5.1,0,0,0-2.2-1.9,10.11,10.11,0,0,0-5.7-.5,18.88,18.88,0,0,0-1.8.6l-1.4.7c-.4.2-.6.4-.8.5a5.11,5.11,0,0,0-2.1-1.5,9.14,9.14,0,0,0-3.1-.5,29.9,29.9,0,0,0-4.5.3c-1.3.2-2.3.4-3.1.6Z"
+                  fill="#fff">
+                </path>
+                <path id="letter-7"
+                  d="M179.7,24.9a8.94,8.94,0,0,0-1.9-3.1,7.91,7.91,0,0,0-3-2,10.19,10.19,0,0,0-4-.7,25.84,25.84,0,0,0-4.2.3c-1.3.2-2.3.4-3.1.6V46l3.4-1.8V37.5a13.46,13.46,0,0,0,1.9.8,9.47,9.47,0,0,0,3,.4,8.73,8.73,0,0,0,3.7-.7,6.59,6.59,0,0,0,2.7-2,7.77,7.77,0,0,0,1.7-3.1,12.9,12.9,0,0,0,.6-4A8.42,8.42,0,0,0,179.7,24.9Zm-3.2,6.7a6.39,6.39,0,0,1-1,2.2,4.12,4.12,0,0,1-1.7,1.5,6.17,6.17,0,0,1-2.5.5,7.51,7.51,0,0,1-2.6-.5,7.19,7.19,0,0,1-1.8-1V22.4c.4-.1.8-.2,1.4-.3a16.27,16.27,0,0,1,2.4-.1,5.8,5.8,0,0,1,4.5,1.8,7.29,7.29,0,0,1,1.7,5.1A7.66,7.66,0,0,1,176.5,31.6Z"
+                  fill="#fff">
+                </path>
+              </g>
+            </g>
+            <style>
+              @keyframes draw-in {
+                to {
+                  stroke-dashoffset: 0;
                 }
-                @keyframes fade-in {
-                  from {
-                    opacity: 0;
-                  }
-                  to {
-                    opacity: 1;
-                  }
+              }
+
+              @keyframes fade-in {
+                from {
+                  opacity: 0;
                 }
-                @keyframes shine-move {
-                  from {
-                    transform: translateX(-50px);
-                  }
-                  to {
-                    transform: translateX(50px);
-                  }
+
+                to {
+                  opacity: 1;
                 }
-                #bithomp-logotext #shine {
-                  animation: shine-move 1.5s 3.5s ease-in-out both;
+              }
+
+              @keyframes shine-move {
+                from {
+                  transform: translateX(-50px);
                 }
-                #bithomp-logotext #logo-stroke #part-1 path,
-                #bithomp-logotext #logo-stroke #part-2 path,
-                #bithomp-logotext #logo-stroke #part-3 path {
-                  animation: draw-in 3s ease-in-out both;
+
+                to {
+                  transform: translateX(50px);
                 }
-                #bithomp-logotext #logo-fill {
-                  animation: fade-in 1s 3s linear both;
-                }
-                #bithomp-logotext #letter-1 {
-                  animation: fade-in 2s 3s linear both;
-                }
-                #bithomp-logotext #letter-2 {
-                  animation: fade-in 2s 3.05s linear both;
-                }
-                #bithomp-logotext #letter-3 {
-                  animation: fade-in 2s 3.1s linear both;
-                }
-                #bithomp-logotext #letter-4 {
-                  animation: fade-in 2s 3.15s linear both;
-                }
-                #bithomp-logotext #letter-5 {
-                  animation: fade-in 2s 3.2s linear both;
-                }
-                #bithomp-logotext #letter-6 {
-                  animation: fade-in 2s 3.25s linear both;
-                }
-                #bithomp-logotext #letter-7 {
-                  animation: fade-in 2s 3.3s linear both;
-                }
-              </style>
-            </svg>
-          </div>
-        </a>
-        <div class="social-icons">
-          <a href="https://twitter.com/bithomp">
-            <svg width="22" height="22" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1684 408q-67 98-162 167 1 14 1 42 0 130-38 259.5t-115.5 248.5-184.5 210.5-258 146-323 54.5q-271 0-496-145 35 4 78 4 225 0 401-138-105-2-188-64.5t-114-159.5q33 5 61 5 43 0 85-11-112-23-185.5-111.5t-73.5-205.5v-4q68 38 146 41-66-44-105-115t-39-154q0-88 44-163 121 149 294.5 238.5t371.5 99.5q-8-38-8-74 0-134 94.5-228.5t228.5-94.5q140 0 236 102 109-21 205-78-37 115-142 178 93-10 186-50z" fill="#006b7d"/></svg>
-          </a>
-          <a href="https://github.com/Bithomp">
-            <svg width="22" height="22" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M896 128q209 0 385.5 103t279.5 279.5 103 385.5q0 251-146.5 451.5t-378.5 277.5q-27 5-40-7t-13-30q0-3 .5-76.5t.5-134.5q0-97-52-142 57-6 102.5-18t94-39 81-66.5 53-105 20.5-150.5q0-119-79-206 37-91-8-204-28-9-81 11t-92 44l-38 24q-93-26-192-26t-192 26q-16-11-42.5-27t-83.5-38.5-85-13.5q-45 113-8 204-79 87-79 206 0 85 20.5 150t52.5 105 80.5 67 94 39 102.5 18q-39 36-49 103-21 10-45 15t-57 5-65.5-21.5-55.5-62.5q-19-32-48.5-52t-49.5-24l-20-3q-21 0-29 4.5t-5 11.5 9 14 13 12l7 5q22 10 43.5 38t31.5 51l10 23q13 38 44 61.5t67 30 69.5 7 55.5-3.5l23-4q0 38 .5 88.5t.5 54.5q0 18-13 30t-40 7q-232-77-378.5-277.5t-146.5-451.5q0-209 103-385.5t279.5-279.5 385.5-103zm-477 1103q3-7-7-12-10-3-13 2-3 7 7 12 9 6 13-2zm31 34q7-5-2-16-10-9-16-3-7 5 2 16 10 10 16 3zm30 45q9-7 0-19-8-13-17-6-9 5 0 18t17 7zm42 42q8-8-4-19-12-12-20-3-9 8 4 19 12 12 20 3zm57 25q3-11-13-16-15-4-19 7t13 15q15 6 19-6zm63 5q0-13-17-11-16 0-16 11 0 13 17 11 16 0 16-11zm58-10q-2-11-18-9-16 3-14 15t18 8 14-14z" fill="#006b7d"/></svg>
-          </a>
-          <a href="/">
-            <svg width="22" height="22" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1472 992v480q0 26-19 45t-45 19h-384v-384h-256v384h-384q-26 0-45-19t-19-45v-480q0-1 .5-3t.5-3l575-474 575 474q1 2 1 6zm223-69l-62 74q-8 9-21 11h-3q-13 0-21-7l-692-577-692 577q-12 8-24 7-13-2-21-11l-62-74q-8-10-7-23.5t11-21.5l719-599q32-26 76-26t76 26l244 204v-195q0-14 9-23t23-9h192q14 0 23 9t9 23v408l219 182q10 8 11 21.5t-7 23.5z" fill="#006b7d"/></svg>
-          </a>
+              }
+
+              #bithomp-logotext #shine {
+                animation: shine-move 1.5s 3.5s ease-in-out both;
+              }
+
+              #bithomp-logotext #logo-stroke #part-1 path,
+              #bithomp-logotext #logo-stroke #part-2 path,
+              #bithomp-logotext #logo-stroke #part-3 path {
+                animation: draw-in 3s ease-in-out both;
+              }
+
+              #bithomp-logotext #logo-fill {
+                animation: fade-in 1s 3s linear both;
+              }
+
+              #bithomp-logotext #letter-1 {
+                animation: fade-in 2s 3s linear both;
+              }
+
+              #bithomp-logotext #letter-2 {
+                animation: fade-in 2s 3.05s linear both;
+              }
+
+              #bithomp-logotext #letter-3 {
+                animation: fade-in 2s 3.1s linear both;
+              }
+
+              #bithomp-logotext #letter-4 {
+                animation: fade-in 2s 3.15s linear both;
+              }
+
+              #bithomp-logotext #letter-5 {
+                animation: fade-in 2s 3.2s linear both;
+              }
+
+              #bithomp-logotext #letter-6 {
+                animation: fade-in 2s 3.25s linear both;
+              }
+
+              #bithomp-logotext #letter-7 {
+                animation: fade-in 2s 3.3s linear both;
+              }
+            </style>
+          </svg>
         </div>
+      </a>
+      <div class="social-icons">
+        <a href="https://twitter.com/bithomp">
+          <svg width="22" height="22" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M1684 408q-67 98-162 167 1 14 1 42 0 130-38 259.5t-115.5 248.5-184.5 210.5-258 146-323 54.5q-271 0-496-145 35 4 78 4 225 0 401-138-105-2-188-64.5t-114-159.5q33 5 61 5 43 0 85-11-112-23-185.5-111.5t-73.5-205.5v-4q68 38 146 41-66-44-105-115t-39-154q0-88 44-163 121 149 294.5 238.5t371.5 99.5q-8-38-8-74 0-134 94.5-228.5t228.5-94.5q140 0 236 102 109-21 205-78-37 115-142 178 93-10 186-50z"
+              fill="#006b7d" /></svg>
+        </a>
+        <a href="https://github.com/Bithomp">
+          <svg width="22" height="22" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M896 128q209 0 385.5 103t279.5 279.5 103 385.5q0 251-146.5 451.5t-378.5 277.5q-27 5-40-7t-13-30q0-3 .5-76.5t.5-134.5q0-97-52-142 57-6 102.5-18t94-39 81-66.5 53-105 20.5-150.5q0-119-79-206 37-91-8-204-28-9-81 11t-92 44l-38 24q-93-26-192-26t-192 26q-16-11-42.5-27t-83.5-38.5-85-13.5q-45 113-8 204-79 87-79 206 0 85 20.5 150t52.5 105 80.5 67 94 39 102.5 18q-39 36-49 103-21 10-45 15t-57 5-65.5-21.5-55.5-62.5q-19-32-48.5-52t-49.5-24l-20-3q-21 0-29 4.5t-5 11.5 9 14 13 12l7 5q22 10 43.5 38t31.5 51l10 23q13 38 44 61.5t67 30 69.5 7 55.5-3.5l23-4q0 38 .5 88.5t.5 54.5q0 18-13 30t-40 7q-232-77-378.5-277.5t-146.5-451.5q0-209 103-385.5t279.5-279.5 385.5-103zm-477 1103q3-7-7-12-10-3-13 2-3 7 7 12 9 6 13-2zm31 34q7-5-2-16-10-9-16-3-7 5 2 16 10 10 16 3zm30 45q9-7 0-19-8-13-17-6-9 5 0 18t17 7zm42 42q8-8-4-19-12-12-20-3-9 8 4 19 12 12 20 3zm57 25q3-11-13-16-15-4-19 7t13 15q15 6 19-6zm63 5q0-13-17-11-16 0-16 11 0 13 17 11 16 0 16-11zm58-10q-2-11-18-9-16 3-14 15t18 8 14-14z"
+              fill="#006b7d" /></svg>
+        </a>
+        <a href="/">
+          <svg width="22" height="22" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M1472 992v480q0 26-19 45t-45 19h-384v-384h-256v384h-384q-26 0-45-19t-19-45v-480q0-1 .5-3t.5-3l575-474 575 474q1 2 1 6zm223-69l-62 74q-8 9-21 11h-3q-13 0-21-7l-692-577-692 577q-12 8-24 7-13-2-21-11l-62-74q-8-10-7-23.5t11-21.5l719-599q32-26 76-26t76 26l244 204v-195q0-14 9-23t23-9h192q14 0 23 9t9 23v408l219 182q10 8 11 21.5t-7 23.5z"
+              fill="#006b7d" /></svg>
+        </a>
       </div>
-      <h2>Bithomp tools <span class="testnetonly hidden">(testnet)</span></h2>
-      <span class="terms" id="version">loading...</span>
+    </div>
+    <h2>Bithomp tools <span class="testnetonly hidden">(testnet)</span></h2>
+    <span class="terms" id="version">loading...</span>
 
-      <div class="terms">
-        <button onclick="location.href='https://github.com/Bithomp/bithomp-tools';" class="button github">Download <svg width="22" height="22" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M896 128q209 0 385.5 103t279.5 279.5 103 385.5q0 251-146.5 451.5t-378.5 277.5q-27 5-40-7t-13-30q0-3 .5-76.5t.5-134.5q0-97-52-142 57-6 102.5-18t94-39 81-66.5 53-105 20.5-150.5q0-119-79-206 37-91-8-204-28-9-81 11t-92 44l-38 24q-93-26-192-26t-192 26q-16-11-42.5-27t-83.5-38.5-85-13.5q-45 113-8 204-79 87-79 206 0 85 20.5 150t52.5 105 80.5 67 94 39 102.5 18q-39 36-49 103-21 10-45 15t-57 5-65.5-21.5-55.5-62.5q-19-32-48.5-52t-49.5-24l-20-3q-21 0-29 4.5t-5 11.5 9 14 13 12l7 5q22 10 43.5 38t31.5 51l10 23q13 38 44 61.5t67 30 69.5 7 55.5-3.5l23-4q0 38 .5 88.5t.5 54.5q0 18-13 30t-40 7q-232-77-378.5-277.5t-146.5-451.5q0-209 103-385.5t279.5-279.5 385.5-103zm-477 1103q3-7-7-12-10-3-13 2-3 7 7 12 9 6 13-2zm31 34q7-5-2-16-10-9-16-3-7 5 2 16 10 10 16 3zm30 45q9-7 0-19-8-13-17-6-9 5 0 18t17 7zm42 42q8-8-4-19-12-12-20-3-9 8 4 19 12 12 20 3zm57 25q3-11-13-16-15-4-19 7t13 15q15 6 19-6zm63 5q0-13-17-11-16 0-16 11 0 13 17 11 16 0 16-11zm58-10q-2-11-18-9-16 3-14 15t18 8 14-14z" fill="#fff"/></svg></button>
+    <div class="terms">
+      <button onclick="location.href='https://github.com/Bithomp/bithomp-tools';" class="button github">Download <svg
+          width="22" height="22" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M896 128q209 0 385.5 103t279.5 279.5 103 385.5q0 251-146.5 451.5t-378.5 277.5q-27 5-40-7t-13-30q0-3 .5-76.5t.5-134.5q0-97-52-142 57-6 102.5-18t94-39 81-66.5 53-105 20.5-150.5q0-119-79-206 37-91-8-204-28-9-81 11t-92 44l-38 24q-93-26-192-26t-192 26q-16-11-42.5-27t-83.5-38.5-85-13.5q-45 113-8 204-79 87-79 206 0 85 20.5 150t52.5 105 80.5 67 94 39 102.5 18q-39 36-49 103-21 10-45 15t-57 5-65.5-21.5-55.5-62.5q-19-32-48.5-52t-49.5-24l-20-3q-21 0-29 4.5t-5 11.5 9 14 13 12l7 5q22 10 43.5 38t31.5 51l10 23q13 38 44 61.5t67 30 69.5 7 55.5-3.5l23-4q0 38 .5 88.5t.5 54.5q0 18-13 30t-40 7q-232-77-378.5-277.5t-146.5-451.5q0-209 103-385.5t279.5-279.5 385.5-103zm-477 1103q3-7-7-12-10-3-13 2-3 7 7 12 9 6 13-2zm31 34q7-5-2-16-10-9-16-3-7 5 2 16 10 10 16 3zm30 45q9-7 0-19-8-13-17-6-9 5 0 18t17 7zm42 42q8-8-4-19-12-12-20-3-9 8 4 19 12 12 20 3zm57 25q3-11-13-16-15-4-19 7t13 15q15 6 19-6zm63 5q0-13-17-11-16 0-16 11 0 13 17 11 16 0 16-11zm58-10q-2-11-18-9-16 3-14 15t18 8 14-14z"
+            fill="#fff" /></svg></button>
+    </div>
+
+    <div class="terms terms-notes bordered">
+      <b>Important</b><br>
+      - Only use this tool on a trusted computer.<br>
+      - Use a private browsing mode in your browser.<br>
+      - Close the browser tab after using the tool and clear cache.<br>
+      - Never share your secret key or mnemonic (recovery phrase) with anyone.<br>
+      <br>
+      <b>Features</b><br>
+      - You can use this tool in two modes: online and offline.<br>
+      - Works with secret key, mnemonic and Ledger Hardware Wallet.<br>
+      - Multisignature signing in the Offline mode.<br>
+      - Send a Payment: XRP or any IOU.<br>
+      - Add or Remove a Trustline.<br>
+      - Place or Cancel Buy/Sell trade orders.<br>
+      - Add a Gravatar to your account.<br>
+      - Assign a Domain to your account.<br>
+      - Create, Execute or Cancel Escrow.<br>
+      - Add a regular key.<br>
+      - Add a list of signers (multisig).<br>
+      - Add a message key.<br>
+      - Set a flag to Require destination tag.<br>
+      - Disallow Incoming XRP.<br>
+      - Enable default rippling.<br>
+      - Disable Master Key.<br>
+      <br>
+      <b>Offline mode:</b><br>
+      - Another Computer or Phone will be required to submit the transaction.<br>
+      - Offline mode is recomended.<br>
+      - Download the <b>index.html</b> file from <a href="https://github.com/Bithomp/bithomp-tools" target="_blank"
+        rel="noopener">github</a>.
+      - Transfer it to the offline PC on the usb stick.<br>
+      - Open the index.html file in any browser, private mode.<br>
+      - You will be able to submit signed transaction blob by any device here: <a id="bithompSubmit"
+        href="https://bithomp.com/submit" rel="noopener">https://bithomp.com/submit</a><br>
+      <br>
+      <b>Online mode:</b><br>
+      - Your Secret Key and/or Mnemonic is not transmitted over the network.<br>
+      - Transactions get signed and encrypted by JS library and then transmitted through Web Socket.<br>
+      - Connect to a secure web socket (WSS) server.<br>
+      <br>
+      THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+      THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+      AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+      CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+      IN THE SOFTWARE.<br>
+      <br>
+      BY DOWNLOADING, INSTALLING OR USING THIS SOFTWARE YOU AGREE THAT YOU CAN NOT HOLD IT'S CREATORS RESPONSIBLE OR
+      LIABLE FOR ANY ACTIONS OR CONSEQUENCES IN RELATION TO IT.<br>
+    </div>
+    <input type="button" value="I have read, understand, and agree to the above." id="terms_button"
+      class="terms-button" />
+
+    <div class="terms-agreed hidden">
+
+      <div class="switch-field">
+        <input type="radio" id="switch_online" name="tool_mode" value="online" checked />
+        <label for="switch_online">Online</label>
+        <input type="radio" id="switch_offline" name="tool_mode" value="offline" />
+        <label for="switch_offline">Offline</label>
       </div>
 
-      <div class="terms terms-notes bordered">
-        <b>Important</b><br>
-        - Only use this tool on a trusted computer.<br>
-        - Use a private browsing mode in your browser.<br>
-        - Close the browser tab after using the tool and clear cache.<br>
-        - Never share your secret key or mnemonic (recovery phrase) with anyone.<br>
-        <br>
-        <b>Features</b><br>
-        - You can use this tool in two modes: online and offline.<br>
-        - Works with secret key, mnemonic and Ledger Hardware Wallet.<br>
-        - Multisignature signing in the Offline mode.<br>
-        - Send a Payment: XRP or any IOU.<br>
-        - Add or Remove a Trustline.<br>
-        - Place or Cancel Buy/Sell trade orders.<br>
-        - Add a Gravatar to your account.<br>
-        - Assign a Domain to your account.<br>
-        - Create, Execute or Cancel Escrow.<br>
-        - Add a regular key.<br>
-        - Add a list of signers (multisig).<br>
-        - Add a message key.<br>
-        - Set a flag to Require destination tag.<br>
-        - Disallow Incoming XRP.<br>
-        - Enable default rippling.<br>
-        - Disable Master Key.<br>
-        <br>
-        <b>Offline mode:</b><br>
-        - Another Computer or Phone will be required to submit the transaction.<br>
-        - Offline mode is recomended.<br>
-        - Download the <b>index.html</b> file from <a href="https://github.com/Bithomp/bithomp-tools" target="_blank" rel="noopener">github</a>.
-        - Transfer it to the offline PC on the usb stick.<br>
-        - Open the index.html file in any browser, private mode.<br>
-        - You will be able to submit signed transaction blob by any device here: <a id="bithompSubmit" href="https://bithomp.com/submit" rel="noopener">https://bithomp.com/submit</a><br>
-        <br>
-        <b>Online mode:</b><br>
-        - Your Secret Key and/or Mnemonic is not transmitted over the network.<br>
-        - Transactions get signed and encrypted by JS library and then transmitted through Web Socket.<br>
-        - Connect to a secure web socket (WSS) server.<br>
-        <br>
-        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.<br>
-        <br>
-        BY DOWNLOADING, INSTALLING OR USING THIS SOFTWARE YOU AGREE THAT YOU CAN NOT HOLD IT'S CREATORS RESPONSIBLE OR LIABLE FOR ANY ACTIONS OR CONSEQUENCES IN RELATION TO IT.<br>
-      </div>
-      <input type="button" value="I have read, understand, and agree to the above." id="terms_button" class="terms-button"/>
+      <fieldset class="server">
+        <div>
+          <input type="text" id="server" placeholder="Enter XRPL ws here" value="wss://xrpl.ws" spellcheck="false"
+            class="bordered-centered" />
+          <button type="button" id="server_connect" class="server-not-connected">Connect</button>
+          <div class="feedback" id="server_feedback"></div>
+        </div>
+      </fieldset>
 
-      <div class="terms-agreed hidden">
+      <fieldset id="choose-wallet-type" class="hidden">
+        <hr>
+        <h3>Choose Wallet Type</h3>
 
         <div class="switch-field">
-          <input type="radio" id="switch_online" name="tool_mode" value="online" checked/>
-          <label for="switch_online">Online</label>
-          <input type="radio" id="switch_offline" name="tool_mode" value="offline" />
-          <label for="switch_offline">Offline</label>
+          <input type="radio" id="switch_secret" name="privkey_type" value="secret" checked="checked"
+            autocomplete="new-password" />
+          <label for="switch_secret">Paper wallet (secret key)</label>
+          <input type="radio" id="switch_mnemonic" name="privkey_type" value="mnemonic" />
+          <label for="switch_mnemonic">Passphrase (mnemonic)</label>
+          <span class="online-fields">
+            <span class="switch_hw hidden">
+              <input type="radio" id="switch_hw" name="privkey_type" value="hw" />
+              <label for="switch_hw">Ledger HW (hardware)</label>
+            </span>
+          </span>
         </div>
 
-        <fieldset class="server">
-          <div>
-            <input type="text" id="server" placeholder="Enter XRPL ws here" value="wss://xrpl.ws" spellcheck="false" class="bordered-centered" />
-            <button type="button" id="server_connect" class="server-not-connected">Connect</button>
-            <div class="feedback" id="server_feedback"></div>
+        <input type="hidden" id="address" />
+        <input type="hidden" id="privkey" />
+        <input type="hidden" id="pubkey" />
+
+        <div class="hw-fields hidden">
+          <div class="ledgerhw-not-connected note bordered">
+            1. Connect Ledger Wallet to your computer<br>
+            2. Start XRP app on it (2.0.1 or higher)<br>
+            3. Press "Connect" button<br>
+            <center><input type="button" value="connect" id="ledgerhw_connect" /></center>
           </div>
-        </fieldset>
+        </div>
 
-        <fieldset id="choose-wallet-type" class="hidden">
-          <hr>
-          <h3>Choose Wallet Type</h3>
+        <div class="mnemonic-fields hidden">
+          <input type="text" id="bip32-path" placeholder="The BIP32 derivation path" spellcheck="false"
+            autocomplete="off" class="bordered-centered" value="m/44'/144'/0'/0" />
+          <br /><br />
+          <textarea id="phrase" class="phrase" placeholder="Enter your mnemonic (e.g. 24 recovery words)"></textarea>
+          <input type="text" id="mnemonic_passphrase" placeholder="Enter your mnemonic passphrase (if required)"
+            spellcheck="false" autocomplete="off" class="bordered-centered" />
+        </div>
 
-          <div class="switch-field">
-            <input type="radio" id="switch_secret" name="privkey_type" value="secret" checked="checked" autocomplete="new-password"/>
-            <label for="switch_secret">Paper wallet (secret key)</label>
-            <input type="radio" id="switch_mnemonic" name="privkey_type" value="mnemonic" />
-            <label for="switch_mnemonic">Passphrase (mnemonic)</label>
-            <span class="online-fields">
-              <span class="switch_hw hidden">
-                <input type="radio" id="switch_hw" name="privkey_type" value="hw" />
-                <label for="switch_hw">Ledger HW (hardware)</label>
-              </span>
-            </span>
-          </div>
+        <div class="secret-fields">
+          <input type="text" id="secret" placeholder="Enter your XRP secret here, i.e. sxxxxxxxxxxxxxxxxx"
+            spellcheck="false" autocomplete="off" class="bordered-centered" />
+          <input type="text" id="secret_hidden" placeholder="*****************************"
+            class="hidden bordered-centered" />
+        </div>
 
-          <input type="hidden" id="address" />
-          <input type="hidden" id="privkey" />
-          <input type="hidden" id="pubkey" />
-
-          <div class="hw-fields hidden">
-            <div class="ledgerhw-not-connected note bordered">
-              1. Connect Ledger Wallet to your computer<br>
-              2. Start XRP app on it (2.0.1 or higher)<br>
-              3. Press "Connect" button<br>
-              <center><input type="button" value="connect" id="ledgerhw_connect" /></center>
-            </div>
-          </div>
-
-          <div class="mnemonic-fields hidden">
-            <textarea id="phrase" class="phrase" placeholder="Enter your mnemonic (e.g. 24 recovery words)"></textarea>
-            <input type="text" id="mnemonic_passphrase" placeholder="Enter your mnemonic passphrase (if required)" spellcheck="false" autocomplete="off" class="bordered-centered" />
-          </div>
-
-          <div class="secret-fields">
-            <input type="text" id="secret" placeholder="Enter your XRP secret here, i.e. sxxxxxxxxxxxxxxxxx" spellcheck="false" autocomplete="off" class="bordered-centered" />
-            <input type="text" id="secret_hidden" placeholder="*****************************" class="hidden bordered-centered" />
-          </div>
-
-          <div class="feedback orange" id="feedback"></div>
-          <div class="set-address hidden">
-            <label class="container container-set-address">
-              Sign on behalf of a different address
-              <input type="checkbox" id="set_address">
+        <div class="feedback orange" id="feedback"></div>
+        <div class="set-address hidden">
+          <label class="container container-set-address">
+            Sign on behalf of a different address
+            <input type="checkbox" id="set_address">
+            <span class="checkmark"></span>
+          </label>
+          <input type="text" id="sign_address" placeholder="Enter a XRP address"
+            class="bordered-centered sign-address hidden" spellcheck="false" />
+          <div class="offline-fields hidden">
+            <label class="container container-multisig sign-address hidden">
+              Multi-signatute
+              <input type="checkbox" id="multisig">
               <span class="checkmark"></span>
             </label>
-            <input type="text" id="sign_address" placeholder="Enter a XRP address" class="bordered-centered sign-address hidden" spellcheck="false" />
-            <div class="offline-fields hidden">
-              <label class="container container-multisig sign-address hidden">
-                Multi-signatute
-                <input type="checkbox" id="multisig">
-                <span class="checkmark"></span>
-              </label>
-            </div>
-            <div class="feedback sign-address hidden" id="sign_address_feedback"></div>
           </div>
-          <div class="feedback" id="account_feedback"></div>
+          <div class="feedback sign-address hidden" id="sign_address_feedback"></div>
+        </div>
+        <div class="feedback" id="account_feedback"></div>
 
-          <div id="ready-to-sign" class="hidden">
+        <div id="ready-to-sign" class="hidden">
+          <hr>
+          <h3>Choose Transaction Type</h3>
 
-            <hr>
+          <div class="switch-field">
+            <input type="radio" id="switch_payment" name="tx_type" value="payment" checked />
+            <label for="switch_payment">Payment</label>
+            <input type="radio" id="switch_trustline" name="tx_type" value="trustline" />
+            <label for="switch_trustline">Trustline</label>
+            <div class="inline secret-fields mnemonic-fields hidden">
+              <input type="radio" id="switch_settings" name="tx_type" value="settings" />
+              <label for="switch_settings">Settings</label>
+            </div>
+          </div>
+          <div class="switch-field secret-fields mnemonic-fields hidden">
+            <input type="radio" id="switch_order" name="tx_type" value="order" />
+            <label for="switch_order">Order</label>
+            <input type="radio" id="switch_escrow" name="tx_type" value="escrow" />
+            <label for="switch_escrow">Escrow</label>
+          </div>
 
-            <h3>Choose Transaction Type</h3>
+          <hr>
 
-            <div class="switch-field">
-              <input type="radio" id="switch_payment" name="tx_type" value="payment" checked/>
-              <label for="switch_payment">Payment</label>
-              <input type="radio" id="switch_trustline" name="tx_type" value="trustline" />
-              <label for="switch_trustline">Trustline</label>
-              <div class="inline secret-fields mnemonic-fields hidden">
-                <input type="radio" id="switch_settings" name="tx_type" value="settings" />
-                <label for="switch_settings">Settings</label>
+          <h3 class="payment-fields trustline-fields">Transaction details</h3>
+          <h3 class="settings-fields hidden">Choose a Setting to Modify</h3>
+          <h3 class="order-fields hidden">Choose a type of Order transaction</h3>
+          <h3 class="escrow-fields hidden">Choose a type of Escrow transaction</h3>
+
+          <div class="fields-wide payment-fields">
+            <div>
+              <div class="left">Recipient:</div>
+              <div class="right"><input type="text" id="payment_recipient" placeholder="XRP address of a payee"
+                  spellcheck="false" /></div>
+            </div>
+            <div>
+              <div class="left">Destination tag:</div>
+              <div class="right"><input type="text" id="payment_destination_tag" placeholder="If it's required"
+                  spellcheck="false" /></div>
+            </div>
+            <br>
+            <div class="fields-group-header">
+              <div class="left"></div>
+              <div class="right">Recipient will receive</div>
+            </div>
+            <div>
+              <div class="left">Amount:</div>
+              <div class="right">
+                <input type="text" id="payment_amount" spellcheck="false" />
               </div>
             </div>
-            <div class="switch-field secret-fields mnemonic-fields hidden">
-              <input type="radio" id="switch_order" name="tx_type" value="order" />
-              <label for="switch_order">Order</label>
-              <input type="radio" id="switch_escrow" name="tx_type" value="escrow" />
-              <label for="switch_escrow">Escrow</label>
+            <div>
+              <div class="left">Currency:</div>
+              <div class="right">
+                <input type="text" id="payment_currency" value="XRP" spellcheck="false" />
+              </div>
             </div>
+            <div>
+              <div class="left">Counterparty:</div>
+              <div class="right"><input type="text" id="payment_counterparty"
+                  placeholder="If the currency is different from XRP" spellcheck="false" /></div>
+            </div>
+            <br>
+            <div>
+              <div class="left">Invoice ID:</div>
+              <div class="right"><input type="text" id="payment_invoiceid" placeholder="(optional)"
+                  spellcheck="false" /></div>
+            </div>
+          </div>
 
-            <hr>
+          <div class="fields-wide hidden trustline-fields">
+            <div>
+              <div class="left">Currency:</div>
+              <div class="right"><input type="text" id="trustline_currency" placeholder="BTC" spellcheck="false" />
+              </div>
+            </div>
+            <div>
+              <div class="left">Counterparty:</div>
+              <div class="right"><input type="text" id="trustline_counterparty" placeholder="Gateway's XRP address"
+                  spellcheck="false" /></div>
+            </div>
+            <div>
+              <div class="left">Limit:</div>
+              <div class="right"><input type="text" id="trustline_limit" placeholder="only when you add a trustline"
+                  value="10000000" spellcheck="false" /></div>
+            </div>
+          </div>
 
-            <h3 class="payment-fields trustline-fields">Transaction details</h3>
-            <h3 class="settings-fields hidden">Choose a Setting to Modify</h3>
-            <h3 class="order-fields hidden">Choose a type of Order transaction</h3>
-            <h3 class="escrow-fields hidden">Choose a type of Escrow transaction</h3>
+          <div class="hidden escrow-fields">
+            <select id="select_escrow">
+              <option value="creation" selected="selected">Escrow creation</option>
+              <option value="execution">Escrow execution</option>
+              <option value="cancellation">Escrow cancellation</option>
+            </select>
+          </div>
 
-            <div class="fields-wide payment-fields">
+          <div class="hidden escrow-fields">
+            <div class="fields-wide escrow-creation">
+              <div class="orange note">
+                <br>
+                <center>NOTE: To create an escrow you need to have at least 5 XRP available.</center>
+              </div>
               <div>
                 <div class="left">Recipient:</div>
-                <div class="right"><input type="text" id="payment_recipient" placeholder="XRP address of a payee" spellcheck="false" /></div>
+                <div class="right">
+                  <input type="text" id="escrow_recipient" placeholder="XRP address of a payee" spellcheck="false" />
+                </div>
               </div>
               <div>
                 <div class="left">Destination tag:</div>
-                <div class="right"><input type="text" id="payment_destination_tag" placeholder="If it's required" spellcheck="false" /></div>
-              </div>
-              <br>
-              <div class="fields-group-header">
-                <div class="left"></div>
-                <div class="right">Recipient will receive</div>
+                <div class="right">
+                  <input type="text" id="escrow_destination_tag" placeholder="If it's required" />
+                </div>
               </div>
               <div>
                 <div class="left">Amount:</div>
                 <div class="right">
-                  <input type="text" id="payment_amount" spellcheck="false" />
+                  <input type="text" id="escrow_amount" />
                 </div>
               </div>
-              <div>
-                <div class="left">Currency:</div>
+              <div class="red note">
+                <br>
+                <center>DANGER: You can LOCK your XRP for years here...</center>
+              </div>
+              <label class="container container-escrow-executeAfter">
+                Allow to Execute only after a date (optional)
+                <input type="checkbox" id="escrow_executeAfter" checked="checked" />
+                <span class="checkmark"></span>
+              </label>
+              <div class="orange note escrow-executeAfter-fields">
+                <br>
+                <center>The escrow can not be executed before this time.</center>
+              </div>
+              <div class="escrow-executeAfter-fields">
+                <div class="left">Year:</div>
                 <div class="right">
-                  <input type="text" id="payment_currency" value="XRP" spellcheck="false" />
+                  <input type="text" id="escrow_execute_year" maxlength="4" />
                 </div>
               </div>
-              <div>
-                <div class="left">Counterparty:</div>
-                <div class="right"><input type="text" id="payment_counterparty" placeholder="If the currency is different from XRP" spellcheck="false" /></div>
+              <div class="escrow-executeAfter-fields">
+                <div class="left">Month:</div>
+                <div class="right">
+                  <input type="text" id="escrow_execute_month" maxlength="2" />
+                </div>
               </div>
-              <br>
-              <div>
-                <div class="left">Invoice ID:</div>
-                <div class="right"><input type="text" id="payment_invoiceid" placeholder="(optional)" spellcheck="false" /></div>
+              <div class="escrow-executeAfter-fields">
+                <div class="left">Day:</div>
+                <div class="right">
+                  <input type="text" id="escrow_execute_day" maxlength="2" />
+                </div>
               </div>
-            </div>
-
-            <div class="fields-wide hidden trustline-fields">
-              <div>
-                <div class="left">Currency:</div>
-                <div class="right"><input type="text" id="trustline_currency" placeholder="BTC" spellcheck="false" /></div>
+              <div class="escrow-executeAfter-fields">
+                <div class="left">Hour:</div>
+                <div class="right">
+                  <input type="text" id="escrow_execute_hour" maxlength="2" />
+                </div>
               </div>
-              <div>
-                <div class="left">Counterparty:</div>
-                <div class="right"><input type="text" id="trustline_counterparty" placeholder="Gateway's XRP address" spellcheck="false" /></div>
+              <div class="escrow-executeAfter-fields">
+                <div class="left">Minute:</div>
+                <div class="right">
+                  <input type="text" id="escrow_execute_minute" maxlength="2" />
+                </div>
               </div>
-              <div>
-                <div class="left">Limit:</div>
-                <div class="right"><input  type="text" id="trustline_limit" placeholder="only when you add a trustline" value="10000000" spellcheck="false" /></div>
+              <label class="container container-escrow-cancelAfter">
+                Allow to Cancel after a date (optional)
+                <input type="checkbox" id="escrow_cancelAfter" />
+                <span class="checkmark"></span>
+              </label>
+              <div class="orange note escrow-cancelAfter-fields">
+                <br>
+                <center>The escrow may be cancelled after this time.</center>
               </div>
-            </div>
-
-            <div class="hidden escrow-fields">
-              <select id="select_escrow">
-                <option value="creation" selected="selected">Escrow creation</option>
-                <option value="execution">Escrow execution</option>
-                <option value="cancellation">Escrow cancellation</option>
-              </select>
-            </div>
-
-            <div class="hidden escrow-fields">
-              <div class="fields-wide escrow-creation">
-                <div class="orange note">
-                  <br><center>NOTE: To create an escrow you need to have at least 5 XRP available.</center>
+              <div class="escrow-cancelAfter-fields">
+                <div class="left">Year:</div>
+                <div class="right">
+                  <input type="text" id="escrow_cancel_year" maxlength="4" />
                 </div>
-                <div>
-                  <div class="left">Recipient:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_recipient" placeholder="XRP address of a payee" spellcheck="false" />
-                  </div>
+              </div>
+              <div class="escrow-cancelAfter-fields">
+                <div class="left">Month:</div>
+                <div class="right">
+                  <input type="text" id="escrow_cancel_month" maxlength="2" />
                 </div>
-                <div>
-                  <div class="left">Destination tag:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_destination_tag" placeholder="If it's required" />
-                  </div>
+              </div>
+              <div class="escrow-cancelAfter-fields">
+                <div class="left">Day:</div>
+                <div class="right">
+                  <input type="text" id="escrow_cancel_day" maxlength="2" />
                 </div>
-                <div>
-                  <div class="left">Amount:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_amount" />
-                  </div>
+              </div>
+              <div class="escrow-cancelAfter-fields">
+                <div class="left">Hour:</div>
+                <div class="right">
+                  <input type="text" id="escrow_cancel_hour" maxlength="2" />
                 </div>
-                <div class="red note">
-                  <br><center>DANGER: You can LOCK your XRP for years here...</center>
-                </div>
-                <label class="container container-escrow-executeAfter">
-                  Allow to Execute only after a date (optional)
-                  <input type="checkbox" id="escrow_executeAfter" checked="checked"/>
-                  <span class="checkmark"></span>
-                </label>
-                <div class="orange note escrow-executeAfter-fields">
-                  <br><center>The escrow can not be executed before this time.</center>
-                </div>
-                <div class="escrow-executeAfter-fields">
-                  <div class="left">Year:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_execute_year" maxlength="4"/>
-                  </div>
-                </div>
-                <div class="escrow-executeAfter-fields">
-                  <div class="left">Month:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_execute_month" maxlength="2"/>
-                  </div>
-                </div>
-                <div class="escrow-executeAfter-fields">
-                  <div class="left">Day:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_execute_day" maxlength="2"/>
-                  </div>
-                </div>
-                <div class="escrow-executeAfter-fields">
-                  <div class="left">Hour:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_execute_hour" maxlength="2"/>
-                  </div>
-                </div>
-                <div class="escrow-executeAfter-fields">
-                  <div class="left">Minute:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_execute_minute" maxlength="2"/>
-                  </div>
-                </div>
-                <label class="container container-escrow-cancelAfter">
-                  Allow to Cancel after a date (optional)
-                  <input type="checkbox" id="escrow_cancelAfter"/>
-                  <span class="checkmark"></span>
-                </label>
-                <div class="orange note escrow-cancelAfter-fields">
-                  <br><center>The escrow may be cancelled after this time.</center>
-                </div>
-                <div class="escrow-cancelAfter-fields">
-                  <div class="left">Year:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_cancel_year" maxlength="4"/>
-                  </div>
-                </div>
-                <div class="escrow-cancelAfter-fields">
-                  <div class="left">Month:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_cancel_month" maxlength="2"/>
-                  </div>
-                </div>
-                <div class="escrow-cancelAfter-fields">
-                  <div class="left">Day:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_cancel_day" maxlength="2"/>
-                  </div>
-                </div>
-                <div class="escrow-cancelAfter-fields">
-                  <div class="left">Hour:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_cancel_hour" maxlength="2"/>
-                  </div>
-                </div>
-                <div class="escrow-cancelAfter-fields">
-                  <div class="left">Minute:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_cancel_minute" maxlength="2"/>
-                  </div>
-                  <br>
+              </div>
+              <div class="escrow-cancelAfter-fields">
+                <div class="left">Minute:</div>
+                <div class="right">
+                  <input type="text" id="escrow_cancel_minute" maxlength="2" />
                 </div>
                 <br>
-                <div class="orange note">
-                  <center>
-                    Condition: A hex value representing a <a href="https://tools.ietf.org/html/draft-thomas-crypto-conditions-02#section-8.1">PREIMAGE-SHA-256 crypto-condition</a>. If present, <i>fulfillment</i> is required upon execution.
-                  </center>
-                </div>
-                <div>
-                  <div class="left">Condition:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_create_condition" placeholder="optional" spellcheck="false" />
-                  </div>
-                </div>
               </div>
-              <div class="fields-wide escrow-execution escrow-cancellation hidden">
-                <div>
-                  <div class="left">Owner:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_owner" placeholder="XRP address of the escrow owner" spellcheck="false" />
-                  </div>
-                </div>
-                <div>
-                  <div class="left">Escrow sequence:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_sequence" placeholder="sequence of the escrow to execute" spellcheck="false" />
-                  </div>
-                </div>
+              <br>
+              <div class="orange note">
+                <center>
+                  Condition: A hex value representing a <a
+                    href="https://tools.ietf.org/html/draft-thomas-crypto-conditions-02#section-8.1">PREIMAGE-SHA-256
+                    crypto-condition</a>. If present, <i>fulfillment</i> is required upon execution.
+                </center>
               </div>
-              <div class="fields-wide escrow-execution hidden">
-                <div>
-                  <div class="left">Condition:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_execute_condition" placeholder="(optional) condition from the escrow creation" spellcheck="false" />
-                  </div>
-                </div>
-                <div>
-                  <div class="left">Fulfillment:</div>
-                  <div class="right">
-                    <input type="text" id="escrow_execute_fulfillment" placeholder="(optional) fulfillment for condition" spellcheck="false" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="hidden settings-fields">
-              <select id="select_settings">
-                <option value="domain" selected="selected">Domain</option>
-                <option value="gravatar">Gravatar</option>
-                <option value="messageKey">Message key</option>
-                <option value="regularKey">Regular key</option>
-                <option value="signers">Multi-signature</option>
-                <option value="requireDestinationTag">Require destination tag</option>
-                <option value="disallowIncomingXRP">Disallow Incoming XRP</option>
-                <option value="defaultRipple">Enable default rippling</option>
-                <option value="disableMasterKey">Disable Master Key</option>
-              </select>
-            </div>
-
-            <div class="fields-wide hidden settings-fields">
-              <div class="settings-domain">
-                <div class="orange note">
-                  Here you can assign a domain that owns your account.
-                </div>
-                <input type="text" id="settings_domain" placeholder="Domain name, e.g. mysite.com" spellcheck="false" class="bordered-centered" />
-                <br><br>
-              </div>
-              <div class="settings-gravatar hidden">
-                <div class="orange note">
-                  Enter a <a href="https://gravatar.com" target="_blank">Gravatar</a> email address for your XRP wallet in order to display your avatar in the Bithomp Explorer and in other XRP software.
-                </div>
-                <input type="text" id="settings_email" placeholder="Gravatar email" spellcheck="false" class="bordered-centered" />
-              </div>
-              <div class="settings-messageKey hidden">
-                <div class="orange note">
-                  Public key for sending encrypted messages to this account. Conventionally, it should be a secp256k1 key, the same encryption that is used by the rest of Ripple.
-                </div>
-                <input type="text" id="settings_messageKey" placeholder="Message key" spellcheck="false" class="bordered-centered" />
-              </div>
-              <div class="settings-regularKey hidden">
-                <div class="orange note">
-                  Here you can assign another keypair to manage your account.<br><br>
-                  <span class="red">
-                    DANGER: You may lose all your XRP and other assets if you assign an address you are not in control of.
-                    Please do not use this tool unless you know what you are doing!
-                  </span>
-                </div>
-                <input type="text" id="settings_regularKey" placeholder="Regular key" spellcheck="false" class="bordered-centered" />
-              </div>
-              <div class="settings-signers hidden">
-                <div class="note">
-                  Here you can assign/remove sets of accounts can be used to sign a transaction on behalf of this account using multisigning.
-                </div>
-                <div class="note red">
-                  DANGER: You may lose all your XRP and other assets if you assign addresses you are not in control of.
-                  Please do not use this tool unless you know what you are doing!
-                </div>
-                <div class="note orange">
-                  NOTE: To assign a List of Signers you need to have at least 15 XRP available.
-                  (10 XRP + 5 XRP for each signer, for ex. 3 signers: 10 + 3*5 = 25 XRP.
-                </div>
-                <div class="note">
-                  THRESHOLD - a target number for the signer weights. A multi-signature from this list is valid only if the sum weights of the signatures provided is equal or greater than this value.
-                </div>
-
-                <input type="text" id="settings_signers_threshold" placeholder="Threshold" class="bordered-centered" />
-                <div><br><center>List of Signers</center><br></div>
-
-                <div class="double-fileds">
-                  <div class="left">
-                    <input type="text" name="settings_signers_weight" placeholder="Weight" />
-                  </div>
-                  <div class="right">
-                    <input type="text" name="settings_signers_address" placeholder="Address" spellcheck="false" />
-                  </div>
-                </div>
-
-                <div class="double-fileds">
-                  <div class="left">
-                    <input type="text" name="settings_signers_weight" placeholder="Weight" spellcheck="false" />
-                  </div>
-                  <div class="right">
-                    <input type="text" name="settings_signers_address" placeholder="Address" />
-                  </div>
-                </div>
-
-                <div class="double-fileds">
-                  <div class="left">
-                    <input type="text" name="settings_signers_weight" placeholder="Weight" />
-                  </div>
-                  <div class="right">
-                    <input type="text" name="settings_signers_address" placeholder="Address" spellcheck="false" />
-                  </div>
-                </div>
-
-                <div class="line-with-button">
-                  <button type="button" id="settings_signers_add">Add more</button>
-                </div>
-
-              </div>
-              <div class="settings-requireDestinationTag hidden">
-                <div class="orange note">
-                  Require a destination tag when someone sends XRP/IOU to your account.<br><br>
-                </div>
-              </div>
-              <div class="settings-disallowIncomingXRP hidden">
-                <div class="orange note">
-                  Disallow Incoming XRP to your account.<br><br>
-                </div>
-              </div>
-              <div class="settings-defaultRipple hidden">
-                <div class="orange note">
-                  Enable Rippling on this account’s trust lines by default.<br><br>
-                  <span class="red">
-                    DANGER: Please do not use this tool unless you know what you are doing!
-                  </span>
-                </div>
-              </div>
-              <div class="settings-disableMasterKey hidden">
-                <div class="orange note">
-                  Disallows use of the master key to sign transactions for this account.<br><br>
-                  <span class="red">
-                    DANGER: Can be set only if your account has a Signer List or a Regular Key.
-                    Please do not use this tool unless you know what you are doing!
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div class="hidden order-fields">
-              <select id="select_order">
-                <option value="buy" selected="selected">Create a BUY order</option>
-                <option value="sell">Create a SELL order</option>
-                <option value="cancel">Order cancelation</option>
-              </select>
-            </div>
-
-            <div class="hidden order-fields">
-              <div class="fields-wide order-buy order-sell">
-                <div class="orange note">
-                  <br><center>NOTE: To place an order you need to have at least 5 XRP available.</center>
-                </div>
-                <h3 class="order-buy">I want to Buy</h3>
-                <h3 class="order-sell hidden">I want to Sell</h3>
-                <div>
-                  <div class="left">Amount:</div>
-                  <div class="right"><input type="text" id="order_quantity_amount" spellcheck="false" /></div>
-                </div>
-                <div>
-                  <div class="left">Currency:</div>
-                  <div class="right"><input type="text" id="order_quantity_currency" spellcheck="false" /></div>
-                </div>
-                <div>
-                  <div class="left">Counterparty:</div>
-                  <div class="right"><input type="text" id="order_quantity_counterparty" placeholder="Leave blank if the currency is XRP" spellcheck="false" /></div>
-                </div>
-                <h3>The total price to be paid</h3>
-                <div>
-                  <div class="left">Amount:</div>
-                  <div class="right"><input type="text" id="order_totalPrice_amount" spellcheck="false" /></div>
-                </div>
-                <div>
-                  <div class="left">Currency:</div>
-                  <div class="right"><input type="text" id="order_totalPrice_currency" spellcheck="false" /></div>
-                </div>
-                <div>
-                  <div class="left">Counterparty:</div>
-                  <div class="right"><input type="text" id="order_totalPrice_counterparty" placeholder="Leave blank if the currency is XRP" spellcheck="false" /></div>
-                </div>
-              </div>
-              <div class="fields-wide order-cancel hidden">
-                <div>
-                  <div class="left">Order sequence:</div>
-                  <div class="right"><input type="text" id="order_sequence" placeholder="sequence of the order to cancel" spellcheck="false" /></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="fields-wide">
-              <div class="payment-fields escrow-fields hidden">
-                <div class="left">Memo:</div>
-                <div class="right"><input type="text" id="memo" placeholder="message (optional)" /></div>
-              </div>
-
-              <div class="note offline-fields hidden">
-                <hr>
-                On your phone or another connected computer open a page:
-                <span id="submit-link" class="small">https://bithomp.com/submit</span>
-                You can use a Phone QR Reader to scan the above URL:
-                <div id="submitUrlQR" class="submitUrlQR"></div>
-                Find there the <b>recommended fee</b> and the <b>next sequence</b>.
-                <hr>
-              </div>
-
-              <h3 class="order-fields hidden">Transaction details</h3>
-
               <div>
-                <div class="escrow-fields note">
-                  <center class="escrow-creation hidden orange">For escrow we recommend 0.00033 or a higher fee.</center>
+                <div class="left">Condition:</div>
+                <div class="right">
+                  <input type="text" id="escrow_create_condition" placeholder="optional" spellcheck="false" />
                 </div>
-                <div class="left">Fee to pay (XRP):</div>
-                <div class="right"><input type="text" id="fee" value="0.000012" placeholder="0.000012" spellcheck="false" /></div>
-              </div>
-              <div class="offline-fields hidden">
-                <div class="left">Next sequence:</div>
-                <div class="right"><input type="text" id="sequence" placeholder="sequence of the transaction" spellcheck="false" /></div>
               </div>
             </div>
-
-            <div class="payment-fields">
-              <button type="button" id="payment_pay">
-                Send <span>XRP</span>
-              </button>
-              <button type="button" id="payment_find_alternatives" class="online-fields payment-find-alternatives">
-                Find alternatives
-              </button>
-              <div id="payment_paths" class="online-fields wide-buttons"></div>
+            <div class="fields-wide escrow-execution escrow-cancellation hidden">
+              <div>
+                <div class="left">Owner:</div>
+                <div class="right">
+                  <input type="text" id="escrow_owner" placeholder="XRP address of the escrow owner"
+                    spellcheck="false" />
+                </div>
+              </div>
+              <div>
+                <div class="left">Escrow sequence:</div>
+                <div class="right">
+                  <input type="text" id="escrow_sequence" placeholder="sequence of the escrow to execute"
+                    spellcheck="false" />
+                </div>
+              </div>
             </div>
-
-            <div class="trustline-fields hidden">
-              <button type="button" id="trustline_add">Add</button>
-              <button type="button" id="trustline_remove">Delete</button>
+            <div class="fields-wide escrow-execution hidden">
+              <div>
+                <div class="left">Condition:</div>
+                <div class="right">
+                  <input type="text" id="escrow_execute_condition"
+                    placeholder="(optional) condition from the escrow creation" spellcheck="false" />
+                </div>
+              </div>
+              <div>
+                <div class="left">Fulfillment:</div>
+                <div class="right">
+                  <input type="text" id="escrow_execute_fulfillment" placeholder="(optional) fulfillment for condition"
+                    spellcheck="false" />
+                </div>
+              </div>
             </div>
-
-            <div class="escrow-fields">
-              <button type="button" id="escrow_submit">Submit</button>
-            </div>
-
-            <div class="settings-fields">
-              <button type="button" id="settings_set">Set</button>
-
-              <button type="button" id="settings_unset" class="settings-domain settings-messageKey settings-regularKey settings-signers settings-requireDestinationTag settings-disallowIncomingXRP settings-defaultRipple hidden settings-disableMasterKey">
-                Remove
-              </button>
-            </div>
-
-            <div class="order-fields">
-              <button type="button" id="order_submit">Submit</button>
-            </div>
-
-            <div class="feedback orange" id="tx_feedback"></div>
-
-            <textarea id="txBlob" class="tx-blob offline-fields hidden" readonly></textarea>
-            <div id="blobQR" class="blobQR offline-fields hidden"></div>
-
           </div>
 
-        </fieldset>
+          <div class="hidden settings-fields">
+            <select id="select_settings">
+              <option value="domain" selected="selected">Domain</option>
+              <option value="gravatar">Gravatar</option>
+              <option value="messageKey">Message key</option>
+              <option value="regularKey">Regular key</option>
+              <option value="signers">Multi-signature</option>
+              <option value="requireDestinationTag">Require destination tag</option>
+              <option value="disallowIncomingXRP">Disallow Incoming XRP</option>
+              <option value="defaultRipple">Enable default rippling</option>
+              <option value="disableMasterKey">Disable Master Key</option>
+            </select>
+          </div>
 
-      </div>
+          <div class="fields-wide hidden settings-fields">
+            <div class="settings-domain">
+              <div class="orange note">
+                Here you can assign a domain that owns your account.
+              </div>
+              <input type="text" id="settings_domain" placeholder="Domain name, e.g. mysite.com" spellcheck="false"
+                class="bordered-centered" />
+              <br><br>
+            </div>
+            <div class="settings-gravatar hidden">
+              <div class="orange note">
+                Enter a <a href="https://gravatar.com" target="_blank">Gravatar</a> email address for your XRP wallet in
+                order to display your avatar in the Bithomp Explorer and in other XRP software.
+              </div>
+              <input type="text" id="settings_email" placeholder="Gravatar email" spellcheck="false"
+                class="bordered-centered" />
+            </div>
+            <div class="settings-messageKey hidden">
+              <div class="orange note">
+                Public key for sending encrypted messages to this account. Conventionally, it should be a secp256k1 key,
+                the same encryption that is used by the rest of Ripple.
+              </div>
+              <input type="text" id="settings_messageKey" placeholder="Message key" spellcheck="false"
+                class="bordered-centered" />
+            </div>
+            <div class="settings-regularKey hidden">
+              <div class="orange note">
+                Here you can assign another keypair to manage your account.<br><br>
+                <span class="red">
+                  DANGER: You may lose all your XRP and other assets if you assign an address you are not in control of.
+                  Please do not use this tool unless you know what you are doing!
+                </span>
+              </div>
+              <input type="text" id="settings_regularKey" placeholder="Regular key" spellcheck="false"
+                class="bordered-centered" />
+            </div>
+            <div class="settings-signers hidden">
+              <div class="note">
+                Here you can assign/remove sets of accounts can be used to sign a transaction on behalf of this account
+                using multisigning.
+              </div>
+              <div class="note red">
+                DANGER: You may lose all your XRP and other assets if you assign addresses you are not in control of.
+                Please do not use this tool unless you know what you are doing!
+              </div>
+              <div class="note orange">
+                NOTE: To assign a List of Signers you need to have at least 15 XRP available.
+                (10 XRP + 5 XRP for each signer, for ex. 3 signers: 10 + 3*5 = 25 XRP.
+              </div>
+              <div class="note">
+                THRESHOLD - a target number for the signer weights. A multi-signature from this list is valid only if
+                the sum weights of the signatures provided is equal or greater than this value.
+              </div>
 
-      <hr>
+              <input type="text" id="settings_signers_threshold" placeholder="Threshold" class="bordered-centered" />
+              <div><br>
+                <center>List of Signers</center><br>
+              </div>
 
-      <div class="footer">
-        © 2015 - <span id="thisYear">2020</span> <a href="http://octillion.info" target="_blank">Octillion S.A.</a> All Rights Reserved
-      </div>
+              <div class="double-fileds">
+                <div class="left">
+                  <input type="text" name="settings_signers_weight" placeholder="Weight" />
+                </div>
+                <div class="right">
+                  <input type="text" name="settings_signers_address" placeholder="Address" spellcheck="false" />
+                </div>
+              </div>
+
+              <div class="double-fileds">
+                <div class="left">
+                  <input type="text" name="settings_signers_weight" placeholder="Weight" spellcheck="false" />
+                </div>
+                <div class="right">
+                  <input type="text" name="settings_signers_address" placeholder="Address" />
+                </div>
+              </div>
+
+              <div class="double-fileds">
+                <div class="left">
+                  <input type="text" name="settings_signers_weight" placeholder="Weight" />
+                </div>
+                <div class="right">
+                  <input type="text" name="settings_signers_address" placeholder="Address" spellcheck="false" />
+                </div>
+              </div>
+
+              <div class="line-with-button">
+                <button type="button" id="settings_signers_add">Add more</button>
+              </div>
+
+            </div>
+            <div class="settings-requireDestinationTag hidden">
+              <div class="orange note">
+                Require a destination tag when someone sends XRP/IOU to your account.<br><br>
+              </div>
+            </div>
+            <div class="settings-disallowIncomingXRP hidden">
+              <div class="orange note">
+                Disallow Incoming XRP to your account.<br><br>
+              </div>
+            </div>
+            <div class="settings-defaultRipple hidden">
+              <div class="orange note">
+                Enable Rippling on this account’s trust lines by default.<br><br>
+                <span class="red">
+                  DANGER: Please do not use this tool unless you know what you are doing!
+                </span>
+              </div>
+            </div>
+            <div class="settings-disableMasterKey hidden">
+              <div class="orange note">
+                Disallows use of the master key to sign transactions for this account.<br><br>
+                <span class="red">
+                  DANGER: Can be set only if your account has a Signer List or a Regular Key.
+                  Please do not use this tool unless you know what you are doing!
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hidden order-fields">
+            <select id="select_order">
+              <option value="buy" selected="selected">Create a BUY order</option>
+              <option value="sell">Create a SELL order</option>
+              <option value="cancel">Order cancelation</option>
+            </select>
+          </div>
+
+          <div class="hidden order-fields">
+            <div class="fields-wide order-buy order-sell">
+              <div class="orange note">
+                <br>
+                <center>NOTE: To place an order you need to have at least 5 XRP available.</center>
+              </div>
+              <h3 class="order-buy">I want to Buy</h3>
+              <h3 class="order-sell hidden">I want to Sell</h3>
+              <div>
+                <div class="left">Amount:</div>
+                <div class="right"><input type="text" id="order_quantity_amount" spellcheck="false" /></div>
+              </div>
+              <div>
+                <div class="left">Currency:</div>
+                <div class="right"><input type="text" id="order_quantity_currency" spellcheck="false" /></div>
+              </div>
+              <div>
+                <div class="left">Counterparty:</div>
+                <div class="right"><input type="text" id="order_quantity_counterparty"
+                    placeholder="Leave blank if the currency is XRP" spellcheck="false" /></div>
+              </div>
+              <h3>The total price to be paid</h3>
+              <div>
+                <div class="left">Amount:</div>
+                <div class="right"><input type="text" id="order_totalPrice_amount" spellcheck="false" /></div>
+              </div>
+              <div>
+                <div class="left">Currency:</div>
+                <div class="right"><input type="text" id="order_totalPrice_currency" spellcheck="false" /></div>
+              </div>
+              <div>
+                <div class="left">Counterparty:</div>
+                <div class="right"><input type="text" id="order_totalPrice_counterparty"
+                    placeholder="Leave blank if the currency is XRP" spellcheck="false" /></div>
+              </div>
+            </div>
+            <div class="fields-wide order-cancel hidden">
+              <div>
+                <div class="left">Order sequence:</div>
+                <div class="right"><input type="text" id="order_sequence" placeholder="sequence of the order to cancel"
+                    spellcheck="false" /></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fields-wide">
+            <div class="payment-fields escrow-fields hidden">
+              <div class="left">Memo:</div>
+              <div class="right"><input type="text" id="memo" placeholder="message (optional)" /></div>
+            </div>
+
+            <div class="note offline-fields hidden">
+              <hr>
+              On your phone or another connected computer open a page:
+              <span id="submit-link" class="small">https://bithomp.com/submit</span>
+              You can use a Phone QR Reader to scan the above URL:
+              <div id="submitUrlQR" class="submitUrlQR"></div>
+              Find there the <b>recommended fee</b> and the <b>next sequence</b>.
+              <hr>
+            </div>
+
+            <h3 class="order-fields hidden">Transaction details</h3>
+
+            <div>
+              <div class="escrow-fields note">
+                <center class="escrow-creation hidden orange">For escrow we recommend 0.00033 or a higher fee.</center>
+              </div>
+              <div class="left">Fee to pay (XRP):</div>
+              <div class="right"><input type="text" id="fee" value="0.000012" placeholder="0.000012"
+                  spellcheck="false" /></div>
+            </div>
+            <div class="offline-fields hidden">
+              <div class="left">Next sequence:</div>
+              <div class="right"><input type="text" id="sequence" placeholder="sequence of the transaction"
+                  spellcheck="false" /></div>
+            </div>
+          </div>
+
+          <div class="payment-fields">
+            <button type="button" id="payment_pay">
+              Send <span>XRP</span>
+            </button>
+            <button type="button" id="payment_find_alternatives" class="online-fields payment-find-alternatives">
+              Find alternatives
+            </button>
+            <div id="payment_paths" class="online-fields wide-buttons"></div>
+          </div>
+
+          <div class="trustline-fields hidden">
+            <button type="button" id="trustline_add">Add</button>
+            <button type="button" id="trustline_remove">Delete</button>
+          </div>
+
+          <div class="escrow-fields">
+            <button type="button" id="escrow_submit">Submit</button>
+          </div>
+
+          <div class="settings-fields">
+            <button type="button" id="settings_set">Set</button>
+
+            <button type="button" id="settings_unset"
+              class="settings-domain settings-messageKey settings-regularKey settings-signers settings-requireDestinationTag settings-disallowIncomingXRP settings-defaultRipple hidden settings-disableMasterKey">
+              Remove
+            </button>
+          </div>
+
+          <div class="order-fields">
+            <button type="button" id="order_submit">Submit</button>
+          </div>
+
+          <div class="feedback orange" id="tx_feedback"></div>
+
+          <textarea id="txBlob" class="tx-blob offline-fields hidden" readonly></textarea>
+          <div id="blobQR" class="blobQR offline-fields hidden"></div>
+
+        </div>
+
+      </fieldset>
 
     </div>
 
-    <script src="js/basex.js"></script>
-    <script src="js/levenshtein.js"></script>
-    <script src="js/bitcoinjs-3.3.2.js"></script>
-    <script src="js/sjcl-bip39.js"></script>
-    <script src="js/wordlist_english.js"></script>
-    <script src="js/jsbip39.js"></script>
-    <script src="js/lodash.js"></script>
-    <script src="js/ripple-0.22.0-modified.js"></script>
-    <script src="js/jquery-3.2.1.js"></script>
-    <script src="js/bithomphw.min.js"></script>
-    <script src="js/qrcode.js"></script>
-    <script src="js/index.js"></script>
-  </body>
+    <hr>
+
+    <div class="footer">
+      © 2015 - <span id="thisYear">2020</span> <a href="http://octillion.info" target="_blank">Octillion S.A.</a> All
+      Rights Reserved
+    </div>
+
+  </div>
+
+  <script src="js/basex.js"></script>
+  <script src="js/levenshtein.js"></script>
+  <script src="js/bitcoinjs-3.3.2.js"></script>
+  <script src="js/sjcl-bip39.js"></script>
+  <script src="js/wordlist_english.js"></script>
+  <script src="js/jsbip39.js"></script>
+  <script src="js/lodash.js"></script>
+  <script src="js/ripple-0.22.0-modified.js"></script>
+  <script src="js/jquery-3.2.1.js"></script>
+  <script src="js/bithomphw.min.js"></script>
+  <script src="js/qrcode.js"></script>
+  <script src="js/index.js"></script>
+</body>
+
 </html>
