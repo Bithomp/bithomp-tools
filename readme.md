@@ -1,7 +1,6 @@
 The project "Bithomp tools" is discontinued because it's technical capabilities no longer meet the needs of the modern marketplace.
 --------------------------------------------------------------------------------------------------------
-You can still download and use it offline on a separate secure offline computer/phone, but for online transactions it's recommended to use hardware wallets or a mobile app XUMM.
-https://bithomp.com/wallets/hardware
+You can still download and use it offline on a separate secure offline computer/phone, but for online transactions it's recommended to use hardware wallets or a mobile app Xaman.
 
 # Bithomp Tools
 
